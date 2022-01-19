@@ -1,0 +1,341 @@
+ARM GAS  /tmp/ccxQTaBf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"robot_operation.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text._Z13motor_actuatev,"ax",%progbits
+  18              		.align	1
+  19              		.global	_Z13motor_actuatev
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	_Z13motor_actuatev:
+  27              	.LFB422:
+  28              		.file 1 "Core/Src/robot/robot_operation.cpp"
+   1:Core/Src/robot/robot_operation.cpp **** #include "robot_operation.h"
+   2:Core/Src/robot/robot_operation.cpp **** extern encoder encoder_[4];
+   3:Core/Src/robot/robot_operation.cpp **** extern motor motor_[4];
+   4:Core/Src/robot/robot_operation.cpp **** extern robo_state robo_state_;
+   5:Core/Src/robot/robot_operation.cpp **** inversekinematics inversekinematics_;
+   6:Core/Src/robot/robot_operation.cpp **** extern pid_Algorithm pid_Algorithm_[4];
+   7:Core/Src/robot/robot_operation.cpp **** extern JoyStick joystick;
+   8:Core/Src/robot/robot_operation.cpp **** void robo_play()
+   9:Core/Src/robot/robot_operation.cpp **** {
+  10:Core/Src/robot/robot_operation.cpp **** 	uint32_t currTime = HAL_GetTick();
+  11:Core/Src/robot/robot_operation.cpp **** 	while(1)
+  12:Core/Src/robot/robot_operation.cpp **** 	{
+  13:Core/Src/robot/robot_operation.cpp **** 	      joystick.parse_JoyData();
+  14:Core/Src/robot/robot_operation.cpp **** 		if ((HAL_GetTick() - currTime) > 10)
+  15:Core/Src/robot/robot_operation.cpp **** 		{ 	
+  16:Core/Src/robot/robot_operation.cpp **** 			//taskENTER_CRITICAL();
+  17:Core/Src/robot/robot_operation.cpp **** 			inversekinematics_.set_robotVelocity(robo_state_.velocity, robo_state_.direction, robo_state_.om
+  18:Core/Src/robot/robot_operation.cpp **** 			motor_actuate();
+  19:Core/Src/robot/robot_operation.cpp **** 			//taskEXIT_CRITICAL();
+  20:Core/Src/robot/robot_operation.cpp ****            currTime = HAL_GetTick();
+  21:Core/Src/robot/robot_operation.cpp **** 		}
+  22:Core/Src/robot/robot_operation.cpp **** 	}
+  23:Core/Src/robot/robot_operation.cpp **** }
+  24:Core/Src/robot/robot_operation.cpp **** int i=3;
+  25:Core/Src/robot/robot_operation.cpp **** void motor_actuate()
+  26:Core/Src/robot/robot_operation.cpp **** {  
+  29              		.loc 1 26 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccxQTaBf.s 			page 2
+
+
+  33 0000 38B5     		push	{r3, r4, r5, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 3, -16
+  37              		.cfi_offset 4, -12
+  38              		.cfi_offset 5, -8
+  39              		.cfi_offset 14, -4
+  40 0002 2DED028B 		vpush.64	{d8}
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 24
+  43              		.cfi_offset 80, -24
+  44              		.cfi_offset 81, -20
+  27:Core/Src/robot/robot_operation.cpp **** // float tunedOmega = motor_[i].computeOmega(inversekinematics_.get_motorOmegaFromInvKin(i), encode
+  28:Core/Src/robot/robot_operation.cpp **** //  motor_[i].set_omega(inversekinematics_.get_motorOmegaFromInvKin(i));
+  29:Core/Src/robot/robot_operation.cpp **** // printf("%f   %f   %f   %f\n",encoder_[0].get_omega(),encoder_[1].get_omega(),encoder_[0].get_ome
+  30:Core/Src/robot/robot_operation.cpp **** for (int i = 0; i < 4; i++)
+  45              		.loc 1 30 1 view .LVU1
+  46              	.LVL0:
+  47              	.LBB6:
+  48              		.loc 1 30 10 is_stmt 0 view .LVU2
+  49 0006 0024     		movs	r4, #0
+  50 0008 1DE0     		b	.L3
+  51              	.LVL1:
+  52              	.L5:
+  53              	.LBB7:
+  31:Core/Src/robot/robot_operation.cpp **** 	{ 
+  32:Core/Src/robot/robot_operation.cpp **** 		//printf("%d\n",i);
+  33:Core/Src/robot/robot_operation.cpp **** 		float tunedOmega = motor_[i].computeOmega(inversekinematics_.get_motorOmegaFromInvKin(i), encoder
+  54              		.loc 1 33 3 is_stmt 1 discriminator 2 view .LVU3
+  55              		.loc 1 33 44 is_stmt 0 discriminator 2 view .LVU4
+  56 000a 4FF4D073 		mov	r3, #416
+  57 000e 104D     		ldr	r5, .L6
+  58 0010 03FB0455 		mla	r5, r3, r4, r5
+  59              	.LVL2:
+  60              	.LBB8:
+  61              	.LBI8:
+  62              		.file 2 "Core/Inc/actuator/inversekinematics.h"
+   1:Core/Inc/actuator/inversekinematics.h **** #pragma once
+   2:Core/Inc/actuator/inversekinematics.h **** #ifndef _INVERSEKINEMATICS_H_
+   3:Core/Inc/actuator/inversekinematics.h **** #define _INVERSEKINEMATICS_H_
+   4:Core/Inc/actuator/inversekinematics.h **** #include"defines.h"
+   5:Core/Inc/actuator/inversekinematics.h **** class inversekinematics
+   6:Core/Inc/actuator/inversekinematics.h **** {  private:
+   7:Core/Inc/actuator/inversekinematics.h **** 	float motor_omega[4];
+   8:Core/Inc/actuator/inversekinematics.h **** 	float robot_velocity[3];
+   9:Core/Inc/actuator/inversekinematics.h ****    public:
+  10:Core/Inc/actuator/inversekinematics.h **** 	void set_motorOmegaFromInvKin(void);
+  11:Core/Inc/actuator/inversekinematics.h **** 	void set_robotVelocity(float,float,float=0);
+  12:Core/Inc/actuator/inversekinematics.h **** 	float get_motorOmegaFromInvKin(int motor_index) { return motor_omega[motor_index]; }
+  63              		.loc 2 12 8 is_stmt 1 discriminator 2 view .LVU5
+  64              	.LBB9:
+  65              		.loc 2 12 52 discriminator 2 view .LVU6
+  66              		.loc 2 12 82 is_stmt 0 discriminator 2 view .LVU7
+  67 0014 0F4B     		ldr	r3, .L6+4
+  68 0016 03EB8403 		add	r3, r3, r4, lsl #2
+  69 001a 93ED008A 		vldr.32	s16, [r3]
+  70              	.LVL3:
+ARM GAS  /tmp/ccxQTaBf.s 			page 3
+
+
+  71              		.loc 2 12 82 discriminator 2 view .LVU8
+  72              	.LBE9:
+  73              	.LBE8:
+  74              		.loc 1 33 44 discriminator 2 view .LVU9
+  75 001e 04EB8400 		add	r0, r4, r4, lsl #2
+  76 0022 0D4B     		ldr	r3, .L6+8
+  77 0024 03EB8000 		add	r0, r3, r0, lsl #2
+  78 0028 FFF7FEFF 		bl	_ZN7encoder9get_omegaEv
+  79              	.LVL4:
+  80 002c F0EE400A 		vmov.f32	s1, s0
+  81 0030 0A4B     		ldr	r3, .L6+12
+  82 0032 195D     		ldrb	r1, [r3, r4]	@ zero_extendqisi2
+  83 0034 B0EE480A 		vmov.f32	s0, s16
+  84 0038 2846     		mov	r0, r5
+  85 003a FFF7FEFF 		bl	_ZN5motor12computeOmegaEff13pid_Algorithm
+  86              	.LVL5:
+  34:Core/Src/robot/robot_operation.cpp **** 		motor_[i].set_omega(tunedOmega);
+  87              		.loc 1 34 3 is_stmt 1 discriminator 2 view .LVU10
+  88              		.loc 1 34 22 is_stmt 0 discriminator 2 view .LVU11
+  89 003e 2846     		mov	r0, r5
+  90 0040 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+  91              	.LVL6:
+  92              		.loc 1 34 22 discriminator 2 view .LVU12
+  93              	.LBE7:
+  30:Core/Src/robot/robot_operation.cpp **** 	{ 
+  94              		.loc 1 30 1 is_stmt 1 discriminator 2 view .LVU13
+  95 0044 0134     		adds	r4, r4, #1
+  96              	.LVL7:
+  97              	.L3:
+  30:Core/Src/robot/robot_operation.cpp **** 	{ 
+  98              		.loc 1 30 19 discriminator 3 view .LVU14
+  99 0046 032C     		cmp	r4, #3
+ 100 0048 DFDD     		ble	.L5
+ 101              	.LBE6:
+  35:Core/Src/robot/robot_operation.cpp **** 	}
+  36:Core/Src/robot/robot_operation.cpp **** // }
+  37:Core/Src/robot/robot_operation.cpp **** }
+ 102              		.loc 1 37 1 is_stmt 0 view .LVU15
+ 103 004a BDEC028B 		vldm	sp!, {d8}
+ 104              	.LCFI2:
+ 105              		.cfi_restore 80
+ 106              		.cfi_restore 81
+ 107              		.cfi_def_cfa_offset 16
+ 108 004e 38BD     		pop	{r3, r4, r5, pc}
+ 109              	.LVL8:
+ 110              	.L7:
+ 111              		.loc 1 37 1 view .LVU16
+ 112              		.align	2
+ 113              	.L6:
+ 114 0050 00000000 		.word	motor_
+ 115 0054 00000000 		.word	.LANCHOR0
+ 116 0058 00000000 		.word	encoder_
+ 117 005c 00000000 		.word	pid_Algorithm_
+ 118              		.cfi_endproc
+ 119              	.LFE422:
+ 121              		.section	.text._Z9robo_playv,"ax",%progbits
+ 122              		.align	1
+ARM GAS  /tmp/ccxQTaBf.s 			page 4
+
+
+ 123              		.global	_Z9robo_playv
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 127              		.fpu fpv4-sp-d16
+ 129              	_Z9robo_playv:
+ 130              	.LFB421:
+   9:Core/Src/robot/robot_operation.cpp **** 	uint32_t currTime = HAL_GetTick();
+ 131              		.loc 1 9 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135 0000 10B5     		push	{r4, lr}
+ 136              	.LCFI3:
+ 137              		.cfi_def_cfa_offset 8
+ 138              		.cfi_offset 4, -8
+ 139              		.cfi_offset 14, -4
+  10:Core/Src/robot/robot_operation.cpp **** 	while(1)
+ 140              		.loc 1 10 2 view .LVU18
+  10:Core/Src/robot/robot_operation.cpp **** 	while(1)
+ 141              		.loc 1 10 33 is_stmt 0 view .LVU19
+ 142 0002 FFF7FEFF 		bl	HAL_GetTick
+ 143              	.LVL9:
+ 144 0006 0446     		mov	r4, r0
+ 145              	.LVL10:
+ 146              	.L9:
+  11:Core/Src/robot/robot_operation.cpp **** 	{
+ 147              		.loc 1 11 2 is_stmt 1 view .LVU20
+  13:Core/Src/robot/robot_operation.cpp **** 		if ((HAL_GetTick() - currTime) > 10)
+ 148              		.loc 1 13 8 view .LVU21
+  13:Core/Src/robot/robot_operation.cpp **** 		if ((HAL_GetTick() - currTime) > 10)
+ 149              		.loc 1 13 30 is_stmt 0 view .LVU22
+ 150 0008 0B48     		ldr	r0, .L12
+ 151 000a FFF7FEFF 		bl	_ZN8JoyStick13parse_JoyDataEv
+ 152              	.LVL11:
+  14:Core/Src/robot/robot_operation.cpp **** 		{ 	
+ 153              		.loc 1 14 3 is_stmt 1 view .LVU23
+  14:Core/Src/robot/robot_operation.cpp **** 		{ 	
+ 154              		.loc 1 14 19 is_stmt 0 view .LVU24
+ 155 000e FFF7FEFF 		bl	HAL_GetTick
+ 156              	.LVL12:
+  14:Core/Src/robot/robot_operation.cpp **** 		{ 	
+ 157              		.loc 1 14 22 view .LVU25
+ 158 0012 031B     		subs	r3, r0, r4
+  14:Core/Src/robot/robot_operation.cpp **** 		{ 	
+ 159              		.loc 1 14 3 view .LVU26
+ 160 0014 0A2B     		cmp	r3, #10
+ 161 0016 F7D9     		bls	.L9
+  17:Core/Src/robot/robot_operation.cpp **** 			motor_actuate();
+ 162              		.loc 1 17 4 is_stmt 1 view .LVU27
+  17:Core/Src/robot/robot_operation.cpp **** 			motor_actuate();
+ 163              		.loc 1 17 40 is_stmt 0 view .LVU28
+ 164 0018 084B     		ldr	r3, .L12+4
+ 165 001a 93ED111A 		vldr.32	s2, [r3, #68]
+ 166 001e D3ED120A 		vldr.32	s1, [r3, #72]
+ 167 0022 93ED100A 		vldr.32	s0, [r3, #64]
+ 168 0026 0648     		ldr	r0, .L12+8
+ARM GAS  /tmp/ccxQTaBf.s 			page 5
+
+
+ 169 0028 FFF7FEFF 		bl	_ZN17inversekinematics17set_robotVelocityEfff
+ 170              	.LVL13:
+  18:Core/Src/robot/robot_operation.cpp **** 			//taskEXIT_CRITICAL();
+ 171              		.loc 1 18 4 is_stmt 1 view .LVU29
+  18:Core/Src/robot/robot_operation.cpp **** 			//taskEXIT_CRITICAL();
+ 172              		.loc 1 18 17 is_stmt 0 view .LVU30
+ 173 002c FFF7FEFF 		bl	_Z13motor_actuatev
+ 174              	.LVL14:
+  20:Core/Src/robot/robot_operation.cpp **** 		}
+ 175              		.loc 1 20 12 is_stmt 1 view .LVU31
+  20:Core/Src/robot/robot_operation.cpp **** 		}
+ 176              		.loc 1 20 34 is_stmt 0 view .LVU32
+ 177 0030 FFF7FEFF 		bl	HAL_GetTick
+ 178              	.LVL15:
+ 179 0034 0446     		mov	r4, r0
+ 180              	.LVL16:
+  20:Core/Src/robot/robot_operation.cpp **** 		}
+ 181              		.loc 1 20 34 view .LVU33
+ 182 0036 E7E7     		b	.L9
+ 183              	.L13:
+ 184              		.align	2
+ 185              	.L12:
+ 186 0038 00000000 		.word	joystick
+ 187 003c 00000000 		.word	robo_state_
+ 188 0040 00000000 		.word	.LANCHOR0
+ 189              		.cfi_endproc
+ 190              	.LFE421:
+ 192              		.global	i
+ 193              		.global	inversekinematics_
+ 194              		.section	.bss.inversekinematics_,"aw",%nobits
+ 195              		.align	2
+ 196              		.set	.LANCHOR0,. + 0
+ 199              	inversekinematics_:
+ 200 0000 00000000 		.space	28
+ 200      00000000 
+ 200      00000000 
+ 200      00000000 
+ 200      00000000 
+ 201              		.section	.data.i,"aw"
+ 202              		.align	2
+ 205              	i:
+ 206 0000 03000000 		.word	3
+ 207              		.text
+ 208              	.Letext0:
+ 209              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 210              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 211              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 212              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 213              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 214              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 215              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 216              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 217              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 218              		.file 12 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 219              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 220              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 221              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ARM GAS  /tmp/ccxQTaBf.s 			page 6
+
+
+ 222              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 223              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 224              		.file 18 "Core/Inc/control/pid.h"
+ 225              		.file 19 "Core/Inc/control/fuzzy_pid.h"
+ 226              		.file 20 "Core/Inc/actuator/motor.h"
+ 227              		.file 21 "Core/Inc/actuator/encoder.h"
+ 228              		.file 22 "Core/Inc/robot/robo_state.h"
+ 229              		.file 23 "Core/Inc/devs/joystick.h"
+ 230              		.file 24 "Core/Inc/utils/container/queue_custom.h"
+ 231              		.file 25 "<built-in>"
+ARM GAS  /tmp/ccxQTaBf.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 robot_operation.cpp
+     /tmp/ccxQTaBf.s:18     .text._Z13motor_actuatev:0000000000000000 $t
+     /tmp/ccxQTaBf.s:26     .text._Z13motor_actuatev:0000000000000000 _Z13motor_actuatev
+     /tmp/ccxQTaBf.s:114    .text._Z13motor_actuatev:0000000000000050 $d
+     /tmp/ccxQTaBf.s:122    .text._Z9robo_playv:0000000000000000 $t
+     /tmp/ccxQTaBf.s:129    .text._Z9robo_playv:0000000000000000 _Z9robo_playv
+     /tmp/ccxQTaBf.s:186    .text._Z9robo_playv:0000000000000038 $d
+     /tmp/ccxQTaBf.s:205    .data.i:0000000000000000 i
+     /tmp/ccxQTaBf.s:199    .bss.inversekinematics_:0000000000000000 inversekinematics_
+     /tmp/ccxQTaBf.s:195    .bss.inversekinematics_:0000000000000000 $d
+     /tmp/ccxQTaBf.s:202    .data.i:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+_ZN7encoder9get_omegaEv
+_ZN5motor12computeOmegaEff13pid_Algorithm
+_ZN5motor9set_omegaEf
+motor_
+encoder_
+pid_Algorithm_
+HAL_GetTick
+_ZN8JoyStick13parse_JoyDataEv
+_ZN17inversekinematics17set_robotVelocityEfff
+joystick
+robo_state_

@@ -1,0 +1,560 @@
+ARM GAS  /tmp/ccD2MQsP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"encoder.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	__aeabi_i2d
+  18              		.global	__aeabi_dmul
+  19              		.global	__aeabi_ddiv
+  20              		.global	__aeabi_d2f
+  21              		.section	.text._ZN7encoder16encoderInitilizeEv,"ax",%progbits
+  22              		.align	1
+  23              		.global	_ZN7encoder16encoderInitilizeEv
+  24              		.arch armv7e-m
+  25              		.syntax unified
+  26              		.thumb
+  27              		.thumb_func
+  28              		.fpu fpv4-sp-d16
+  30              	_ZN7encoder16encoderInitilizeEv:
+  31              	.LVL0:
+  32              	.LFB1653:
+  33              		.file 1 "Core/Src/actuator/encoder.cpp"
+   1:Core/Src/actuator/encoder.cpp **** #include "encoder.h"
+   2:Core/Src/actuator/encoder.cpp **** void encoder::encoderInitilize()
+   3:Core/Src/actuator/encoder.cpp **** {
+  34              		.loc 1 3 1 view -0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38              		.loc 1 3 1 is_stmt 0 view .LVU1
+  39 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  40              	.LCFI0:
+  41              		.cfi_def_cfa_offset 24
+  42              		.cfi_offset 3, -24
+  43              		.cfi_offset 4, -20
+  44              		.cfi_offset 5, -16
+  45              		.cfi_offset 6, -12
+  46              		.cfi_offset 7, -8
+  47              		.cfi_offset 14, -4
+  48 0002 0446     		mov	r4, r0
+   4:Core/Src/actuator/encoder.cpp **** 	prevAngle =((2 * PI * ((int16_t)encoder_config_->henc->Instance->CNT)) / encoder_config_->ppr);
+  49              		.loc 1 4 2 is_stmt 1 view .LVU2
+  50              		.loc 1 4 34 is_stmt 0 view .LVU3
+  51 0004 0568     		ldr	r5, [r0]
+  52              		.loc 1 4 51 view .LVU4
+  53 0006 2B68     		ldr	r3, [r5]
+  54              		.loc 1 4 57 view .LVU5
+ARM GAS  /tmp/ccD2MQsP.s 			page 2
+
+
+  55 0008 1B68     		ldr	r3, [r3]
+  56              		.loc 1 4 67 view .LVU6
+  57 000a 586A     		ldr	r0, [r3, #36]
+  58              	.LVL1:
+  59              		.loc 1 4 22 view .LVU7
+  60 000c 00B2     		sxth	r0, r0
+  61 000e FFF7FEFF 		bl	__aeabi_i2d
+  62              	.LVL2:
+  63 0012 0BA3     		adr	r3, .L3
+  64 0014 D3E90023 		ldrd	r2, [r3]
+  65 0018 FFF7FEFF 		bl	__aeabi_dmul
+  66              	.LVL3:
+  67 001c 0646     		mov	r6, r0
+  68 001e 0F46     		mov	r7, r1
+  69              		.loc 1 4 73 view .LVU8
+  70 0020 A888     		ldrh	r0, [r5, #4]
+  71 0022 FFF7FEFF 		bl	__aeabi_i2d
+  72              	.LVL4:
+  73 0026 0246     		mov	r2, r0
+  74 0028 0B46     		mov	r3, r1
+  75 002a 3046     		mov	r0, r6
+  76 002c 3946     		mov	r1, r7
+  77 002e FFF7FEFF 		bl	__aeabi_ddiv
+  78              	.LVL5:
+  79 0032 FFF7FEFF 		bl	__aeabi_d2f
+  80              	.LVL6:
+  81              		.loc 1 4 12 view .LVU9
+  82 0036 E060     		str	r0, [r4, #12]	@ float
+   5:Core/Src/actuator/encoder.cpp **** 	angle=0;
+  83              		.loc 1 5 2 is_stmt 1 view .LVU10
+  84              		.loc 1 5 7 is_stmt 0 view .LVU11
+  85 0038 0023     		movs	r3, #0
+  86 003a A360     		str	r3, [r4, #8]	@ float
+   6:Core/Src/actuator/encoder.cpp **** }
+  87              		.loc 1 6 1 view .LVU12
+  88 003c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+  89              	.LVL7:
+  90              	.L4:
+  91              		.loc 1 6 1 view .LVU13
+  92 003e 00BF     		.align	3
+  93              	.L3:
+  94 0040 6F1283C0 		.word	-1065151889
+  95 0044 CA211940 		.word	1075388874
+  96              		.cfi_endproc
+  97              	.LFE1653:
+  99              		.section	.text._ZN7encoder9get_omegaEv,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	_ZN7encoder9get_omegaEv
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 105              		.fpu fpv4-sp-d16
+ 107              	_ZN7encoder9get_omegaEv:
+ 108              	.LVL8:
+ 109              	.LFB1654:
+   7:Core/Src/actuator/encoder.cpp **** float encoder::get_omega(void)
+   8:Core/Src/actuator/encoder.cpp **** {
+ARM GAS  /tmp/ccD2MQsP.s 			page 3
+
+
+ 110              		.loc 1 8 1 is_stmt 1 view -0
+ 111              		.cfi_startproc
+ 112              		@ args = 0, pretend = 0, frame = 0
+ 113              		@ frame_needed = 0, uses_anonymous_args = 0
+ 114              		.loc 1 8 1 is_stmt 0 view .LVU15
+ 115 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 116              	.LCFI1:
+ 117              		.cfi_def_cfa_offset 24
+ 118              		.cfi_offset 3, -24
+ 119              		.cfi_offset 4, -20
+ 120              		.cfi_offset 5, -16
+ 121              		.cfi_offset 6, -12
+ 122              		.cfi_offset 7, -8
+ 123              		.cfi_offset 14, -4
+ 124 0002 0446     		mov	r4, r0
+   9:Core/Src/actuator/encoder.cpp ****     omega = ((2 * PI * (int16_t)encoder_config_->henc->Instance->CNT * 1000.0) / (encoder_config_->
+ 125              		.loc 1 9 5 is_stmt 1 view .LVU16
+ 126              		.loc 1 9 33 is_stmt 0 view .LVU17
+ 127 0004 0568     		ldr	r5, [r0]
+ 128              		.loc 1 9 50 view .LVU18
+ 129 0006 2B68     		ldr	r3, [r5]
+ 130              		.loc 1 9 56 view .LVU19
+ 131 0008 1B68     		ldr	r3, [r3]
+ 132              		.loc 1 9 66 view .LVU20
+ 133 000a 586A     		ldr	r0, [r3, #36]
+ 134              	.LVL9:
+ 135              		.loc 1 9 22 view .LVU21
+ 136 000c 00B2     		sxth	r0, r0
+ 137 000e FFF7FEFF 		bl	__aeabi_i2d
+ 138              	.LVL10:
+ 139 0012 14A3     		adr	r3, .L7+4
+ 140 0014 D3E90023 		ldrd	r2, [r3]
+ 141 0018 FFF7FEFF 		bl	__aeabi_dmul
+ 142              	.LVL11:
+ 143              		.loc 1 9 70 view .LVU22
+ 144 001c 0022     		movs	r2, #0
+ 145 001e 104B     		ldr	r3, .L7
+ 146 0020 FFF7FEFF 		bl	__aeabi_dmul
+ 147              	.LVL12:
+ 148 0024 0646     		mov	r6, r0
+ 149 0026 0F46     		mov	r7, r1
+ 150              		.loc 1 9 100 view .LVU23
+ 151 0028 AB88     		ldrh	r3, [r5, #4]
+ 152              		.loc 1 9 104 view .LVU24
+ 153 002a 03EB8303 		add	r3, r3, r3, lsl #2
+ 154              		.loc 1 9 80 view .LVU25
+ 155 002e 5800     		lsls	r0, r3, #1
+ 156 0030 FFF7FEFF 		bl	__aeabi_i2d
+ 157              	.LVL13:
+ 158 0034 0246     		mov	r2, r0
+ 159 0036 0B46     		mov	r3, r1
+ 160 0038 3046     		mov	r0, r6
+ 161 003a 3946     		mov	r1, r7
+ 162 003c FFF7FEFF 		bl	__aeabi_ddiv
+ 163              	.LVL14:
+ 164 0040 FFF7FEFF 		bl	__aeabi_d2f
+ 165              	.LVL15:
+ARM GAS  /tmp/ccD2MQsP.s 			page 4
+
+
+ 166              		.loc 1 9 11 view .LVU26
+ 167 0044 6060     		str	r0, [r4, #4]	@ float
+  10:Core/Src/actuator/encoder.cpp ****     count+=(int16_t)encoder_config_->henc->Instance->CNT;
+ 168              		.loc 1 10 5 is_stmt 1 view .LVU27
+ 169              		.loc 1 10 38 is_stmt 0 view .LVU28
+ 170 0046 2B68     		ldr	r3, [r5]
+ 171              		.loc 1 10 44 view .LVU29
+ 172 0048 1B68     		ldr	r3, [r3]
+ 173              		.loc 1 10 54 view .LVU30
+ 174 004a 5B6A     		ldr	r3, [r3, #36]
+ 175              		.loc 1 10 10 view .LVU31
+ 176 004c 228A     		ldrh	r2, [r4, #16]
+ 177 004e 1344     		add	r3, r3, r2
+ 178 0050 2382     		strh	r3, [r4, #16]	@ movhi
+  11:Core/Src/actuator/encoder.cpp ****     encoder_config_->henc->Instance->CNT = 0;
+ 179              		.loc 1 11 5 is_stmt 1 view .LVU32
+ 180              		.loc 1 11 22 is_stmt 0 view .LVU33
+ 181 0052 2B68     		ldr	r3, [r5]
+ 182              		.loc 1 11 28 view .LVU34
+ 183 0054 1B68     		ldr	r3, [r3]
+ 184              		.loc 1 11 42 view .LVU35
+ 185 0056 0022     		movs	r2, #0
+ 186 0058 5A62     		str	r2, [r3, #36]
+  12:Core/Src/actuator/encoder.cpp ****     return omega;
+ 187              		.loc 1 12 5 is_stmt 1 view .LVU36
+  13:Core/Src/actuator/encoder.cpp ****     
+  14:Core/Src/actuator/encoder.cpp **** }
+ 188              		.loc 1 14 1 is_stmt 0 view .LVU37
+ 189 005a 94ED010A 		vldr.32	s0, [r4, #4]
+ 190 005e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 191              	.LVL16:
+ 192              	.L8:
+ 193              		.loc 1 14 1 view .LVU38
+ 194              		.align	3
+ 195              	.L7:
+ 196 0060 00408F40 		.word	1083129856
+ 197 0064 6F1283C0 		.word	-1065151889
+ 198 0068 CA211940 		.word	1075388874
+ 199              		.cfi_endproc
+ 200              	.LFE1654:
+ 202              		.section	.text._ZN7encoder9get_angleEv,"ax",%progbits
+ 203              		.align	1
+ 204              		.global	_ZN7encoder9get_angleEv
+ 205              		.syntax unified
+ 206              		.thumb
+ 207              		.thumb_func
+ 208              		.fpu fpv4-sp-d16
+ 210              	_ZN7encoder9get_angleEv:
+ 211              	.LVL17:
+ 212              	.LFB1655:
+  15:Core/Src/actuator/encoder.cpp **** float encoder::get_angle(void)
+  16:Core/Src/actuator/encoder.cpp **** {
+ 213              		.loc 1 16 1 is_stmt 1 view -0
+ 214              		.cfi_startproc
+ 215              		@ args = 0, pretend = 0, frame = 0
+ 216              		@ frame_needed = 0, uses_anonymous_args = 0
+ 217              		.loc 1 16 1 is_stmt 0 view .LVU40
+ARM GAS  /tmp/ccD2MQsP.s 			page 5
+
+
+ 218 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 219              	.LCFI2:
+ 220              		.cfi_def_cfa_offset 24
+ 221              		.cfi_offset 3, -24
+ 222              		.cfi_offset 4, -20
+ 223              		.cfi_offset 5, -16
+ 224              		.cfi_offset 6, -12
+ 225              		.cfi_offset 7, -8
+ 226              		.cfi_offset 14, -4
+ 227 0002 2DED028B 		vpush.64	{d8}
+ 228              	.LCFI3:
+ 229              		.cfi_def_cfa_offset 32
+ 230              		.cfi_offset 80, -32
+ 231              		.cfi_offset 81, -28
+ 232 0006 0446     		mov	r4, r0
+  17:Core/Src/actuator/encoder.cpp ****     float newAngle = ((2 * PI * ((int16_t)encoder_config_->henc->Instance->CNT+count)) / encoder_co
+ 233              		.loc 1 17 5 is_stmt 1 view .LVU41
+ 234              		.loc 1 17 43 is_stmt 0 view .LVU42
+ 235 0008 0568     		ldr	r5, [r0]
+ 236              		.loc 1 17 60 view .LVU43
+ 237 000a 2B68     		ldr	r3, [r5]
+ 238              		.loc 1 17 66 view .LVU44
+ 239 000c 1B68     		ldr	r3, [r3]
+ 240              		.loc 1 17 76 view .LVU45
+ 241 000e 586A     		ldr	r0, [r3, #36]
+ 242              	.LVL18:
+ 243              		.loc 1 17 80 view .LVU46
+ 244 0010 B4F91030 		ldrsh	r3, [r4, #16]
+ 245              		.loc 1 17 31 view .LVU47
+ 246 0014 03FA80F0 		sxtah	r0, r3, r0
+ 247 0018 FFF7FEFF 		bl	__aeabi_i2d
+ 248              	.LVL19:
+ 249 001c 20A3     		adr	r3, .L16+8
+ 250 001e D3E90023 		ldrd	r2, [r3]
+ 251 0022 FFF7FEFF 		bl	__aeabi_dmul
+ 252              	.LVL20:
+ 253 0026 0646     		mov	r6, r0
+ 254 0028 0F46     		mov	r7, r1
+ 255              		.loc 1 17 88 view .LVU48
+ 256 002a A888     		ldrh	r0, [r5, #4]
+ 257 002c FFF7FEFF 		bl	__aeabi_i2d
+ 258              	.LVL21:
+ 259 0030 0246     		mov	r2, r0
+ 260 0032 0B46     		mov	r3, r1
+ 261 0034 3046     		mov	r0, r6
+ 262 0036 3946     		mov	r1, r7
+ 263 0038 FFF7FEFF 		bl	__aeabi_ddiv
+ 264              	.LVL22:
+ 265              		.loc 1 17 110 view .LVU49
+ 266 003c FFF7FEFF 		bl	__aeabi_d2f
+ 267              	.LVL23:
+ 268 0040 08EE100A 		vmov	s16, r0
+ 269              	.LVL24:
+  18:Core/Src/actuator/encoder.cpp **** 	float dx=newAngle-prevAngle;
+ 270              		.loc 1 18 2 is_stmt 1 view .LVU50
+ 271              		.loc 1 18 20 is_stmt 0 view .LVU51
+ 272 0044 94ED030A 		vldr.32	s0, [r4, #12]
+ARM GAS  /tmp/ccD2MQsP.s 			page 6
+
+
+ 273              		.loc 1 18 8 view .LVU52
+ 274 0048 38EE400A 		vsub.f32	s0, s16, s0
+ 275              	.LVL25:
+  19:Core/Src/actuator/encoder.cpp **** 	dx = normalizeAngle(dx);
+ 276              		.loc 1 19 2 is_stmt 1 view .LVU53
+ 277              	.LBB4:
+ 278              	.LBI4:
+ 279              		.file 2 "Core/Inc/utils/defines.h"
+   1:Core/Inc/utils/defines.h **** #ifndef _DEFINES_H_
+   2:Core/Inc/utils/defines.h **** #define  _DEFINES_H_
+   3:Core/Inc/utils/defines.h **** #define PI (3.1415)
+   4:Core/Inc/utils/defines.h **** #define SAMPLE_TIME 10
+   5:Core/Inc/utils/defines.h **** #define bodyDiameter 0.600
+   6:Core/Inc/utils/defines.h **** #define interWheelDist 0.75
+   7:Core/Inc/utils/defines.h **** #define wheelDiameter 0.14
+   8:Core/Inc/utils/defines.h **** #define motor_to_arm_gear_ratio 3.5
+   9:Core/Inc/utils/defines.h **** #include"stm32f4xx_hal.h"
+  10:Core/Inc/utils/defines.h **** #include"stm32f4xx_it.h"
+  11:Core/Inc/utils/defines.h **** #include"stm32f4xx_hal_conf.h"
+  12:Core/Inc/utils/defines.h **** #include"math.h"
+  13:Core/Inc/utils/defines.h **** #include"linalg.h"
+  14:Core/Inc/utils/defines.h **** #include"stdio.h"
+  15:Core/Inc/utils/defines.h **** #include"usart.h"
+  16:Core/Inc/utils/defines.h **** #include"tim.h"
+  17:Core/Inc/utils/defines.h **** inline float normalizeAngle(float dx)
+ 280              		.loc 2 17 14 view .LVU54
+ 281              	.LBB5:
+  18:Core/Inc/utils/defines.h **** {
+  19:Core/Inc/utils/defines.h **** 	if (dx >= 0)
+ 282              		.loc 2 19 2 view .LVU55
+ 283 004c B5EEC00A 		vcmpe.f32	s0, #0
+ 284 0050 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 285 0054 14DB     		blt	.L14
+  20:Core/Inc/utils/defines.h **** 		dx = fmodf(dx + (float)PI, 2 * (float)PI) - (float)PI;
+ 286              		.loc 2 20 3 view .LVU56
+ 287              		.loc 2 20 13 is_stmt 0 view .LVU57
+ 288 0056 DFED108A 		vldr.32	s17, .L16
+ 289 005a DFED100A 		vldr.32	s1, .L16+4
+ 290 005e 30EE280A 		vadd.f32	s0, s0, s17
+ 291              	.LVL26:
+ 292              		.loc 2 20 13 view .LVU58
+ 293 0062 FFF7FEFF 		bl	fmodf
+ 294              	.LVL27:
+ 295              		.loc 2 20 6 view .LVU59
+ 296 0066 30EE680A 		vsub.f32	s0, s0, s17
+ 297              	.LVL28:
+ 298              	.L12:
+  21:Core/Inc/utils/defines.h **** 	else
+  22:Core/Inc/utils/defines.h **** 		dx = fmodf(dx - (float)PI, 2 * (float)PI) + (float)PI;
+  23:Core/Inc/utils/defines.h **** 	return dx;
+ 299              		.loc 2 23 2 is_stmt 1 view .LVU60
+ 300              		.loc 2 23 2 is_stmt 0 view .LVU61
+ 301              	.LBE5:
+ 302              	.LBE4:
+  20:Core/Src/actuator/encoder.cpp **** 	angle+= dx;
+ 303              		.loc 1 20 2 is_stmt 1 view .LVU62
+ 304              		.loc 1 20 7 is_stmt 0 view .LVU63
+ARM GAS  /tmp/ccD2MQsP.s 			page 7
+
+
+ 305 006a D4ED027A 		vldr.32	s15, [r4, #8]
+ 306 006e 30EE270A 		vadd.f32	s0, s0, s15
+ 307              	.LVL29:
+ 308              		.loc 1 20 7 view .LVU64
+ 309 0072 84ED020A 		vstr.32	s0, [r4, #8]
+  21:Core/Src/actuator/encoder.cpp **** 	prevAngle = newAngle;
+ 310              		.loc 1 21 2 is_stmt 1 view .LVU65
+ 311              		.loc 1 21 12 is_stmt 0 view .LVU66
+ 312 0076 84ED038A 		vstr.32	s16, [r4, #12]
+  22:Core/Src/actuator/encoder.cpp **** 	return angle;
+ 313              		.loc 1 22 2 is_stmt 1 view .LVU67
+  23:Core/Src/actuator/encoder.cpp **** 
+  24:Core/Src/actuator/encoder.cpp **** }
+ 314              		.loc 1 24 1 is_stmt 0 view .LVU68
+ 315 007a BDEC028B 		vldm	sp!, {d8}
+ 316              	.LCFI4:
+ 317              		.cfi_remember_state
+ 318              		.cfi_restore 80
+ 319              		.cfi_restore 81
+ 320              		.cfi_def_cfa_offset 24
+ 321              	.LVL30:
+ 322              		.loc 1 24 1 view .LVU69
+ 323 007e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 324              	.LVL31:
+ 325              	.L14:
+ 326              	.LCFI5:
+ 327              		.cfi_restore_state
+ 328              	.LBB7:
+ 329              	.LBB6:
+  22:Core/Inc/utils/defines.h **** 	return dx;
+ 330              		.loc 2 22 3 is_stmt 1 view .LVU70
+  22:Core/Inc/utils/defines.h **** 	return dx;
+ 331              		.loc 2 22 13 is_stmt 0 view .LVU71
+ 332 0080 DFED058A 		vldr.32	s17, .L16
+ 333 0084 DFED050A 		vldr.32	s1, .L16+4
+ 334 0088 30EE680A 		vsub.f32	s0, s0, s17
+ 335              	.LVL32:
+  22:Core/Inc/utils/defines.h **** 	return dx;
+ 336              		.loc 2 22 13 view .LVU72
+ 337 008c FFF7FEFF 		bl	fmodf
+ 338              	.LVL33:
+  22:Core/Inc/utils/defines.h **** 	return dx;
+ 339              		.loc 2 22 6 view .LVU73
+ 340 0090 30EE280A 		vadd.f32	s0, s0, s17
+ 341              	.LVL34:
+  22:Core/Inc/utils/defines.h **** 	return dx;
+ 342              		.loc 2 22 6 view .LVU74
+ 343 0094 E9E7     		b	.L12
+ 344              	.L17:
+ 345 0096 00BF     		.align	3
+ 346              	.L16:
+ 347 0098 560E4940 		.word	1078529622
+ 348 009c 560EC940 		.word	1086918230
+ 349 00a0 6F1283C0 		.word	-1065151889
+ 350 00a4 CA211940 		.word	1075388874
+ 351              	.LBE6:
+ 352              	.LBE7:
+ARM GAS  /tmp/ccD2MQsP.s 			page 8
+
+
+ 353              		.cfi_endproc
+ 354              	.LFE1655:
+ 356              		.section	.text._ZN7encoder9get_countEv,"ax",%progbits
+ 357              		.align	1
+ 358              		.global	_ZN7encoder9get_countEv
+ 359              		.syntax unified
+ 360              		.thumb
+ 361              		.thumb_func
+ 362              		.fpu fpv4-sp-d16
+ 364              	_ZN7encoder9get_countEv:
+ 365              	.LVL35:
+ 366              	.LFB1656:
+  25:Core/Src/actuator/encoder.cpp **** uint16_t encoder::get_count(void)
+  26:Core/Src/actuator/encoder.cpp **** {
+ 367              		.loc 1 26 1 is_stmt 1 view -0
+ 368              		.cfi_startproc
+ 369              		@ args = 0, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371              		@ link register save eliminated.
+  27:Core/Src/actuator/encoder.cpp **** 	return count;
+ 372              		.loc 1 27 2 view .LVU76
+  28:Core/Src/actuator/encoder.cpp **** }
+ 373              		.loc 1 28 1 is_stmt 0 view .LVU77
+ 374 0000 008A     		ldrh	r0, [r0, #16]
+ 375              	.LVL36:
+ 376              		.loc 1 28 1 view .LVU78
+ 377 0002 7047     		bx	lr
+ 378              		.cfi_endproc
+ 379              	.LFE1656:
+ 381              		.section	.text._ZN7encoder11reset_angleEv,"ax",%progbits
+ 382              		.align	1
+ 383              		.global	_ZN7encoder11reset_angleEv
+ 384              		.syntax unified
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.fpu fpv4-sp-d16
+ 389              	_ZN7encoder11reset_angleEv:
+ 390              	.LVL37:
+ 391              	.LFB1657:
+  29:Core/Src/actuator/encoder.cpp **** void encoder::reset_angle()
+  30:Core/Src/actuator/encoder.cpp **** {
+ 392              		.loc 1 30 1 is_stmt 1 view -0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 0, uses_anonymous_args = 0
+ 396              		@ link register save eliminated.
+  31:Core/Src/actuator/encoder.cpp **** count=0;
+ 397              		.loc 1 31 1 view .LVU80
+ 398              		.loc 1 31 6 is_stmt 0 view .LVU81
+ 399 0000 0023     		movs	r3, #0
+ 400 0002 0382     		strh	r3, [r0, #16]	@ movhi
+  32:Core/Src/actuator/encoder.cpp **** encoder_config_->henc->Instance->CNT=0;
+ 401              		.loc 1 32 1 is_stmt 1 view .LVU82
+ 402 0004 0268     		ldr	r2, [r0]
+ 403              		.loc 1 32 18 is_stmt 0 view .LVU83
+ 404 0006 1268     		ldr	r2, [r2]
+ 405              		.loc 1 32 24 view .LVU84
+ARM GAS  /tmp/ccD2MQsP.s 			page 9
+
+
+ 406 0008 1268     		ldr	r2, [r2]
+ 407              		.loc 1 32 37 view .LVU85
+ 408 000a 5362     		str	r3, [r2, #36]
+  33:Core/Src/actuator/encoder.cpp **** angle=0;
+ 409              		.loc 1 33 1 is_stmt 1 view .LVU86
+ 410              		.loc 1 33 6 is_stmt 0 view .LVU87
+ 411 000c 0023     		movs	r3, #0
+ 412 000e 8360     		str	r3, [r0, #8]	@ float
+  34:Core/Src/actuator/encoder.cpp **** prevAngle=0;
+ 413              		.loc 1 34 1 is_stmt 1 view .LVU88
+ 414              		.loc 1 34 10 is_stmt 0 view .LVU89
+ 415 0010 C360     		str	r3, [r0, #12]	@ float
+  35:Core/Src/actuator/encoder.cpp **** }
+ 416              		.loc 1 35 1 view .LVU90
+ 417 0012 7047     		bx	lr
+ 418              		.cfi_endproc
+ 419              	.LFE1657:
+ 421              		.text
+ 422              	.Letext0:
+ 423              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 424              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 425              		.file 5 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdint.h"
+ 426              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 427              		.file 7 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/incl
+ 428              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 429              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 430              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 431              		.file 11 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 432              		.file 12 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 433              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 434              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 435              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 436              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 437              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 438              		.file 18 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 439              		.file 19 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 440              		.file 20 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 441              		.file 21 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 442              		.file 22 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 443              		.file 23 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 444              		.file 24 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 445              		.file 25 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_types
+ 446              		.file 26 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/reent.
+ 447              		.file 27 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/lock.h
+ 448              		.file 28 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 449              		.file 29 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdlib.h"
+ 450              		.file 30 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 451              		.file 31 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/inc
+ 452              		.file 32 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/wchar.h"
+ 453              		.file 33 "Core/Inc/utils/linalg.h"
+ 454              		.file 34 "Core/Inc/actuator/encoder.h"
+ 455              		.file 35 "<built-in>"
+ARM GAS  /tmp/ccD2MQsP.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 encoder.cpp
+     /tmp/ccD2MQsP.s:22     .text._ZN7encoder16encoderInitilizeEv:0000000000000000 $t
+     /tmp/ccD2MQsP.s:30     .text._ZN7encoder16encoderInitilizeEv:0000000000000000 _ZN7encoder16encoderInitilizeEv
+     /tmp/ccD2MQsP.s:94     .text._ZN7encoder16encoderInitilizeEv:0000000000000040 $d
+     /tmp/ccD2MQsP.s:100    .text._ZN7encoder9get_omegaEv:0000000000000000 $t
+     /tmp/ccD2MQsP.s:107    .text._ZN7encoder9get_omegaEv:0000000000000000 _ZN7encoder9get_omegaEv
+     /tmp/ccD2MQsP.s:196    .text._ZN7encoder9get_omegaEv:0000000000000060 $d
+     /tmp/ccD2MQsP.s:203    .text._ZN7encoder9get_angleEv:0000000000000000 $t
+     /tmp/ccD2MQsP.s:210    .text._ZN7encoder9get_angleEv:0000000000000000 _ZN7encoder9get_angleEv
+     /tmp/ccD2MQsP.s:347    .text._ZN7encoder9get_angleEv:0000000000000098 $d
+     /tmp/ccD2MQsP.s:357    .text._ZN7encoder9get_countEv:0000000000000000 $t
+     /tmp/ccD2MQsP.s:364    .text._ZN7encoder9get_countEv:0000000000000000 _ZN7encoder9get_countEv
+     /tmp/ccD2MQsP.s:382    .text._ZN7encoder11reset_angleEv:0000000000000000 $t
+     /tmp/ccD2MQsP.s:389    .text._ZN7encoder11reset_angleEv:0000000000000000 _ZN7encoder11reset_angleEv
+
+UNDEFINED SYMBOLS
+__aeabi_i2d
+__aeabi_dmul
+__aeabi_ddiv
+__aeabi_d2f
+fmodf

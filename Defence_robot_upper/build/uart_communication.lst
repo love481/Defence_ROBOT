@@ -1,0 +1,1156 @@
+ARM GAS  /tmp/ccCewe2D.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"uart_communication.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text._ZN8CRC_HashD2Ev,"axG",%progbits,_ZN8CRC_HashD5Ev,comdat
+  18              		.align	1
+  19              		.weak	_ZN8CRC_HashD2Ev
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	_ZN8CRC_HashD2Ev:
+  27              	.LVL0:
+  28              	.LFB1705:
+  29              		.file 1 "Core/Inc/utils/crypto/crc_hash.h"
+   1:Core/Inc/utils/crypto/crc_hash.h **** #ifndef _CRC_HASH_
+   2:Core/Inc/utils/crypto/crc_hash.h **** #define _CRC_HASH_
+   3:Core/Inc/utils/crypto/crc_hash.h **** 
+   4:Core/Inc/utils/crypto/crc_hash.h **** #include "stm32f4xx.h"
+   5:Core/Inc/utils/crypto/crc_hash.h **** 
+   6:Core/Inc/utils/crypto/crc_hash.h **** #define WIDTH                   (8)
+   7:Core/Inc/utils/crypto/crc_hash.h **** #define CRC_HASH_TABLE_SIZE     (256)
+   8:Core/Inc/utils/crypto/crc_hash.h **** #define TOP_BIT                 (1 << 7)
+   9:Core/Inc/utils/crypto/crc_hash.h **** 
+  10:Core/Inc/utils/crypto/crc_hash.h **** class CRC_Hash
+  11:Core/Inc/utils/crypto/crc_hash.h **** {
+  12:Core/Inc/utils/crypto/crc_hash.h **** public:
+  13:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash(uint8_t polynomial);
+  14:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash(CRC_Hash &&) = default;
+  15:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash(const CRC_Hash &) = default;
+  16:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash &operator=(CRC_Hash &&) = default;
+  17:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash &operator=(const CRC_Hash &) = default;
+  18:Core/Inc/utils/crypto/crc_hash.h ****         ~CRC_Hash() { }
+  30              		.loc 1 18 9 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 18 23 is_stmt 0 view .LVU1
+  36 0000 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE1705:
+  40              		.weak	_ZN8CRC_HashD1Ev
+  41              		.thumb_set _ZN8CRC_HashD1Ev,_ZN8CRC_HashD2Ev
+ARM GAS  /tmp/ccCewe2D.s 			page 2
+
+
+  42              		.section	.text._Z41__static_initialization_and_destruction_0ii,"ax",%progbits
+  43              		.align	1
+  44              		.syntax unified
+  45              		.thumb
+  46              		.thumb_func
+  47              		.fpu fpv4-sp-d16
+  49              	_Z41__static_initialization_and_destruction_0ii:
+  50              	.LVL1:
+  51              	.LFB1713:
+  52              		.file 2 "Core/Src/devs/uart_communication.cpp"
+   1:Core/Src/devs/uart_communication.cpp **** #include"uart_communication.h"
+   2:Core/Src/devs/uart_communication.cpp **** rotation_wheel rotation_wheel_;
+   3:Core/Src/devs/uart_communication.cpp **** arm arm_;
+   4:Core/Src/devs/uart_communication.cpp **** //extern conveyer_encoder conveyer_encoder_;
+   5:Core/Src/devs/uart_communication.cpp **** struct JoyStick_Data gJoy;
+   6:Core/Src/devs/uart_communication.cpp **** static CRC_Hash gJoyStick_CRC(7);
+   7:Core/Src/devs/uart_communication.cpp **** static uint8_t gRx4Data;
+   8:Core/Src/devs/uart_communication.cpp **** static uint8_t gJoy_Data_Arr[NUM_JOYSTICK_BYTES];
+   9:Core/Src/devs/uart_communication.cpp **** static uint16_t gRx4_Data_num = 0;
+  10:Core/Src/devs/uart_communication.cpp **** static bool gStart_Byte_Rx4 = false;
+  11:Core/Src/devs/uart_communication.cpp **** 
+  12:Core/Src/devs/uart_communication.cpp **** void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+  13:Core/Src/devs/uart_communication.cpp **** {__HAL_UART_FLUSH_DRREGISTER(huart);
+  14:Core/Src/devs/uart_communication.cpp ****         if (!gStart_Byte_Rx4)
+  15:Core/Src/devs/uart_communication.cpp ****         {
+  16:Core/Src/devs/uart_communication.cpp ****                 if (gRx4Data == JOYSTICK_START_BYTE)
+  17:Core/Src/devs/uart_communication.cpp ****                 {
+  18:Core/Src/devs/uart_communication.cpp ****                        // printf("started\n");
+  19:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = true;
+  20:Core/Src/devs/uart_communication.cpp ****                 }
+  21:Core/Src/devs/uart_communication.cpp ****         }
+  22:Core/Src/devs/uart_communication.cpp ****         else if(gRx4Data != JOYSTICK_START_BYTE)
+  23:Core/Src/devs/uart_communication.cpp ****         {
+  24:Core/Src/devs/uart_communication.cpp ****                 if (gRx4_Data_num < NUM_JOYSTICK_BYTES)
+  25:Core/Src/devs/uart_communication.cpp ****                 {
+  26:Core/Src/devs/uart_communication.cpp ****                         gJoy_Data_Arr[gRx4_Data_num] = gRx4Data;
+  27:Core/Src/devs/uart_communication.cpp ****                        // printf("data%d  %d\n",gRx4_Data_num,gJoy_Data_Arr[gRx4_Data_num]);
+  28:Core/Src/devs/uart_communication.cpp ****                         ++gRx4_Data_num;
+  29:Core/Src/devs/uart_communication.cpp ****                 }
+  30:Core/Src/devs/uart_communication.cpp ****                 else {
+  31:Core/Src/devs/uart_communication.cpp ****                         uint8_t rem = gRx4Data;
+  32:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = false;
+  33:Core/Src/devs/uart_communication.cpp ****                         gRx4_Data_num = 0;
+  34:Core/Src/devs/uart_communication.cpp ****                         //uint8_t hash = gJoyStick_CRC.get_Hash(gJoy_Data_Arr, NUM_JOYSTICK_BYTES);
+  35:Core/Src/devs/uart_communication.cpp ****                        // printf("rem %d hash %d\n",rem,hash);
+  36:Core/Src/devs/uart_communication.cpp ****                        fill_JoyData(&gJoy,gJoy_Data_Arr);
+  37:Core/Src/devs/uart_communication.cpp ****                        /* if (hash == rem) {
+  38:Core/Src/devs/uart_communication.cpp ****                                 fill_JoyData(&gJoy,gJoy_Data_Arr);
+  39:Core/Src/devs/uart_communication.cpp ****                         }
+  40:Core/Src/devs/uart_communication.cpp ****                         else {
+  41:Core/Src/devs/uart_communication.cpp ****                                 printf("Error\n");
+  42:Core/Src/devs/uart_communication.cpp ****                         }*/
+  43:Core/Src/devs/uart_communication.cpp ****                 }
+  44:Core/Src/devs/uart_communication.cpp **** }  
+  45:Core/Src/devs/uart_communication.cpp **** }
+  46:Core/Src/devs/uart_communication.cpp **** void fill_JoyData(JoyStick_Data *joy, uint8_t data[NUM_JOYSTICK_BYTES])
+  47:Core/Src/devs/uart_communication.cpp **** {
+ARM GAS  /tmp/ccCewe2D.s 			page 3
+
+
+  48:Core/Src/devs/uart_communication.cpp ****         joy->button1 = data[0];
+  49:Core/Src/devs/uart_communication.cpp ****         joy->button2 = data[1];
+  50:Core/Src/devs/uart_communication.cpp **** }
+  51:Core/Src/devs/uart_communication.cpp **** void communication_init()
+  52:Core/Src/devs/uart_communication.cpp **** {
+  53:Core/Src/devs/uart_communication.cpp ****  HAL_UART_Receive_DMA(&huart4,&gRx4Data,1);
+  54:Core/Src/devs/uart_communication.cpp **** }
+  55:Core/Src/devs/uart_communication.cpp **** void parse_joyData()
+  56:Core/Src/devs/uart_communication.cpp **** { 
+  57:Core/Src/devs/uart_communication.cpp ****  if(gJoy.button1 ==1)
+  58:Core/Src/devs/uart_communication.cpp **** 
+  59:Core/Src/devs/uart_communication.cpp ****       {       //printf("Wheel sarted\n");
+  60:Core/Src/devs/uart_communication.cpp ****               rotation_wheel_.set_wheelCommand(true);
+  61:Core/Src/devs/uart_communication.cpp ****       }
+  62:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==2)
+  63:Core/Src/devs/uart_communication.cpp ****      
+  64:Core/Src/devs/uart_communication.cpp ****      {       //printf("Wheel stoppedd\n");
+  65:Core/Src/devs/uart_communication.cpp ****              rotation_wheel_.set_wheelCommand(false);
+  66:Core/Src/devs/uart_communication.cpp ****      }
+  67:Core/Src/devs/uart_communication.cpp ****    if(gJoy.button1 ==4)
+  68:Core/Src/devs/uart_communication.cpp ****        
+  69:Core/Src/devs/uart_communication.cpp ****        {
+  70:Core/Src/devs/uart_communication.cpp ****         arm_.set_joint0Direction(Direction::CLOCKWISE);
+  71:Core/Src/devs/uart_communication.cpp ****        }
+  72:Core/Src/devs/uart_communication.cpp **** 
+  73:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==8)
+  74:Core/Src/devs/uart_communication.cpp ****      arm_.set_joint0Direction(Direction::ANTICLOCKWISE);
+  75:Core/Src/devs/uart_communication.cpp ****      
+  76:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==16)
+  77:Core/Src/devs/uart_communication.cpp ****         {
+  78:Core/Src/devs/uart_communication.cpp ****         arm_.set_joint1Direction(Direction::ANTICLOCKWISE);
+  79:Core/Src/devs/uart_communication.cpp ****         gJoy.button1=0;
+  80:Core/Src/devs/uart_communication.cpp ****         }
+  81:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==32)
+  82:Core/Src/devs/uart_communication.cpp ****        {
+  83:Core/Src/devs/uart_communication.cpp ****        arm_.set_joint1Direction(Direction::CLOCKWISE);
+  84:Core/Src/devs/uart_communication.cpp ****        gJoy.button1=0;
+  85:Core/Src/devs/uart_communication.cpp ****        }
+  86:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==64)
+  87:Core/Src/devs/uart_communication.cpp ****        {   //printf("pneu actuated\n");
+  88:Core/Src/devs/uart_communication.cpp ****                rotation_wheel_.set_pneuCommand(true);
+  89:Core/Src/devs/uart_communication.cpp ****                rotation_wheel_.set_PneuArrowHold(true);
+  90:Core/Src/devs/uart_communication.cpp ****                gJoy.button1=0;
+  91:Core/Src/devs/uart_communication.cpp ****        }
+  92:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==128)
+  93:Core/Src/devs/uart_communication.cpp ****         {   
+  94:Core/Src/devs/uart_communication.cpp ****                 arm_.set_pneuReleaseCommand(true);
+  95:Core/Src/devs/uart_communication.cpp ****         }
+  96:Core/Src/devs/uart_communication.cpp ****     else if(gJoy.button2 ==128)
+  97:Core/Src/devs/uart_communication.cpp ****         
+  98:Core/Src/devs/uart_communication.cpp ****         {
+  99:Core/Src/devs/uart_communication.cpp ****          arm_.set_startLoadArrow(true);
+ 100:Core/Src/devs/uart_communication.cpp ****               
+ 101:Core/Src/devs/uart_communication.cpp ****         }
+ 102:Core/Src/devs/uart_communication.cpp ****        else if(gJoy.button2==64)
+ 103:Core/Src/devs/uart_communication.cpp ****         
+ 104:Core/Src/devs/uart_communication.cpp ****         {
+ARM GAS  /tmp/ccCewe2D.s 			page 4
+
+
+ 105:Core/Src/devs/uart_communication.cpp ****          arm_.set_pneuHoldCommand(true);
+ 106:Core/Src/devs/uart_communication.cpp ****               
+ 107:Core/Src/devs/uart_communication.cpp ****         }
+ 108:Core/Src/devs/uart_communication.cpp ****       else if(gJoy.button2 ==32)
+ 109:Core/Src/devs/uart_communication.cpp ****           arm_.reset_armState(true);
+ 110:Core/Src/devs/uart_communication.cpp ****         
+ 111:Core/Src/devs/uart_communication.cpp **** }...
+  53              		.loc 2 111 1 is_stmt 1 view -0
+  54              		.cfi_startproc
+  55              		@ args = 0, pretend = 0, frame = 0
+  56              		@ frame_needed = 0, uses_anonymous_args = 0
+  57              		.loc 2 111 1 is_stmt 0 view .LVU3
+  58 0000 0128     		cmp	r0, #1
+  59 0002 00D0     		beq	.L8
+  60 0004 7047     		bx	lr
+  61              	.L8:
+  62              		.loc 2 111 1 discriminator 1 view .LVU4
+  63 0006 38B5     		push	{r3, r4, r5, lr}
+  64              	.LCFI0:
+  65              		.cfi_def_cfa_offset 16
+  66              		.cfi_offset 3, -16
+  67              		.cfi_offset 4, -12
+  68              		.cfi_offset 5, -8
+  69              		.cfi_offset 14, -4
+  70              		.loc 2 111 1 discriminator 1 view .LVU5
+  71 0008 4FF6FF73 		movw	r3, #65535
+  72 000c 9942     		cmp	r1, r3
+  73 000e 00D0     		beq	.L9
+  74              	.LVL2:
+  75              	.L2:
+  76              		.loc 2 111 1 view .LVU6
+  77 0010 38BD     		pop	{r3, r4, r5, pc}
+  78              	.LVL3:
+  79              	.L9:
+  80              	.LBB35:
+  81              	.LBI35:
+  82              		.file 3 "Core/Inc/actuator/rotatory_wheel.h"
+   1:Core/Inc/actuator/rotatory_wheel.h **** #pragma once
+   2:Core/Inc/actuator/rotatory_wheel.h **** #ifndef _ROTATORY_WHEEL_
+   3:Core/Inc/actuator/rotatory_wheel.h **** #define _ROTATORY_WHEEL_
+   4:Core/Inc/actuator/rotatory_wheel.h **** #include"robo_init.h"
+   5:Core/Inc/actuator/rotatory_wheel.h **** class rotation_wheel
+   6:Core/Inc/actuator/rotatory_wheel.h **** {
+   7:Core/Inc/actuator/rotatory_wheel.h ****  private:
+   8:Core/Inc/actuator/rotatory_wheel.h ****    bool PneuActuate;
+   9:Core/Inc/actuator/rotatory_wheel.h ****    bool WheelActuate; 
+  10:Core/Inc/actuator/rotatory_wheel.h ****    bool PneuArrowHold;
+  11:Core/Inc/actuator/rotatory_wheel.h ****    uint32_t pneuDelay;
+  12:Core/Inc/actuator/rotatory_wheel.h ****    uint32_t currTime;
+  13:Core/Inc/actuator/rotatory_wheel.h ****    uint32_t totalTime;
+  14:Core/Inc/actuator/rotatory_wheel.h ****  public:
+  15:Core/Inc/actuator/rotatory_wheel.h ****    rotation_wheel(){
+  83              		.loc 3 15 4 is_stmt 1 view .LVU7
+  84              	.LBB36:
+  85              	.LBB37:
+  16:Core/Inc/actuator/rotatory_wheel.h ****        PneuActuate=false;
+  86              		.loc 3 16 8 view .LVU8
+ARM GAS  /tmp/ccCewe2D.s 			page 5
+
+
+  87              		.loc 3 16 19 is_stmt 0 view .LVU9
+  88 0012 104D     		ldr	r5, .L10
+  89 0014 0024     		movs	r4, #0
+  90 0016 2C70     		strb	r4, [r5]
+  17:Core/Inc/actuator/rotatory_wheel.h ****        WheelActuate=false;
+  91              		.loc 3 17 8 is_stmt 1 view .LVU10
+  92              		.loc 3 17 20 is_stmt 0 view .LVU11
+  93 0018 6C70     		strb	r4, [r5, #1]
+  18:Core/Inc/actuator/rotatory_wheel.h ****        PneuArrowHold=false;
+  94              		.loc 3 18 8 is_stmt 1 view .LVU12
+  95              		.loc 3 18 21 is_stmt 0 view .LVU13
+  96 001a AC70     		strb	r4, [r5, #2]
+  19:Core/Inc/actuator/rotatory_wheel.h ****        pneuDelay=HAL_GetTick();
+  97              		.loc 3 19 8 is_stmt 1 view .LVU14
+  98              		.loc 3 19 29 is_stmt 0 view .LVU15
+  99 001c FFF7FEFF 		bl	HAL_GetTick
+ 100              	.LVL4:
+ 101              		.loc 3 19 17 view .LVU16
+ 102 0020 6860     		str	r0, [r5, #4]
+  20:Core/Inc/actuator/rotatory_wheel.h ****        currTime = HAL_GetTick();
+ 103              		.loc 3 20 8 is_stmt 1 view .LVU17
+ 104              		.loc 3 20 30 is_stmt 0 view .LVU18
+ 105 0022 FFF7FEFF 		bl	HAL_GetTick
+ 106              	.LVL5:
+ 107              		.loc 3 20 17 view .LVU19
+ 108 0026 A860     		str	r0, [r5, #8]
+  21:Core/Inc/actuator/rotatory_wheel.h ****        totalTime=0;
+ 109              		.loc 3 21 8 is_stmt 1 view .LVU20
+ 110              		.loc 3 21 17 is_stmt 0 view .LVU21
+ 111 0028 EC60     		str	r4, [r5, #12]
+ 112              	.LVL6:
+ 113              		.loc 3 21 17 view .LVU22
+ 114              	.LBE37:
+ 115              	.LBE36:
+ 116              	.LBE35:
+ 117              	.LBB38:
+ 118              	.LBI38:
+ 119              		.file 4 "Core/Inc/actuator/arm.h"
+   1:Core/Inc/actuator/arm.h **** #pragma once
+   2:Core/Inc/actuator/arm.h **** #ifndef _ARM_H_
+   3:Core/Inc/actuator/arm.h **** #define _ARM_H_
+   4:Core/Inc/actuator/arm.h **** #include"encoder.h"
+   5:Core/Inc/actuator/arm.h **** #include"motor.h"
+   6:Core/Inc/actuator/arm.h **** class arm
+   7:Core/Inc/actuator/arm.h **** {
+   8:Core/Inc/actuator/arm.h ****  private:
+   9:Core/Inc/actuator/arm.h ****    Direction joint[2];
+  10:Core/Inc/actuator/arm.h ****    bool pneuHoldState;
+  11:Core/Inc/actuator/arm.h ****    bool pneuReleaseState;
+  12:Core/Inc/actuator/arm.h ****    bool armState;
+  13:Core/Inc/actuator/arm.h ****    bool startLoadArrow;
+  14:Core/Inc/actuator/arm.h ****    uint32_t currTime;
+  15:Core/Inc/actuator/arm.h ****  public:
+  16:Core/Inc/actuator/arm.h ****    arm(){
+ 120              		.loc 4 16 4 is_stmt 1 view .LVU23
+ 121              	.LBB39:
+ 122              	.LBB40:
+ARM GAS  /tmp/ccCewe2D.s 			page 6
+
+
+  17:Core/Inc/actuator/arm.h ****        pneuHoldState=false;
+ 123              		.loc 4 17 8 view .LVU24
+ 124              		.loc 4 17 21 is_stmt 0 view .LVU25
+ 125 002a 0B4D     		ldr	r5, .L10+4
+ 126 002c AC70     		strb	r4, [r5, #2]
+  18:Core/Inc/actuator/arm.h ****        pneuHoldState=false;
+ 127              		.loc 4 18 8 is_stmt 1 view .LVU26
+  19:Core/Inc/actuator/arm.h ****        armState=false;
+ 128              		.loc 4 19 8 view .LVU27
+ 129              		.loc 4 19 16 is_stmt 0 view .LVU28
+ 130 002e 2C71     		strb	r4, [r5, #4]
+  20:Core/Inc/actuator/arm.h ****        startLoadArrow=false;
+ 131              		.loc 4 20 8 is_stmt 1 view .LVU29
+ 132              		.loc 4 20 22 is_stmt 0 view .LVU30
+ 133 0030 6C71     		strb	r4, [r5, #5]
+  21:Core/Inc/actuator/arm.h ****        currTime = HAL_GetTick();
+ 134              		.loc 4 21 8 is_stmt 1 view .LVU31
+ 135              		.loc 4 21 30 is_stmt 0 view .LVU32
+ 136 0032 FFF7FEFF 		bl	HAL_GetTick
+ 137              	.LVL7:
+ 138              		.loc 4 21 17 view .LVU33
+ 139 0036 A860     		str	r0, [r5, #8]
+  22:Core/Inc/actuator/arm.h ****        joint[0]=Direction::STOP;
+ 140              		.loc 4 22 8 is_stmt 1 view .LVU34
+ 141              		.loc 4 22 16 is_stmt 0 view .LVU35
+ 142 0038 0223     		movs	r3, #2
+ 143 003a 2B70     		strb	r3, [r5]
+  23:Core/Inc/actuator/arm.h ****        joint[1]=Direction::STOP;
+ 144              		.loc 4 23 8 is_stmt 1 view .LVU36
+ 145              		.loc 4 23 16 is_stmt 0 view .LVU37
+ 146 003c 6B70     		strb	r3, [r5, #1]
+ 147              	.LVL8:
+ 148              		.loc 4 23 16 view .LVU38
+ 149              	.LBE40:
+ 150              	.LBE39:
+ 151              	.LBE38:
+   6:Core/Src/devs/uart_communication.cpp **** static CRC_Hash gJoyStick_CRC(7);
+ 152              		.loc 2 6 32 view .LVU39
+ 153 003e 074C     		ldr	r4, .L10+8
+ 154 0040 0721     		movs	r1, #7
+ 155 0042 2046     		mov	r0, r4
+ 156 0044 FFF7FEFF 		bl	_ZN8CRC_HashC1Eh
+ 157              	.LVL9:
+   6:Core/Src/devs/uart_communication.cpp **** static CRC_Hash gJoyStick_CRC(7);
+ 158              		.loc 2 6 17 view .LVU40
+ 159 0048 054A     		ldr	r2, .L10+12
+ 160 004a 0649     		ldr	r1, .L10+16
+ 161 004c 2046     		mov	r0, r4
+ 162 004e FFF7FEFF 		bl	__aeabi_atexit
+ 163              	.LVL10:
+ 164              		.loc 2 111 1 view .LVU41
+ 165 0052 DDE7     		b	.L2
+ 166              	.L11:
+ 167              		.align	2
+ 168              	.L10:
+ 169 0054 00000000 		.word	.LANCHOR0
+ 170 0058 00000000 		.word	.LANCHOR1
+ARM GAS  /tmp/ccCewe2D.s 			page 7
+
+
+ 171 005c 00000000 		.word	.LANCHOR2
+ 172 0060 00000000 		.word	__dso_handle
+ 173 0064 00000000 		.word	_ZN8CRC_HashD1Ev
+ 174              		.cfi_endproc
+ 175              	.LFE1713:
+ 177              		.section	.text._Z12fill_JoyDataP13JoyStick_DataPh,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	_Z12fill_JoyDataP13JoyStick_DataPh
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 183              		.fpu fpv4-sp-d16
+ 185              	_Z12fill_JoyDataP13JoyStick_DataPh:
+ 186              	.LVL11:
+ 187              	.LFB1708:
+  47:Core/Src/devs/uart_communication.cpp **** {
+ 188              		.loc 2 47 1 is_stmt 1 view -0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 0
+ 191              		@ frame_needed = 0, uses_anonymous_args = 0
+ 192              		@ link register save eliminated.
+  48:Core/Src/devs/uart_communication.cpp ****         joy->button1 = data[0];
+ 193              		.loc 2 48 9 view .LVU43
+  48:Core/Src/devs/uart_communication.cpp ****         joy->button1 = data[0];
+ 194              		.loc 2 48 30 is_stmt 0 view .LVU44
+ 195 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  48:Core/Src/devs/uart_communication.cpp ****         joy->button1 = data[0];
+ 196              		.loc 2 48 22 view .LVU45
+ 197 0002 0370     		strb	r3, [r0]
+  49:Core/Src/devs/uart_communication.cpp ****         joy->button2 = data[1];
+ 198              		.loc 2 49 9 is_stmt 1 view .LVU46
+  49:Core/Src/devs/uart_communication.cpp ****         joy->button2 = data[1];
+ 199              		.loc 2 49 22 is_stmt 0 view .LVU47
+ 200 0004 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 201 0006 4370     		strb	r3, [r0, #1]
+  50:Core/Src/devs/uart_communication.cpp **** }
+ 202              		.loc 2 50 1 view .LVU48
+ 203 0008 7047     		bx	lr
+ 204              		.cfi_endproc
+ 205              	.LFE1708:
+ 207              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 208              		.align	1
+ 209              		.global	HAL_UART_RxCpltCallback
+ 210              		.syntax unified
+ 211              		.thumb
+ 212              		.thumb_func
+ 213              		.fpu fpv4-sp-d16
+ 215              	HAL_UART_RxCpltCallback:
+ 216              	.LVL12:
+ 217              	.LFB1707:
+  13:Core/Src/devs/uart_communication.cpp **** {__HAL_UART_FLUSH_DRREGISTER(huart);
+ 218              		.loc 2 13 1 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+  13:Core/Src/devs/uart_communication.cpp **** {__HAL_UART_FLUSH_DRREGISTER(huart);
+ 222              		.loc 2 13 1 is_stmt 0 view .LVU50
+ARM GAS  /tmp/ccCewe2D.s 			page 8
+
+
+ 223 0000 08B5     		push	{r3, lr}
+ 224              	.LCFI1:
+ 225              		.cfi_def_cfa_offset 8
+ 226              		.cfi_offset 3, -8
+ 227              		.cfi_offset 14, -4
+  13:Core/Src/devs/uart_communication.cpp **** {__HAL_UART_FLUSH_DRREGISTER(huart);
+ 228              		.loc 2 13 2 is_stmt 1 view .LVU51
+ 229 0002 0368     		ldr	r3, [r0]
+ 230 0004 5B68     		ldr	r3, [r3, #4]
+  14:Core/Src/devs/uart_communication.cpp ****         if (!gStart_Byte_Rx4)
+ 231              		.loc 2 14 9 view .LVU52
+ 232              	.LBB41:
+  14:Core/Src/devs/uart_communication.cpp ****         if (!gStart_Byte_Rx4)
+ 233              		.loc 2 14 13 is_stmt 0 view .LVU53
+ 234 0006 124B     		ldr	r3, .L19
+ 235 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  14:Core/Src/devs/uart_communication.cpp ****         if (!gStart_Byte_Rx4)
+ 236              		.loc 2 14 9 view .LVU54
+ 237 000a 43B9     		cbnz	r3, .L14
+  16:Core/Src/devs/uart_communication.cpp ****                 if (gRx4Data == JOYSTICK_START_BYTE)
+ 238              		.loc 2 16 17 is_stmt 1 view .LVU55
+  16:Core/Src/devs/uart_communication.cpp ****                 if (gRx4Data == JOYSTICK_START_BYTE)
+ 239              		.loc 2 16 30 is_stmt 0 view .LVU56
+ 240 000c 114B     		ldr	r3, .L19+4
+ 241 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  16:Core/Src/devs/uart_communication.cpp ****                 if (gRx4Data == JOYSTICK_START_BYTE)
+ 242              		.loc 2 16 17 view .LVU57
+ 243 0010 A52B     		cmp	r3, #165
+ 244 0012 00D0     		beq	.L18
+ 245              	.LVL13:
+ 246              	.L13:
+  16:Core/Src/devs/uart_communication.cpp ****                 if (gRx4Data == JOYSTICK_START_BYTE)
+ 247              		.loc 2 16 17 view .LVU58
+ 248              	.LBE41:
+  45:Core/Src/devs/uart_communication.cpp **** }
+ 249              		.loc 2 45 1 view .LVU59
+ 250 0014 08BD     		pop	{r3, pc}
+ 251              	.LVL14:
+ 252              	.L18:
+ 253              	.LBB46:
+  19:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = true;
+ 254              		.loc 2 19 25 is_stmt 1 view .LVU60
+  19:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = true;
+ 255              		.loc 2 19 41 is_stmt 0 view .LVU61
+ 256 0016 0E4B     		ldr	r3, .L19
+ 257 0018 0122     		movs	r2, #1
+ 258 001a 1A70     		strb	r2, [r3]
+ 259 001c FAE7     		b	.L13
+ 260              	.L14:
+ 261              	.LBE46:
+  22:Core/Src/devs/uart_communication.cpp ****         else if(gRx4Data != JOYSTICK_START_BYTE)
+ 262              		.loc 2 22 14 is_stmt 1 view .LVU62
+ 263              	.LBB47:
+ 264              	.LBB42:
+  22:Core/Src/devs/uart_communication.cpp ****         else if(gRx4Data != JOYSTICK_START_BYTE)
+ 265              		.loc 2 22 26 is_stmt 0 view .LVU63
+ 266 001e 0D4B     		ldr	r3, .L19+4
+ARM GAS  /tmp/ccCewe2D.s 			page 9
+
+
+ 267 0020 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+  22:Core/Src/devs/uart_communication.cpp ****         else if(gRx4Data != JOYSTICK_START_BYTE)
+ 268              		.loc 2 22 14 view .LVU64
+ 269 0022 A52A     		cmp	r2, #165
+ 270 0024 F6D0     		beq	.L13
+ 271              	.LBE42:
+ 272              	.LBE47:
+  24:Core/Src/devs/uart_communication.cpp ****                 if (gRx4_Data_num < NUM_JOYSTICK_BYTES)
+ 273              		.loc 2 24 17 is_stmt 1 view .LVU65
+ 274              	.LBB48:
+ 275              	.LBB45:
+ 276              	.LBB43:
+  24:Core/Src/devs/uart_communication.cpp ****                 if (gRx4_Data_num < NUM_JOYSTICK_BYTES)
+ 277              		.loc 2 24 35 is_stmt 0 view .LVU66
+ 278 0026 0C4B     		ldr	r3, .L19+8
+ 279 0028 1B88     		ldrh	r3, [r3]
+  24:Core/Src/devs/uart_communication.cpp ****                 if (gRx4_Data_num < NUM_JOYSTICK_BYTES)
+ 280              		.loc 2 24 17 view .LVU67
+ 281 002a 012B     		cmp	r3, #1
+ 282 002c 05D8     		bhi	.L16
+  26:Core/Src/devs/uart_communication.cpp ****                         gJoy_Data_Arr[gRx4_Data_num] = gRx4Data;
+ 283              		.loc 2 26 25 is_stmt 1 view .LVU68
+  26:Core/Src/devs/uart_communication.cpp ****                         gJoy_Data_Arr[gRx4_Data_num] = gRx4Data;
+ 284              		.loc 2 26 54 is_stmt 0 view .LVU69
+ 285 002e 0B49     		ldr	r1, .L19+12
+ 286 0030 CA54     		strb	r2, [r1, r3]
+  28:Core/Src/devs/uart_communication.cpp ****                         ++gRx4_Data_num;
+ 287              		.loc 2 28 25 is_stmt 1 view .LVU70
+ 288 0032 0133     		adds	r3, r3, #1
+ 289 0034 084A     		ldr	r2, .L19+8
+ 290 0036 1380     		strh	r3, [r2]	@ movhi
+ 291 0038 ECE7     		b	.L13
+ 292              	.L16:
+ 293              	.LBB44:
+  31:Core/Src/devs/uart_communication.cpp ****                         uint8_t rem = gRx4Data;
+ 294              		.loc 2 31 25 view .LVU71
+ 295              	.LVL15:
+  32:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = false;
+ 296              		.loc 2 32 25 view .LVU72
+  32:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = false;
+ 297              		.loc 2 32 41 is_stmt 0 view .LVU73
+ 298 003a 0023     		movs	r3, #0
+ 299 003c 044A     		ldr	r2, .L19
+ 300              	.LVL16:
+  32:Core/Src/devs/uart_communication.cpp ****                         gStart_Byte_Rx4 = false;
+ 301              		.loc 2 32 41 view .LVU74
+ 302 003e 1370     		strb	r3, [r2]
+  33:Core/Src/devs/uart_communication.cpp ****                         gRx4_Data_num = 0;
+ 303              		.loc 2 33 25 is_stmt 1 view .LVU75
+  33:Core/Src/devs/uart_communication.cpp ****                         gRx4_Data_num = 0;
+ 304              		.loc 2 33 39 is_stmt 0 view .LVU76
+ 305 0040 054A     		ldr	r2, .L19+8
+ 306 0042 1380     		strh	r3, [r2]	@ movhi
+  36:Core/Src/devs/uart_communication.cpp ****                        fill_JoyData(&gJoy,gJoy_Data_Arr);
+ 307              		.loc 2 36 24 is_stmt 1 view .LVU77
+  36:Core/Src/devs/uart_communication.cpp ****                        fill_JoyData(&gJoy,gJoy_Data_Arr);
+ 308              		.loc 2 36 36 is_stmt 0 view .LVU78
+ARM GAS  /tmp/ccCewe2D.s 			page 10
+
+
+ 309 0044 0549     		ldr	r1, .L19+12
+ 310 0046 0648     		ldr	r0, .L19+16
+ 311              	.LVL17:
+  36:Core/Src/devs/uart_communication.cpp ****                        fill_JoyData(&gJoy,gJoy_Data_Arr);
+ 312              		.loc 2 36 36 view .LVU79
+ 313 0048 FFF7FEFF 		bl	_Z12fill_JoyDataP13JoyStick_DataPh
+ 314              	.LVL18:
+  36:Core/Src/devs/uart_communication.cpp ****                        fill_JoyData(&gJoy,gJoy_Data_Arr);
+ 315              		.loc 2 36 36 view .LVU80
+ 316              	.LBE44:
+ 317              	.LBE43:
+ 318              	.LBE45:
+ 319              	.LBE48:
+  45:Core/Src/devs/uart_communication.cpp **** }
+ 320              		.loc 2 45 1 view .LVU81
+ 321 004c E2E7     		b	.L13
+ 322              	.L20:
+ 323 004e 00BF     		.align	2
+ 324              	.L19:
+ 325 0050 00000000 		.word	.LANCHOR3
+ 326 0054 00000000 		.word	.LANCHOR4
+ 327 0058 00000000 		.word	.LANCHOR5
+ 328 005c 00000000 		.word	.LANCHOR6
+ 329 0060 00000000 		.word	.LANCHOR7
+ 330              		.cfi_endproc
+ 331              	.LFE1707:
+ 333              		.section	.text._Z18communication_initv,"ax",%progbits
+ 334              		.align	1
+ 335              		.global	_Z18communication_initv
+ 336              		.syntax unified
+ 337              		.thumb
+ 338              		.thumb_func
+ 339              		.fpu fpv4-sp-d16
+ 341              	_Z18communication_initv:
+ 342              	.LFB1709:
+  52:Core/Src/devs/uart_communication.cpp **** {
+ 343              		.loc 2 52 1 is_stmt 1 view -0
+ 344              		.cfi_startproc
+ 345              		@ args = 0, pretend = 0, frame = 0
+ 346              		@ frame_needed = 0, uses_anonymous_args = 0
+ 347 0000 08B5     		push	{r3, lr}
+ 348              	.LCFI2:
+ 349              		.cfi_def_cfa_offset 8
+ 350              		.cfi_offset 3, -8
+ 351              		.cfi_offset 14, -4
+  53:Core/Src/devs/uart_communication.cpp ****  HAL_UART_Receive_DMA(&huart4,&gRx4Data,1);
+ 352              		.loc 2 53 2 view .LVU83
+  53:Core/Src/devs/uart_communication.cpp ****  HAL_UART_Receive_DMA(&huart4,&gRx4Data,1);
+ 353              		.loc 2 53 22 is_stmt 0 view .LVU84
+ 354 0002 0122     		movs	r2, #1
+ 355 0004 0249     		ldr	r1, .L23
+ 356 0006 0348     		ldr	r0, .L23+4
+ 357 0008 FFF7FEFF 		bl	HAL_UART_Receive_DMA
+ 358              	.LVL19:
+  54:Core/Src/devs/uart_communication.cpp **** }
+ 359              		.loc 2 54 1 view .LVU85
+ 360 000c 08BD     		pop	{r3, pc}
+ARM GAS  /tmp/ccCewe2D.s 			page 11
+
+
+ 361              	.L24:
+ 362 000e 00BF     		.align	2
+ 363              	.L23:
+ 364 0010 00000000 		.word	.LANCHOR4
+ 365 0014 00000000 		.word	huart4
+ 366              		.cfi_endproc
+ 367              	.LFE1709:
+ 369              		.section	.text._Z13parse_joyDatav,"ax",%progbits
+ 370              		.align	1
+ 371              		.global	_Z13parse_joyDatav
+ 372              		.syntax unified
+ 373              		.thumb
+ 374              		.thumb_func
+ 375              		.fpu fpv4-sp-d16
+ 377              	_Z13parse_joyDatav:
+ 378              	.LFB1710:
+  56:Core/Src/devs/uart_communication.cpp **** { 
+ 379              		.loc 2 56 1 is_stmt 1 view -0
+ 380              		.cfi_startproc
+ 381              		@ args = 0, pretend = 0, frame = 0
+ 382              		@ frame_needed = 0, uses_anonymous_args = 0
+ 383              		@ link register save eliminated.
+  57:Core/Src/devs/uart_communication.cpp ****  if(gJoy.button1 ==1)
+ 384              		.loc 2 57 2 view .LVU87
+  57:Core/Src/devs/uart_communication.cpp ****  if(gJoy.button1 ==1)
+ 385              		.loc 2 57 10 is_stmt 0 view .LVU88
+ 386 0000 274B     		ldr	r3, .L48
+ 387 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  57:Core/Src/devs/uart_communication.cpp ****  if(gJoy.button1 ==1)
+ 388              		.loc 2 57 2 view .LVU89
+ 389 0004 012B     		cmp	r3, #1
+ 390 0006 16D0     		beq	.L37
+  62:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==2)
+ 391              		.loc 2 62 9 is_stmt 1 view .LVU90
+ 392 0008 022B     		cmp	r3, #2
+ 393 000a 18D0     		beq	.L38
+ 394              	.L27:
+  67:Core/Src/devs/uart_communication.cpp ****    if(gJoy.button1 ==4)
+ 395              		.loc 2 67 4 view .LVU91
+ 396 000c 042B     		cmp	r3, #4
+ 397 000e 1AD0     		beq	.L39
+  73:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==8)
+ 398              		.loc 2 73 9 view .LVU92
+ 399 0010 082B     		cmp	r3, #8
+ 400 0012 1CD0     		beq	.L40
+  76:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==16)
+ 401              		.loc 2 76 9 view .LVU93
+ 402 0014 102B     		cmp	r3, #16
+ 403 0016 1ED0     		beq	.L41
+  81:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==32)
+ 404              		.loc 2 81 9 view .LVU94
+ 405 0018 202B     		cmp	r3, #32
+ 406 001a 23D0     		beq	.L42
+  86:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==64)
+ 407              		.loc 2 86 9 view .LVU95
+ 408 001c 402B     		cmp	r3, #64
+ 409 001e 27D0     		beq	.L43
+ARM GAS  /tmp/ccCewe2D.s 			page 12
+
+
+  92:Core/Src/devs/uart_communication.cpp ****    else if(gJoy.button1 ==128)
+ 410              		.loc 2 92 9 view .LVU96
+ 411 0020 802B     		cmp	r3, #128
+ 412 0022 2DD0     		beq	.L44
+  96:Core/Src/devs/uart_communication.cpp ****     else if(gJoy.button2 ==128)
+ 413              		.loc 2 96 10 view .LVU97
+  96:Core/Src/devs/uart_communication.cpp ****     else if(gJoy.button2 ==128)
+ 414              		.loc 2 96 18 is_stmt 0 view .LVU98
+ 415 0024 1E4B     		ldr	r3, .L48
+ 416 0026 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+  96:Core/Src/devs/uart_communication.cpp ****     else if(gJoy.button2 ==128)
+ 417              		.loc 2 96 10 view .LVU99
+ 418 0028 802B     		cmp	r3, #128
+ 419 002a 2DD0     		beq	.L45
+ 102:Core/Src/devs/uart_communication.cpp ****        else if(gJoy.button2==64)
+ 420              		.loc 2 102 13 is_stmt 1 view .LVU100
+ 421 002c 402B     		cmp	r3, #64
+ 422 002e 2FD0     		beq	.L46
+ 108:Core/Src/devs/uart_communication.cpp ****       else if(gJoy.button2 ==32)
+ 423              		.loc 2 108 12 view .LVU101
+ 424 0030 202B     		cmp	r3, #32
+ 425 0032 31D0     		beq	.L47
+ 426              	.L25:
+ 427              		.loc 2 111 1 is_stmt 0 view .LVU102
+ 428 0034 7047     		bx	lr
+ 429              	.L37:
+  60:Core/Src/devs/uart_communication.cpp ****               rotation_wheel_.set_wheelCommand(true);
+ 430              		.loc 2 60 15 is_stmt 1 view .LVU103
+ 431              	.LVL20:
+ 432              	.LBB49:
+ 433              	.LBI49:
+  22:Core/Inc/actuator/rotatory_wheel.h **** 
+  23:Core/Inc/actuator/rotatory_wheel.h ****    }
+  24:Core/Inc/actuator/rotatory_wheel.h ****    rotation_wheel(rotation_wheel &&) = default;
+  25:Core/Inc/actuator/rotatory_wheel.h ****    rotation_wheel(const rotation_wheel &) = default;
+  26:Core/Inc/actuator/rotatory_wheel.h ****    rotation_wheel &operator=(rotation_wheel &&) = default;
+  27:Core/Inc/actuator/rotatory_wheel.h ****    rotation_wheel &operator=(const rotation_wheel &) = default;
+  28:Core/Inc/actuator/rotatory_wheel.h ****    void motorWheel_actuate(float);
+  29:Core/Inc/actuator/rotatory_wheel.h ****    void set_pneuCommand(bool p_){ PneuActuate=p_;}
+  30:Core/Inc/actuator/rotatory_wheel.h ****    void set_wheelCommand(bool p_){ WheelActuate=p_;}
+ 434              		.loc 3 30 9 view .LVU104
+ 435              	.LBB50:
+ 436              		.loc 3 30 36 view .LVU105
+ 437              		.loc 3 30 48 is_stmt 0 view .LVU106
+ 438 0036 1B4A     		ldr	r2, .L48+4
+ 439 0038 0121     		movs	r1, #1
+ 440 003a 5170     		strb	r1, [r2, #1]
+ 441              		.loc 3 30 52 view .LVU107
+ 442 003c E6E7     		b	.L27
+ 443              	.LVL21:
+ 444              	.L38:
+ 445              		.loc 3 30 52 view .LVU108
+ 446              	.LBE50:
+ 447              	.LBE49:
+  65:Core/Src/devs/uart_communication.cpp ****              rotation_wheel_.set_wheelCommand(false);
+ 448              		.loc 2 65 14 is_stmt 1 view .LVU109
+ 449              	.LBB51:
+ARM GAS  /tmp/ccCewe2D.s 			page 13
+
+
+ 450              	.LBI51:
+ 451              		.loc 3 30 9 view .LVU110
+ 452              	.LBB52:
+ 453              		.loc 3 30 36 view .LVU111
+ 454              		.loc 3 30 48 is_stmt 0 view .LVU112
+ 455 003e 194A     		ldr	r2, .L48+4
+ 456 0040 0021     		movs	r1, #0
+ 457 0042 5170     		strb	r1, [r2, #1]
+ 458              		.loc 3 30 52 view .LVU113
+ 459 0044 E2E7     		b	.L27
+ 460              	.LVL22:
+ 461              	.L39:
+ 462              		.loc 3 30 52 view .LVU114
+ 463              	.LBE52:
+ 464              	.LBE51:
+  70:Core/Src/devs/uart_communication.cpp ****         arm_.set_joint0Direction(Direction::CLOCKWISE);
+ 465              		.loc 2 70 9 is_stmt 1 view .LVU115
+ 466              	.LBB53:
+ 467              	.LBI53:
+  24:Core/Inc/actuator/arm.h **** 
+  25:Core/Inc/actuator/arm.h ****    }
+  26:Core/Inc/actuator/arm.h ****    arm(arm &&) = default;
+  27:Core/Inc/actuator/arm.h ****    arm(const arm &) = default;
+  28:Core/Inc/actuator/arm.h ****    arm &operator=(arm &&) = default;
+  29:Core/Inc/actuator/arm.h ****    arm &operator=(const arm &) = default;
+  30:Core/Inc/actuator/arm.h ****    void set_pneuHoldCommand(bool p_){ pneuHoldState=p_;}
+  31:Core/Inc/actuator/arm.h ****    void set_pneuReleaseCommand(bool p_){ pneuReleaseState=p_;}
+  32:Core/Inc/actuator/arm.h ****    void set_startLoadArrow(bool p_){ startLoadArrow=p_;}
+  33:Core/Inc/actuator/arm.h ****    void set_joint0Direction(Direction d_){joint[0]=d_;}
+ 468              		.loc 4 33 9 view .LVU116
+ 469              	.LBB54:
+ 470              		.loc 4 33 43 view .LVU117
+ 471              		.loc 4 33 51 is_stmt 0 view .LVU118
+ 472 0046 184B     		ldr	r3, .L48+8
+ 473 0048 0022     		movs	r2, #0
+ 474 004a 1A70     		strb	r2, [r3]
+ 475              		.loc 4 33 55 view .LVU119
+ 476 004c 7047     		bx	lr
+ 477              	.LVL23:
+ 478              	.L40:
+ 479              		.loc 4 33 55 view .LVU120
+ 480              	.LBE54:
+ 481              	.LBE53:
+  74:Core/Src/devs/uart_communication.cpp ****      arm_.set_joint0Direction(Direction::ANTICLOCKWISE);
+ 482              		.loc 2 74 6 is_stmt 1 view .LVU121
+ 483              	.LBB55:
+ 484              	.LBI55:
+ 485              		.loc 4 33 9 view .LVU122
+ 486              	.LBB56:
+ 487              		.loc 4 33 43 view .LVU123
+ 488              		.loc 4 33 51 is_stmt 0 view .LVU124
+ 489 004e 164B     		ldr	r3, .L48+8
+ 490 0050 0122     		movs	r2, #1
+ 491 0052 1A70     		strb	r2, [r3]
+ 492              		.loc 4 33 55 view .LVU125
+ 493 0054 7047     		bx	lr
+ 494              	.LVL24:
+ARM GAS  /tmp/ccCewe2D.s 			page 14
+
+
+ 495              	.L41:
+ 496              		.loc 4 33 55 view .LVU126
+ 497              	.LBE56:
+ 498              	.LBE55:
+  78:Core/Src/devs/uart_communication.cpp ****         arm_.set_joint1Direction(Direction::ANTICLOCKWISE);
+ 499              		.loc 2 78 9 is_stmt 1 view .LVU127
+ 500              	.LBB57:
+ 501              	.LBI57:
+  34:Core/Inc/actuator/arm.h ****    void set_joint1Direction(Direction d_){joint[1]=d_;}
+ 502              		.loc 4 34 9 view .LVU128
+ 503              	.LBB58:
+ 504              		.loc 4 34 43 view .LVU129
+ 505              		.loc 4 34 51 is_stmt 0 view .LVU130
+ 506 0056 144B     		ldr	r3, .L48+8
+ 507 0058 0122     		movs	r2, #1
+ 508 005a 5A70     		strb	r2, [r3, #1]
+ 509              	.LVL25:
+ 510              		.loc 4 34 51 view .LVU131
+ 511              	.LBE58:
+ 512              	.LBE57:
+  79:Core/Src/devs/uart_communication.cpp ****         gJoy.button1=0;
+ 513              		.loc 2 79 9 is_stmt 1 view .LVU132
+  79:Core/Src/devs/uart_communication.cpp ****         gJoy.button1=0;
+ 514              		.loc 2 79 21 is_stmt 0 view .LVU133
+ 515 005c 104B     		ldr	r3, .L48
+ 516 005e 0022     		movs	r2, #0
+ 517 0060 1A70     		strb	r2, [r3]
+ 518 0062 7047     		bx	lr
+ 519              	.L42:
+  83:Core/Src/devs/uart_communication.cpp ****        arm_.set_joint1Direction(Direction::CLOCKWISE);
+ 520              		.loc 2 83 8 is_stmt 1 view .LVU134
+ 521              	.LVL26:
+ 522              	.LBB59:
+ 523              	.LBI59:
+ 524              		.loc 4 34 9 view .LVU135
+ 525              	.LBB60:
+ 526              		.loc 4 34 43 view .LVU136
+ 527              		.loc 4 34 51 is_stmt 0 view .LVU137
+ 528 0064 0023     		movs	r3, #0
+ 529 0066 104A     		ldr	r2, .L48+8
+ 530 0068 5370     		strb	r3, [r2, #1]
+ 531              	.LVL27:
+ 532              		.loc 4 34 51 view .LVU138
+ 533              	.LBE60:
+ 534              	.LBE59:
+  84:Core/Src/devs/uart_communication.cpp ****        gJoy.button1=0;
+ 535              		.loc 2 84 8 is_stmt 1 view .LVU139
+  84:Core/Src/devs/uart_communication.cpp ****        gJoy.button1=0;
+ 536              		.loc 2 84 20 is_stmt 0 view .LVU140
+ 537 006a 0D4A     		ldr	r2, .L48
+ 538 006c 1370     		strb	r3, [r2]
+ 539 006e 7047     		bx	lr
+ 540              	.L43:
+  88:Core/Src/devs/uart_communication.cpp ****                rotation_wheel_.set_pneuCommand(true);
+ 541              		.loc 2 88 16 is_stmt 1 view .LVU141
+ 542              	.LVL28:
+ 543              	.LBB61:
+ARM GAS  /tmp/ccCewe2D.s 			page 15
+
+
+ 544              	.LBI61:
+  29:Core/Inc/actuator/rotatory_wheel.h ****    void set_wheelCommand(bool p_){ WheelActuate=p_;}
+ 545              		.loc 3 29 9 view .LVU142
+ 546              	.LBB62:
+  29:Core/Inc/actuator/rotatory_wheel.h ****    void set_wheelCommand(bool p_){ WheelActuate=p_;}
+ 547              		.loc 3 29 35 view .LVU143
+  29:Core/Inc/actuator/rotatory_wheel.h ****    void set_wheelCommand(bool p_){ WheelActuate=p_;}
+ 548              		.loc 3 29 46 is_stmt 0 view .LVU144
+ 549 0070 0C4B     		ldr	r3, .L48+4
+ 550 0072 0122     		movs	r2, #1
+ 551 0074 1A70     		strb	r2, [r3]
+ 552              	.LVL29:
+  29:Core/Inc/actuator/rotatory_wheel.h ****    void set_wheelCommand(bool p_){ WheelActuate=p_;}
+ 553              		.loc 3 29 46 view .LVU145
+ 554              	.LBE62:
+ 555              	.LBE61:
+  89:Core/Src/devs/uart_communication.cpp ****                rotation_wheel_.set_PneuArrowHold(true);
+ 556              		.loc 2 89 16 is_stmt 1 view .LVU146
+ 557              	.LBB63:
+ 558              	.LBI63:
+  31:Core/Inc/actuator/rotatory_wheel.h ****    void set_PneuArrowHold(bool p_){ PneuArrowHold=p_;}
+ 559              		.loc 3 31 9 view .LVU147
+ 560              	.LBB64:
+ 561              		.loc 3 31 37 view .LVU148
+ 562              		.loc 3 31 50 is_stmt 0 view .LVU149
+ 563 0076 9A70     		strb	r2, [r3, #2]
+ 564              	.LVL30:
+ 565              		.loc 3 31 50 view .LVU150
+ 566              	.LBE64:
+ 567              	.LBE63:
+  90:Core/Src/devs/uart_communication.cpp ****                gJoy.button1=0;
+ 568              		.loc 2 90 16 is_stmt 1 view .LVU151
+  90:Core/Src/devs/uart_communication.cpp ****                gJoy.button1=0;
+ 569              		.loc 2 90 28 is_stmt 0 view .LVU152
+ 570 0078 094B     		ldr	r3, .L48
+ 571 007a 0022     		movs	r2, #0
+ 572 007c 1A70     		strb	r2, [r3]
+ 573 007e 7047     		bx	lr
+ 574              	.L44:
+  94:Core/Src/devs/uart_communication.cpp ****                 arm_.set_pneuReleaseCommand(true);
+ 575              		.loc 2 94 17 is_stmt 1 view .LVU153
+ 576              	.LVL31:
+ 577              	.LBB65:
+ 578              	.LBI65:
+  31:Core/Inc/actuator/arm.h ****    void set_startLoadArrow(bool p_){ startLoadArrow=p_;}
+ 579              		.loc 4 31 9 view .LVU154
+ 580              	.LBB66:
+  31:Core/Inc/actuator/arm.h ****    void set_startLoadArrow(bool p_){ startLoadArrow=p_;}
+ 581              		.loc 4 31 42 view .LVU155
+  31:Core/Inc/actuator/arm.h ****    void set_startLoadArrow(bool p_){ startLoadArrow=p_;}
+ 582              		.loc 4 31 58 is_stmt 0 view .LVU156
+ 583 0080 094B     		ldr	r3, .L48+8
+ 584 0082 0122     		movs	r2, #1
+ 585 0084 DA70     		strb	r2, [r3, #3]
+  31:Core/Inc/actuator/arm.h ****    void set_startLoadArrow(bool p_){ startLoadArrow=p_;}
+ 586              		.loc 4 31 62 view .LVU157
+ 587 0086 7047     		bx	lr
+ARM GAS  /tmp/ccCewe2D.s 			page 16
+
+
+ 588              	.LVL32:
+ 589              	.L45:
+  31:Core/Inc/actuator/arm.h ****    void set_startLoadArrow(bool p_){ startLoadArrow=p_;}
+ 590              		.loc 4 31 62 view .LVU158
+ 591              	.LBE66:
+ 592              	.LBE65:
+  99:Core/Src/devs/uart_communication.cpp ****          arm_.set_startLoadArrow(true);
+ 593              		.loc 2 99 10 is_stmt 1 view .LVU159
+ 594              	.LBB67:
+ 595              	.LBI67:
+  32:Core/Inc/actuator/arm.h ****    void set_joint0Direction(Direction d_){joint[0]=d_;}
+ 596              		.loc 4 32 9 view .LVU160
+ 597              	.LBB68:
+  32:Core/Inc/actuator/arm.h ****    void set_joint0Direction(Direction d_){joint[0]=d_;}
+ 598              		.loc 4 32 38 view .LVU161
+  32:Core/Inc/actuator/arm.h ****    void set_joint0Direction(Direction d_){joint[0]=d_;}
+ 599              		.loc 4 32 52 is_stmt 0 view .LVU162
+ 600 0088 074B     		ldr	r3, .L48+8
+ 601 008a 0122     		movs	r2, #1
+ 602 008c 5A71     		strb	r2, [r3, #5]
+  32:Core/Inc/actuator/arm.h ****    void set_joint0Direction(Direction d_){joint[0]=d_;}
+ 603              		.loc 4 32 56 view .LVU163
+ 604 008e 7047     		bx	lr
+ 605              	.LVL33:
+ 606              	.L46:
+  32:Core/Inc/actuator/arm.h ****    void set_joint0Direction(Direction d_){joint[0]=d_;}
+ 607              		.loc 4 32 56 view .LVU164
+ 608              	.LBE68:
+ 609              	.LBE67:
+ 105:Core/Src/devs/uart_communication.cpp ****          arm_.set_pneuHoldCommand(true);
+ 610              		.loc 2 105 10 is_stmt 1 view .LVU165
+ 611              	.LBB69:
+ 612              	.LBI69:
+  30:Core/Inc/actuator/arm.h ****    void set_pneuReleaseCommand(bool p_){ pneuReleaseState=p_;}
+ 613              		.loc 4 30 9 view .LVU166
+ 614              	.LBB70:
+  30:Core/Inc/actuator/arm.h ****    void set_pneuReleaseCommand(bool p_){ pneuReleaseState=p_;}
+ 615              		.loc 4 30 39 view .LVU167
+  30:Core/Inc/actuator/arm.h ****    void set_pneuReleaseCommand(bool p_){ pneuReleaseState=p_;}
+ 616              		.loc 4 30 52 is_stmt 0 view .LVU168
+ 617 0090 054B     		ldr	r3, .L48+8
+ 618 0092 0122     		movs	r2, #1
+ 619 0094 9A70     		strb	r2, [r3, #2]
+  30:Core/Inc/actuator/arm.h ****    void set_pneuReleaseCommand(bool p_){ pneuReleaseState=p_;}
+ 620              		.loc 4 30 56 view .LVU169
+ 621 0096 7047     		bx	lr
+ 622              	.LVL34:
+ 623              	.L47:
+  30:Core/Inc/actuator/arm.h ****    void set_pneuReleaseCommand(bool p_){ pneuReleaseState=p_;}
+ 624              		.loc 4 30 56 view .LVU170
+ 625              	.LBE70:
+ 626              	.LBE69:
+ 109:Core/Src/devs/uart_communication.cpp ****           arm_.reset_armState(true);
+ 627              		.loc 2 109 11 is_stmt 1 view .LVU171
+ 628              	.LBB71:
+ 629              	.LBI71:
+  35:Core/Inc/actuator/arm.h ****    void reset_armState(bool p_){armState=p_;}
+ARM GAS  /tmp/ccCewe2D.s 			page 17
+
+
+ 630              		.loc 4 35 9 view .LVU172
+ 631              	.LBB72:
+ 632              		.loc 4 35 33 view .LVU173
+ 633              		.loc 4 35 41 is_stmt 0 view .LVU174
+ 634 0098 034B     		ldr	r3, .L48+8
+ 635 009a 0122     		movs	r2, #1
+ 636 009c 1A71     		strb	r2, [r3, #4]
+ 637              	.LVL35:
+ 638              		.loc 4 35 41 view .LVU175
+ 639              	.LBE72:
+ 640              	.LBE71:
+ 641              		.loc 2 111 1 view .LVU176
+ 642 009e C9E7     		b	.L25
+ 643              	.L49:
+ 644              		.align	2
+ 645              	.L48:
+ 646 00a0 00000000 		.word	.LANCHOR7
+ 647 00a4 00000000 		.word	.LANCHOR0
+ 648 00a8 00000000 		.word	.LANCHOR1
+ 649              		.cfi_endproc
+ 650              	.LFE1710:
+ 652              		.section	.text._GLOBAL__sub_I_rotation_wheel_,"ax",%progbits
+ 653              		.align	1
+ 654              		.syntax unified
+ 655              		.thumb
+ 656              		.thumb_func
+ 657              		.fpu fpv4-sp-d16
+ 659              	_GLOBAL__sub_I_rotation_wheel_:
+ 660              	.LFB1714:
+ 661              		.loc 2 111 1 is_stmt 1 view -0
+ 662              		.cfi_startproc
+ 663              		@ args = 0, pretend = 0, frame = 0
+ 664              		@ frame_needed = 0, uses_anonymous_args = 0
+ 665 0000 08B5     		push	{r3, lr}
+ 666              	.LCFI3:
+ 667              		.cfi_def_cfa_offset 8
+ 668              		.cfi_offset 3, -8
+ 669              		.cfi_offset 14, -4
+ 670              		.loc 2 111 1 is_stmt 0 view .LVU178
+ 671 0002 4FF6FF71 		movw	r1, #65535
+ 672 0006 0120     		movs	r0, #1
+ 673 0008 FFF7FEFF 		bl	_Z41__static_initialization_and_destruction_0ii
+ 674              	.LVL36:
+ 675 000c 08BD     		pop	{r3, pc}
+ 676              		.cfi_endproc
+ 677              	.LFE1714:
+ 679              		.section	.init_array,"aw",%init_array
+ 680              		.align	2
+ 681 0000 00000000 		.word	_GLOBAL__sub_I_rotation_wheel_(target1)
+ 682              		.global	gJoy
+ 683              		.global	arm_
+ 684              		.global	rotation_wheel_
+ 685              		.section	.bss._ZL13gJoyStick_CRC,"aw",%nobits
+ 686              		.align	2
+ 687              		.set	.LANCHOR2,. + 0
+ 690              	_ZL13gJoyStick_CRC:
+ 691 0000 00000000 		.space	256
+ARM GAS  /tmp/ccCewe2D.s 			page 18
+
+
+ 691      00000000 
+ 691      00000000 
+ 691      00000000 
+ 691      00000000 
+ 692              		.section	.bss._ZL13gJoy_Data_Arr,"aw",%nobits
+ 693              		.align	2
+ 694              		.set	.LANCHOR6,. + 0
+ 697              	_ZL13gJoy_Data_Arr:
+ 698 0000 0000     		.space	2
+ 699              		.section	.bss._ZL13gRx4_Data_num,"aw",%nobits
+ 700              		.align	1
+ 701              		.set	.LANCHOR5,. + 0
+ 704              	_ZL13gRx4_Data_num:
+ 705 0000 0000     		.space	2
+ 706              		.section	.bss._ZL15gStart_Byte_Rx4,"aw",%nobits
+ 707              		.set	.LANCHOR3,. + 0
+ 710              	_ZL15gStart_Byte_Rx4:
+ 711 0000 00       		.space	1
+ 712              		.section	.bss._ZL8gRx4Data,"aw",%nobits
+ 713              		.set	.LANCHOR4,. + 0
+ 716              	_ZL8gRx4Data:
+ 717 0000 00       		.space	1
+ 718              		.section	.bss.arm_,"aw",%nobits
+ 719              		.align	2
+ 720              		.set	.LANCHOR1,. + 0
+ 723              	arm_:
+ 724 0000 00000000 		.space	12
+ 724      00000000 
+ 724      00000000 
+ 725              		.section	.bss.gJoy,"aw",%nobits
+ 726              		.align	2
+ 727              		.set	.LANCHOR7,. + 0
+ 730              	gJoy:
+ 731 0000 0000     		.space	2
+ 732              		.section	.bss.rotation_wheel_,"aw",%nobits
+ 733              		.align	2
+ 734              		.set	.LANCHOR0,. + 0
+ 737              	rotation_wheel_:
+ 738 0000 00000000 		.space	16
+ 738      00000000 
+ 738      00000000 
+ 738      00000000 
+ 739              		.text
+ 740              	.Letext0:
+ 741              		.file 5 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 742              		.file 6 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 743              		.file 7 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdint.h"
+ 744              		.file 8 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 745              		.file 9 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/incl
+ 746              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 747              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 748              		.file 12 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 749              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 750              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 751              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 752              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 753              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ARM GAS  /tmp/ccCewe2D.s 			page 19
+
+
+ 754              		.file 18 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 755              		.file 19 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 756              		.file 20 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 757              		.file 21 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 758              		.file 22 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 759              		.file 23 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 760              		.file 24 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 761              		.file 25 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 762              		.file 26 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 763              		.file 27 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_types
+ 764              		.file 28 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/reent.
+ 765              		.file 29 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/lock.h
+ 766              		.file 30 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 767              		.file 31 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdlib.h"
+ 768              		.file 32 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 769              		.file 33 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/inc
+ 770              		.file 34 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/wchar.h"
+ 771              		.file 35 "Core/Inc/utils/linalg.h"
+ 772              		.file 36 "Core/Inc/actuator/motor.h"
+ 773              		.file 37 "Core/Inc/devs/uart_communication.h"
+ 774              		.file 38 "Core/Inc/periphs/usart.h"
+ 775              		.file 39 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 776              		.file 40 "<built-in>"
+ARM GAS  /tmp/ccCewe2D.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 uart_communication.cpp
+     /tmp/ccCewe2D.s:18     .text._ZN8CRC_HashD2Ev:0000000000000000 $t
+     /tmp/ccCewe2D.s:26     .text._ZN8CRC_HashD2Ev:0000000000000000 _ZN8CRC_HashD2Ev
+     /tmp/ccCewe2D.s:26     .text._ZN8CRC_HashD2Ev:0000000000000000 _ZN8CRC_HashD1Ev
+     /tmp/ccCewe2D.s:43     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
+     /tmp/ccCewe2D.s:49     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
+     /tmp/ccCewe2D.s:169    .text._Z41__static_initialization_and_destruction_0ii:0000000000000054 $d
+     /tmp/ccCewe2D.s:178    .text._Z12fill_JoyDataP13JoyStick_DataPh:0000000000000000 $t
+     /tmp/ccCewe2D.s:185    .text._Z12fill_JoyDataP13JoyStick_DataPh:0000000000000000 _Z12fill_JoyDataP13JoyStick_DataPh
+     /tmp/ccCewe2D.s:208    .text.HAL_UART_RxCpltCallback:0000000000000000 $t
+     /tmp/ccCewe2D.s:215    .text.HAL_UART_RxCpltCallback:0000000000000000 HAL_UART_RxCpltCallback
+     /tmp/ccCewe2D.s:325    .text.HAL_UART_RxCpltCallback:0000000000000050 $d
+     /tmp/ccCewe2D.s:334    .text._Z18communication_initv:0000000000000000 $t
+     /tmp/ccCewe2D.s:341    .text._Z18communication_initv:0000000000000000 _Z18communication_initv
+     /tmp/ccCewe2D.s:364    .text._Z18communication_initv:0000000000000010 $d
+     /tmp/ccCewe2D.s:370    .text._Z13parse_joyDatav:0000000000000000 $t
+     /tmp/ccCewe2D.s:377    .text._Z13parse_joyDatav:0000000000000000 _Z13parse_joyDatav
+     /tmp/ccCewe2D.s:646    .text._Z13parse_joyDatav:00000000000000a0 $d
+     /tmp/ccCewe2D.s:653    .text._GLOBAL__sub_I_rotation_wheel_:0000000000000000 $t
+     /tmp/ccCewe2D.s:659    .text._GLOBAL__sub_I_rotation_wheel_:0000000000000000 _GLOBAL__sub_I_rotation_wheel_
+     /tmp/ccCewe2D.s:680    .init_array:0000000000000000 $d
+     /tmp/ccCewe2D.s:730    .bss.gJoy:0000000000000000 gJoy
+     /tmp/ccCewe2D.s:723    .bss.arm_:0000000000000000 arm_
+     /tmp/ccCewe2D.s:737    .bss.rotation_wheel_:0000000000000000 rotation_wheel_
+     /tmp/ccCewe2D.s:686    .bss._ZL13gJoyStick_CRC:0000000000000000 $d
+     /tmp/ccCewe2D.s:690    .bss._ZL13gJoyStick_CRC:0000000000000000 _ZL13gJoyStick_CRC
+     /tmp/ccCewe2D.s:693    .bss._ZL13gJoy_Data_Arr:0000000000000000 $d
+     /tmp/ccCewe2D.s:697    .bss._ZL13gJoy_Data_Arr:0000000000000000 _ZL13gJoy_Data_Arr
+     /tmp/ccCewe2D.s:700    .bss._ZL13gRx4_Data_num:0000000000000000 $d
+     /tmp/ccCewe2D.s:704    .bss._ZL13gRx4_Data_num:0000000000000000 _ZL13gRx4_Data_num
+     /tmp/ccCewe2D.s:710    .bss._ZL15gStart_Byte_Rx4:0000000000000000 _ZL15gStart_Byte_Rx4
+     /tmp/ccCewe2D.s:711    .bss._ZL15gStart_Byte_Rx4:0000000000000000 $d
+     /tmp/ccCewe2D.s:716    .bss._ZL8gRx4Data:0000000000000000 _ZL8gRx4Data
+     /tmp/ccCewe2D.s:717    .bss._ZL8gRx4Data:0000000000000000 $d
+     /tmp/ccCewe2D.s:719    .bss.arm_:0000000000000000 $d
+     /tmp/ccCewe2D.s:726    .bss.gJoy:0000000000000000 $d
+     /tmp/ccCewe2D.s:733    .bss.rotation_wheel_:0000000000000000 $d
+                           .group:0000000000000000 _ZN8CRC_HashD5Ev
+
+UNDEFINED SYMBOLS
+HAL_GetTick
+_ZN8CRC_HashC1Eh
+__aeabi_atexit
+__dso_handle
+HAL_UART_Receive_DMA
+huart4

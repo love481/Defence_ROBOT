@@ -1,0 +1,446 @@
+ARM GAS  /tmp/ccKsDGKT.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"rotatory_wheel.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text._ZN14rotation_wheel18motorWheel_actuateEf,"ax",%progbits
+  18              		.align	1
+  19              		.global	_ZN14rotation_wheel18motorWheel_actuateEf
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	_ZN14rotation_wheel18motorWheel_actuateEf:
+  27              	.LVL0:
+  28              	.LFB1707:
+  29              		.file 1 "Core/Src/actuator/rotatory_wheel.cpp"
+   1:Core/Src/actuator/rotatory_wheel.cpp **** #include"rotatory_wheel.h"
+   2:Core/Src/actuator/rotatory_wheel.cpp **** extern pid_Algorithm pid_algo_rotatory_wheel[2];
+   3:Core/Src/actuator/rotatory_wheel.cpp **** extern encoder e_rotatory_wheel[2];
+   4:Core/Src/actuator/rotatory_wheel.cpp **** extern motor m_rotatory_wheel[2];
+   5:Core/Src/actuator/rotatory_wheel.cpp **** static bool entered=false;
+   6:Core/Src/actuator/rotatory_wheel.cpp **** extern TIM_HandleTypeDef htim10;
+   7:Core/Src/actuator/rotatory_wheel.cpp **** void rotation_wheel::motorWheel_actuate(float speed)
+   8:Core/Src/actuator/rotatory_wheel.cpp **** {
+  30              		.loc 1 8 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 8 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 2DED028B 		vpush.64	{d8}
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 16
+  43              		.cfi_offset 80, -16
+  44              		.cfi_offset 81, -12
+  45 0006 B0EE408A 		vmov.f32	s16, s0
+   9:Core/Src/actuator/rotatory_wheel.cpp **** /*float tunedOmega = motor_[3].computeOmega(speed, encoder_[3].get_omega(),pid_Algorithm_[3]);
+  10:Core/Src/actuator/rotatory_wheel.cpp **** 		motor_[3].set_omega(tunedOmega);*/
+  11:Core/Src/actuator/rotatory_wheel.cpp ****  for (int i = 0; i < 2; i++)
+  46              		.loc 1 11 2 is_stmt 1 view .LVU2
+  47              	.LVL1:
+ARM GAS  /tmp/ccKsDGKT.s 			page 2
+
+
+  48              	.LBB2:
+  49              		.loc 1 11 11 is_stmt 0 view .LVU3
+  50 000a 0024     		movs	r4, #0
+  51 000c 10E0     		b	.L3
+  52              	.LVL2:
+  53              	.L5:
+  12:Core/Src/actuator/rotatory_wheel.cpp **** 	{
+  13:Core/Src/actuator/rotatory_wheel.cpp **** 		//float tunedOmega = m_rotatory_wheel[i].computeOmega(speed*(1-2*i), e_rotatory_wheel[i].get_omeg
+  14:Core/Src/actuator/rotatory_wheel.cpp **** 		m_rotatory_wheel[i].set_omega(speed*(1-2*i));
+  54              		.loc 1 14 3 is_stmt 1 discriminator 2 view .LVU4
+  55              		.loc 1 14 43 is_stmt 0 discriminator 2 view .LVU5
+  56 000e 6300     		lsls	r3, r4, #1
+  57              		.loc 1 14 41 discriminator 2 view .LVU6
+  58 0010 C3F10103 		rsb	r3, r3, #1
+  59              		.loc 1 14 32 discriminator 2 view .LVU7
+  60 0014 07EE903A 		vmov	s15, r3	@ int
+  61 0018 B8EEE70A 		vcvt.f32.s32	s0, s15
+  62 001c 20EE080A 		vmul.f32	s0, s0, s16
+  63 0020 4FF4D070 		mov	r0, #416
+  64 0024 054B     		ldr	r3, .L6
+  65 0026 00FB0430 		mla	r0, r0, r4, r3
+  66 002a FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+  67              	.LVL3:
+  11:Core/Src/actuator/rotatory_wheel.cpp **** 	{
+  68              		.loc 1 11 2 is_stmt 1 discriminator 2 view .LVU8
+  69 002e 0134     		adds	r4, r4, #1
+  70              	.LVL4:
+  71              	.L3:
+  11:Core/Src/actuator/rotatory_wheel.cpp **** 	{
+  72              		.loc 1 11 20 discriminator 3 view .LVU9
+  73 0030 012C     		cmp	r4, #1
+  74 0032 ECDD     		ble	.L5
+  75              	.LBE2:
+  15:Core/Src/actuator/rotatory_wheel.cpp **** 	}
+  16:Core/Src/actuator/rotatory_wheel.cpp **** }
+  76              		.loc 1 16 1 is_stmt 0 view .LVU10
+  77 0034 BDEC028B 		vldm	sp!, {d8}
+  78              	.LCFI2:
+  79              		.cfi_restore 80
+  80              		.cfi_restore 81
+  81              		.cfi_def_cfa_offset 8
+  82              	.LVL5:
+  83              		.loc 1 16 1 view .LVU11
+  84 0038 10BD     		pop	{r4, pc}
+  85              	.LVL6:
+  86              	.L7:
+  87              		.loc 1 16 1 view .LVU12
+  88 003a 00BF     		.align	2
+  89              	.L6:
+  90 003c 00000000 		.word	m_rotatory_wheel
+  91              		.cfi_endproc
+  92              	.LFE1707:
+  94              		.section	.text._ZN14rotation_wheel14start_commandsEv,"ax",%progbits
+  95              		.align	1
+  96              		.global	_ZN14rotation_wheel14start_commandsEv
+  97              		.syntax unified
+  98              		.thumb
+ARM GAS  /tmp/ccKsDGKT.s 			page 3
+
+
+  99              		.thumb_func
+ 100              		.fpu fpv4-sp-d16
+ 102              	_ZN14rotation_wheel14start_commandsEv:
+ 103              	.LVL7:
+ 104              	.LFB1708:
+  17:Core/Src/actuator/rotatory_wheel.cpp **** void rotation_wheel::start_commands(void)
+  18:Core/Src/actuator/rotatory_wheel.cpp **** {
+ 105              		.loc 1 18 1 is_stmt 1 view -0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              		.loc 1 18 1 is_stmt 0 view .LVU14
+ 110 0000 38B5     		push	{r3, r4, r5, lr}
+ 111              	.LCFI3:
+ 112              		.cfi_def_cfa_offset 16
+ 113              		.cfi_offset 3, -16
+ 114              		.cfi_offset 4, -12
+ 115              		.cfi_offset 5, -8
+ 116              		.cfi_offset 14, -4
+ 117 0002 0446     		mov	r4, r0
+  19:Core/Src/actuator/rotatory_wheel.cpp ****    if(WheelActuate==true)
+ 118              		.loc 1 19 4 is_stmt 1 view .LVU15
+ 119              		.loc 1 19 7 is_stmt 0 view .LVU16
+ 120 0004 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 121              		.loc 1 19 4 view .LVU17
+ 122 0006 002B     		cmp	r3, #0
+ 123 0008 48D0     		beq	.L9
+  20:Core/Src/actuator/rotatory_wheel.cpp **** 		{  
+  21:Core/Src/actuator/rotatory_wheel.cpp ****         if ((HAL_GetTick() - currTime) > 10)
+ 124              		.loc 1 21 9 is_stmt 1 view .LVU18
+ 125              		.loc 1 21 25 is_stmt 0 view .LVU19
+ 126 000a FFF7FEFF 		bl	HAL_GetTick
+ 127              	.LVL8:
+ 128              		.loc 1 21 30 view .LVU20
+ 129 000e A368     		ldr	r3, [r4, #8]
+ 130              		.loc 1 21 28 view .LVU21
+ 131 0010 C01A     		subs	r0, r0, r3
+ 132              		.loc 1 21 9 view .LVU22
+ 133 0012 0A28     		cmp	r0, #10
+ 134 0014 13D8     		bhi	.L15
+ 135              	.L10:
+  22:Core/Src/actuator/rotatory_wheel.cpp **** 		 { 	
+  23:Core/Src/actuator/rotatory_wheel.cpp **** 			motorWheel_actuate(20);
+  24:Core/Src/actuator/rotatory_wheel.cpp ****          currTime = HAL_GetTick();
+  25:Core/Src/actuator/rotatory_wheel.cpp **** 		  }
+  26:Core/Src/actuator/rotatory_wheel.cpp ****         if(PneuActuate==true && entered==false)
+ 136              		.loc 1 26 9 is_stmt 1 view .LVU23
+ 137              		.loc 1 26 12 is_stmt 0 view .LVU24
+ 138 0016 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 139              		.loc 1 26 9 view .LVU25
+ 140 0018 13B1     		cbz	r3, .L11
+ 141              		.loc 1 26 40 discriminator 1 view .LVU26
+ 142 001a 234B     		ldr	r3, .L17
+ 143 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 144              		.loc 1 26 30 discriminator 1 view .LVU27
+ 145 001e BBB1     		cbz	r3, .L16
+ 146              	.L11:
+ARM GAS  /tmp/ccKsDGKT.s 			page 4
+
+
+  27:Core/Src/actuator/rotatory_wheel.cpp ****         {  
+  28:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_GPIO_WritePin(GPIOE,GPIO_PIN_5,GPIO_PIN_RESET);
+  29:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_Delay(50);
+  30:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_SET);
+  31:Core/Src/actuator/rotatory_wheel.cpp ****            totalTime=HAL_GetTick();
+  32:Core/Src/actuator/rotatory_wheel.cpp ****            PneuActuate=false;
+  33:Core/Src/actuator/rotatory_wheel.cpp ****            entered=true;
+  34:Core/Src/actuator/rotatory_wheel.cpp ****            //HAL_Delay(60);
+  35:Core/Src/actuator/rotatory_wheel.cpp ****            //HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3,GPIO_PIN_RESET);
+  36:Core/Src/actuator/rotatory_wheel.cpp ****         }
+  37:Core/Src/actuator/rotatory_wheel.cpp ****         else if((HAL_GetTick()-totalTime)>2000 && entered==true)
+ 147              		.loc 1 37 14 is_stmt 1 view .LVU28
+ 148              		.loc 1 37 29 is_stmt 0 view .LVU29
+ 149 0020 FFF7FEFF 		bl	HAL_GetTick
+ 150              	.LVL9:
+ 151              		.loc 1 37 32 view .LVU30
+ 152 0024 E368     		ldr	r3, [r4, #12]
+ 153              		.loc 1 37 31 view .LVU31
+ 154 0026 C01A     		subs	r0, r0, r3
+ 155              		.loc 1 37 48 view .LVU32
+ 156 0028 B0F5FA6F 		cmp	r0, #2000
+ 157 002c 27D9     		bls	.L13
+ 158              		.loc 1 37 58 discriminator 1 view .LVU33
+ 159 002e 1E4B     		ldr	r3, .L17
+ 160 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 161              		.loc 1 37 48 discriminator 1 view .LVU34
+ 162 0032 23B3     		cbz	r3, .L13
+  38:Core/Src/actuator/rotatory_wheel.cpp ****         {
+  39:Core/Src/actuator/rotatory_wheel.cpp ****            entered=false;
+ 163              		.loc 1 39 12 is_stmt 1 view .LVU35
+ 164              		.loc 1 39 19 is_stmt 0 view .LVU36
+ 165 0034 0023     		movs	r3, #0
+ 166 0036 1C4A     		ldr	r2, .L17
+ 167 0038 1370     		strb	r3, [r2]
+  40:Core/Src/actuator/rotatory_wheel.cpp ****            PneuActuate=false;
+ 168              		.loc 1 40 12 is_stmt 1 view .LVU37
+ 169              		.loc 1 40 23 is_stmt 0 view .LVU38
+ 170 003a 2370     		strb	r3, [r4]
+ 171 003c 32E0     		b	.L8
+ 172              	.L15:
+  23:Core/Src/actuator/rotatory_wheel.cpp ****          currTime = HAL_GetTick();
+ 173              		.loc 1 23 4 is_stmt 1 view .LVU39
+  23:Core/Src/actuator/rotatory_wheel.cpp ****          currTime = HAL_GetTick();
+ 174              		.loc 1 23 22 is_stmt 0 view .LVU40
+ 175 003e B3EE040A 		vmov.f32	s0, #2.0e+1
+ 176 0042 2046     		mov	r0, r4
+ 177 0044 FFF7FEFF 		bl	_ZN14rotation_wheel18motorWheel_actuateEf
+ 178              	.LVL10:
+  24:Core/Src/actuator/rotatory_wheel.cpp **** 		  }
+ 179              		.loc 1 24 10 is_stmt 1 view .LVU41
+  24:Core/Src/actuator/rotatory_wheel.cpp **** 		  }
+ 180              		.loc 1 24 32 is_stmt 0 view .LVU42
+ 181 0048 FFF7FEFF 		bl	HAL_GetTick
+ 182              	.LVL11:
+  24:Core/Src/actuator/rotatory_wheel.cpp **** 		  }
+ 183              		.loc 1 24 19 view .LVU43
+ 184 004c A060     		str	r0, [r4, #8]
+ARM GAS  /tmp/ccKsDGKT.s 			page 5
+
+
+ 185 004e E2E7     		b	.L10
+ 186              	.L16:
+  28:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_Delay(50);
+ 187              		.loc 1 28 12 is_stmt 1 view .LVU44
+  28:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_Delay(50);
+ 188              		.loc 1 28 29 is_stmt 0 view .LVU45
+ 189 0050 164D     		ldr	r5, .L17+4
+ 190 0052 0022     		movs	r2, #0
+ 191 0054 2021     		movs	r1, #32
+ 192 0056 2846     		mov	r0, r5
+ 193 0058 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 194              	.LVL12:
+  29:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_SET);
+ 195              		.loc 1 29 12 is_stmt 1 view .LVU46
+  29:Core/Src/actuator/rotatory_wheel.cpp ****            HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_SET);
+ 196              		.loc 1 29 21 is_stmt 0 view .LVU47
+ 197 005c 3220     		movs	r0, #50
+ 198 005e FFF7FEFF 		bl	HAL_Delay
+ 199              	.LVL13:
+  30:Core/Src/actuator/rotatory_wheel.cpp ****            totalTime=HAL_GetTick();
+ 200              		.loc 1 30 12 is_stmt 1 view .LVU48
+  30:Core/Src/actuator/rotatory_wheel.cpp ****            totalTime=HAL_GetTick();
+ 201              		.loc 1 30 29 is_stmt 0 view .LVU49
+ 202 0062 0122     		movs	r2, #1
+ 203 0064 0221     		movs	r1, #2
+ 204 0066 2846     		mov	r0, r5
+ 205 0068 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 206              	.LVL14:
+  31:Core/Src/actuator/rotatory_wheel.cpp ****            PneuActuate=false;
+ 207              		.loc 1 31 12 is_stmt 1 view .LVU50
+  31:Core/Src/actuator/rotatory_wheel.cpp ****            PneuActuate=false;
+ 208              		.loc 1 31 33 is_stmt 0 view .LVU51
+ 209 006c FFF7FEFF 		bl	HAL_GetTick
+ 210              	.LVL15:
+  31:Core/Src/actuator/rotatory_wheel.cpp ****            PneuActuate=false;
+ 211              		.loc 1 31 21 view .LVU52
+ 212 0070 E060     		str	r0, [r4, #12]
+  32:Core/Src/actuator/rotatory_wheel.cpp ****            entered=true;
+ 213              		.loc 1 32 12 is_stmt 1 view .LVU53
+  32:Core/Src/actuator/rotatory_wheel.cpp ****            entered=true;
+ 214              		.loc 1 32 23 is_stmt 0 view .LVU54
+ 215 0072 0023     		movs	r3, #0
+ 216 0074 2370     		strb	r3, [r4]
+  33:Core/Src/actuator/rotatory_wheel.cpp ****            //HAL_Delay(60);
+ 217              		.loc 1 33 12 is_stmt 1 view .LVU55
+  33:Core/Src/actuator/rotatory_wheel.cpp ****            //HAL_Delay(60);
+ 218              		.loc 1 33 19 is_stmt 0 view .LVU56
+ 219 0076 0C4B     		ldr	r3, .L17
+ 220 0078 0122     		movs	r2, #1
+ 221 007a 1A70     		strb	r2, [r3]
+ 222 007c 12E0     		b	.L8
+ 223              	.L13:
+  41:Core/Src/actuator/rotatory_wheel.cpp ****         }
+  42:Core/Src/actuator/rotatory_wheel.cpp ****          else if((HAL_GetTick()-totalTime)>100 && entered==true)
+ 224              		.loc 1 42 15 is_stmt 1 view .LVU57
+ 225              		.loc 1 42 30 is_stmt 0 view .LVU58
+ 226 007e FFF7FEFF 		bl	HAL_GetTick
+ARM GAS  /tmp/ccKsDGKT.s 			page 6
+
+
+ 227              	.LVL16:
+ 228              		.loc 1 42 33 view .LVU59
+ 229 0082 E368     		ldr	r3, [r4, #12]
+ 230              		.loc 1 42 32 view .LVU60
+ 231 0084 C01A     		subs	r0, r0, r3
+ 232              		.loc 1 42 48 view .LVU61
+ 233 0086 6428     		cmp	r0, #100
+ 234 0088 0CD9     		bls	.L8
+ 235              		.loc 1 42 58 discriminator 1 view .LVU62
+ 236 008a 074B     		ldr	r3, .L17
+ 237 008c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 238              		.loc 1 42 48 discriminator 1 view .LVU63
+ 239 008e 4BB1     		cbz	r3, .L8
+  43:Core/Src/actuator/rotatory_wheel.cpp ****         {
+  44:Core/Src/actuator/rotatory_wheel.cpp ****             HAL_GPIO_WritePin(GPIOE,GPIO_PIN_1,GPIO_PIN_RESET);           
+ 240              		.loc 1 44 13 is_stmt 1 view .LVU64
+ 241              		.loc 1 44 30 is_stmt 0 view .LVU65
+ 242 0090 0022     		movs	r2, #0
+ 243 0092 0221     		movs	r1, #2
+ 244 0094 0548     		ldr	r0, .L17+4
+ 245 0096 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 246              	.LVL17:
+ 247 009a 03E0     		b	.L8
+ 248              	.LVL18:
+ 249              	.L9:
+  45:Core/Src/actuator/rotatory_wheel.cpp ****         }
+  46:Core/Src/actuator/rotatory_wheel.cpp ****       }
+  47:Core/Src/actuator/rotatory_wheel.cpp ****       else
+  48:Core/Src/actuator/rotatory_wheel.cpp ****        {
+  49:Core/Src/actuator/rotatory_wheel.cpp ****         motorWheel_actuate(0);
+ 250              		.loc 1 49 9 is_stmt 1 view .LVU66
+ 251              		.loc 1 49 27 is_stmt 0 view .LVU67
+ 252 009c 9FED040A 		vldr.32	s0, .L17+8
+ 253 00a0 FFF7FEFF 		bl	_ZN14rotation_wheel18motorWheel_actuateEf
+ 254              	.LVL19:
+ 255              	.L8:
+  50:Core/Src/actuator/rotatory_wheel.cpp ****        }
+  51:Core/Src/actuator/rotatory_wheel.cpp ****        //motor actuate at the interval of 5 ,5 seconds
+  52:Core/Src/actuator/rotatory_wheel.cpp ****   /*   if(WheelActuate==true)  
+  53:Core/Src/actuator/rotatory_wheel.cpp ****    {  
+  54:Core/Src/actuator/rotatory_wheel.cpp ****     if ((HAL_GetTick() - currTime) > 10)
+  55:Core/Src/actuator/rotatory_wheel.cpp **** 
+  56:Core/Src/actuator/rotatory_wheel.cpp **** 		 { 	
+  57:Core/Src/actuator/rotatory_wheel.cpp **** 			motorWheel_actuate(21);
+  58:Core/Src/actuator/rotatory_wheel.cpp ****         currTime = HAL_GetTick();
+  59:Core/Src/actuator/rotatory_wheel.cpp **** 		  }
+  60:Core/Src/actuator/rotatory_wheel.cpp ****          if((HAL_GetTick()-pneuDelay)>5000)
+  61:Core/Src/actuator/rotatory_wheel.cpp ****            {
+  62:Core/Src/actuator/rotatory_wheel.cpp ****               HAL_GPIO_WritePin(GPIOC,GPIO_PIN_1,GPIO_PIN_SET);
+  63:Core/Src/actuator/rotatory_wheel.cpp ****              HAL_Delay(60);
+  64:Core/Src/actuator/rotatory_wheel.cpp ****              {
+  65:Core/Src/actuator/rotatory_wheel.cpp ****                HAL_GPIO_WritePin(GPIOC,GPIO_PIN_1,GPIO_PIN_RESET); 
+  66:Core/Src/actuator/rotatory_wheel.cpp ****                 pneuDelay=HAL_GetTick();
+  67:Core/Src/actuator/rotatory_wheel.cpp ****              }
+  68:Core/Src/actuator/rotatory_wheel.cpp ****             }
+  69:Core/Src/actuator/rotatory_wheel.cpp **** }
+  70:Core/Src/actuator/rotatory_wheel.cpp **** else
+ARM GAS  /tmp/ccKsDGKT.s 			page 7
+
+
+  71:Core/Src/actuator/rotatory_wheel.cpp ****        {
+  72:Core/Src/actuator/rotatory_wheel.cpp ****         motorWheel_actuate(0);
+  73:Core/Src/actuator/rotatory_wheel.cpp ****        }*/
+  74:Core/Src/actuator/rotatory_wheel.cpp **** }...
+ 256              		.loc 1 74 1 view .LVU68
+ 257 00a4 38BD     		pop	{r3, r4, r5, pc}
+ 258              	.LVL20:
+ 259              	.L18:
+ 260              		.loc 1 74 1 view .LVU69
+ 261 00a6 00BF     		.align	2
+ 262              	.L17:
+ 263 00a8 00000000 		.word	.LANCHOR0
+ 264 00ac 00100240 		.word	1073876992
+ 265 00b0 00000000 		.word	0
+ 266              		.cfi_endproc
+ 267              	.LFE1708:
+ 269              		.section	.bss._ZL7entered,"aw",%nobits
+ 270              		.set	.LANCHOR0,. + 0
+ 273              	_ZL7entered:
+ 274 0000 00       		.space	1
+ 275              		.text
+ 276              	.Letext0:
+ 277              		.file 2 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 278              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 279              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdint.h"
+ 280              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 281              		.file 6 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/incl
+ 282              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 283              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 284              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 285              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 286              		.file 11 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 287              		.file 12 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 288              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 289              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 290              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 291              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 292              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 293              		.file 18 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 294              		.file 19 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 295              		.file 20 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 296              		.file 21 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 297              		.file 22 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 298              		.file 23 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 299              		.file 24 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 300              		.file 25 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_types
+ 301              		.file 26 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/reent.
+ 302              		.file 27 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/lock.h
+ 303              		.file 28 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 304              		.file 29 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdlib.h"
+ 305              		.file 30 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 306              		.file 31 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/inc
+ 307              		.file 32 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/wchar.h"
+ 308              		.file 33 "Core/Inc/utils/linalg.h"
+ 309              		.file 34 "Core/Inc/control/pid.h"
+ 310              		.file 35 "Core/Inc/control/fuzzy_pid.h"
+ 311              		.file 36 "Core/Inc/actuator/motor.h"
+ARM GAS  /tmp/ccKsDGKT.s 			page 8
+
+
+ 312              		.file 37 "Core/Inc/actuator/rotatory_wheel.h"
+ 313              		.file 38 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 314              		.file 39 "<built-in>"
+ARM GAS  /tmp/ccKsDGKT.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 rotatory_wheel.cpp
+     /tmp/ccKsDGKT.s:18     .text._ZN14rotation_wheel18motorWheel_actuateEf:0000000000000000 $t
+     /tmp/ccKsDGKT.s:26     .text._ZN14rotation_wheel18motorWheel_actuateEf:0000000000000000 _ZN14rotation_wheel18motorWheel_actuateEf
+     /tmp/ccKsDGKT.s:90     .text._ZN14rotation_wheel18motorWheel_actuateEf:000000000000003c $d
+     /tmp/ccKsDGKT.s:95     .text._ZN14rotation_wheel14start_commandsEv:0000000000000000 $t
+     /tmp/ccKsDGKT.s:102    .text._ZN14rotation_wheel14start_commandsEv:0000000000000000 _ZN14rotation_wheel14start_commandsEv
+     /tmp/ccKsDGKT.s:263    .text._ZN14rotation_wheel14start_commandsEv:00000000000000a8 $d
+     /tmp/ccKsDGKT.s:273    .bss._ZL7entered:0000000000000000 _ZL7entered
+     /tmp/ccKsDGKT.s:274    .bss._ZL7entered:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+_ZN5motor9set_omegaEf
+m_rotatory_wheel
+HAL_GetTick
+HAL_GPIO_WritePin
+HAL_Delay

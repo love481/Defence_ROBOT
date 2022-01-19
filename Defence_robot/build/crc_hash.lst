@@ -1,0 +1,274 @@
+ARM GAS  /tmp/cc4cHVqs.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"crc_hash.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text._ZN8CRC_HashC2Eh,"ax",%progbits
+  18              		.align	1
+  19              		.global	_ZN8CRC_HashC2Eh
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	_ZN8CRC_HashC2Eh:
+  27              	.LVL0:
+  28              	.LFB134:
+  29              		.file 1 "Core/Src/utils/crypto/crc_hash.cpp"
+   1:Core/Src/utils/crypto/crc_hash.cpp **** #include "crc_hash.h"
+   2:Core/Src/utils/crypto/crc_hash.cpp **** 
+   3:Core/Src/utils/crypto/crc_hash.cpp **** 
+   4:Core/Src/utils/crypto/crc_hash.cpp **** CRC_Hash::CRC_Hash(uint8_t poly)
+  30              		.loc 1 4 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 4 1 is_stmt 0 view .LVU1
+  36 0000 8C46     		mov	ip, r1
+  37              	.LBB2:
+   5:Core/Src/utils/crypto/crc_hash.cpp **** {
+   6:Core/Src/utils/crypto/crc_hash.cpp ****         uint8_t remainder;
+  38              		.loc 1 6 9 is_stmt 1 view .LVU2
+   7:Core/Src/utils/crypto/crc_hash.cpp ****         int dividend = 0;
+  39              		.loc 1 7 9 view .LVU3
+  40              	.LVL1:
+  41              		.loc 1 7 13 is_stmt 0 view .LVU4
+  42 0002 0021     		movs	r1, #0
+  43              	.LVL2:
+  44              		.loc 1 7 13 view .LVU5
+  45 0004 0DE0     		b	.L7
+  46              	.LVL3:
+  47              	.L4:
+  48              	.LBB3:
+  49              	.LBB4:
+  50              	.LBB5:
+   8:Core/Src/utils/crypto/crc_hash.cpp **** 
+ARM GAS  /tmp/cc4cHVqs.s 			page 2
+
+
+   9:Core/Src/utils/crypto/crc_hash.cpp ****         for(; dividend < 256; ++dividend) {
+  10:Core/Src/utils/crypto/crc_hash.cpp ****                 remainder = dividend << (WIDTH - 8);
+  11:Core/Src/utils/crypto/crc_hash.cpp **** 
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                 for(uint8_t b = 8; b > 0; --b) {
+  13:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+  14:Core/Src/utils/crypto/crc_hash.cpp ****                                 remainder = (remainder << 1) ^ poly;
+  15:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  16:Core/Src/utils/crypto/crc_hash.cpp ****                         else {
+  17:Core/Src/utils/crypto/crc_hash.cpp ****                                 remainder = (remainder << 1);
+  51              		.loc 1 17 33 is_stmt 1 view .LVU6
+  52              		.loc 1 17 43 is_stmt 0 view .LVU7
+  53 0006 5200     		lsls	r2, r2, #1
+  54              	.LVL4:
+  55              		.loc 1 17 43 view .LVU8
+  56 0008 D2B2     		uxtb	r2, r2
+  57              	.LVL5:
+  58              	.L5:
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+  59              		.loc 1 12 17 is_stmt 1 discriminator 2 view .LVU9
+  60 000a 013B     		subs	r3, r3, #1
+  61              	.LVL6:
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+  62              		.loc 1 12 17 is_stmt 0 discriminator 2 view .LVU10
+  63 000c DBB2     		uxtb	r3, r3
+  64              	.LVL7:
+  65              	.L6:
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+  66              		.loc 1 12 38 is_stmt 1 discriminator 1 view .LVU11
+  67 000e 33B1     		cbz	r3, .L3
+  13:Core/Src/utils/crypto/crc_hash.cpp ****                                 remainder = (remainder << 1) ^ poly;
+  68              		.loc 1 13 25 view .LVU12
+  69 0010 12F0800F 		tst	r2, #128
+  70 0014 F7D0     		beq	.L4
+  14:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  71              		.loc 1 14 33 view .LVU13
+  14:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  72              		.loc 1 14 62 is_stmt 0 view .LVU14
+  73 0016 8CEA4202 		eor	r2, ip, r2, lsl #1
+  74              	.LVL8:
+  14:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  75              		.loc 1 14 43 view .LVU15
+  76 001a D2B2     		uxtb	r2, r2
+  77              	.LVL9:
+  14:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  78              		.loc 1 14 43 view .LVU16
+  79 001c F5E7     		b	.L5
+  80              	.L3:
+  14:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  81              		.loc 1 14 43 view .LVU17
+  82              	.LBE5:
+  18:Core/Src/utils/crypto/crc_hash.cpp ****                         }
+  19:Core/Src/utils/crypto/crc_hash.cpp ****                 }
+  20:Core/Src/utils/crypto/crc_hash.cpp ****                 table_[dividend] = remainder;
+  83              		.loc 1 20 17 is_stmt 1 view .LVU18
+  84              		.loc 1 20 34 is_stmt 0 view .LVU19
+  85 001e 4254     		strb	r2, [r0, r1]
+  86              	.LBE4:
+ARM GAS  /tmp/cc4cHVqs.s 			page 3
+
+
+   9:Core/Src/utils/crypto/crc_hash.cpp ****                 remainder = dividend << (WIDTH - 8);
+  87              		.loc 1 9 9 is_stmt 1 view .LVU20
+  88 0020 0131     		adds	r1, r1, #1
+  89              	.LVL10:
+  90              	.L7:
+   9:Core/Src/utils/crypto/crc_hash.cpp ****                 remainder = dividend << (WIDTH - 8);
+  91              		.loc 1 9 9 is_stmt 0 view .LVU21
+  92              	.LBE3:
+   9:Core/Src/utils/crypto/crc_hash.cpp ****                 remainder = dividend << (WIDTH - 8);
+  93              		.loc 1 9 9 is_stmt 1 discriminator 1 view .LVU22
+  94              	.LBB8:
+   9:Core/Src/utils/crypto/crc_hash.cpp ****                 remainder = dividend << (WIDTH - 8);
+  95              		.loc 1 9 24 discriminator 1 view .LVU23
+  96 0022 FF29     		cmp	r1, #255
+  97 0024 02DC     		bgt	.L2
+  98              	.LBB7:
+  10:Core/Src/utils/crypto/crc_hash.cpp **** 
+  99              		.loc 1 10 17 view .LVU24
+  10:Core/Src/utils/crypto/crc_hash.cpp **** 
+ 100              		.loc 1 10 27 is_stmt 0 view .LVU25
+ 101 0026 CAB2     		uxtb	r2, r1
+ 102              	.LVL11:
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+ 103              		.loc 1 12 17 is_stmt 1 view .LVU26
+ 104              	.LBB6:
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+ 105              		.loc 1 12 29 is_stmt 0 view .LVU27
+ 106 0028 0823     		movs	r3, #8
+ 107 002a F0E7     		b	.L6
+ 108              	.LVL12:
+ 109              	.L2:
+  12:Core/Src/utils/crypto/crc_hash.cpp ****                         if(remainder & TOP_BIT) {
+ 110              		.loc 1 12 29 view .LVU28
+ 111              	.LBE6:
+ 112              	.LBE7:
+ 113              	.LBE8:
+ 114              	.LBE2:
+  21:Core/Src/utils/crypto/crc_hash.cpp ****         }
+  22:Core/Src/utils/crypto/crc_hash.cpp **** }
+ 115              		.loc 1 22 1 view .LVU29
+ 116 002c 7047     		bx	lr
+ 117              		.cfi_endproc
+ 118              	.LFE134:
+ 120              		.global	_ZN8CRC_HashC1Eh
+ 121              		.thumb_set _ZN8CRC_HashC1Eh,_ZN8CRC_HashC2Eh
+ 122              		.section	.text._ZN8CRC_Hash8get_HashEPht,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	_ZN8CRC_Hash8get_HashEPht
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.fpu fpv4-sp-d16
+ 130              	_ZN8CRC_Hash8get_HashEPht:
+ 131              	.LVL13:
+ 132              	.LFB136:
+  23:Core/Src/utils/crypto/crc_hash.cpp **** 
+  24:Core/Src/utils/crypto/crc_hash.cpp **** uint8_t CRC_Hash::get_Hash(uint8_t *buf, uint16_t len)
+ARM GAS  /tmp/cc4cHVqs.s 			page 4
+
+
+  25:Core/Src/utils/crypto/crc_hash.cpp **** {
+ 133              		.loc 1 25 1 is_stmt 1 view -0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		.loc 1 25 1 is_stmt 0 view .LVU31
+ 138 0000 00B5     		push	{lr}
+ 139              	.LCFI0:
+ 140              		.cfi_def_cfa_offset 4
+ 141              		.cfi_offset 14, -4
+ 142 0002 8646     		mov	lr, r0
+  26:Core/Src/utils/crypto/crc_hash.cpp ****         uint8_t data;
+ 143              		.loc 1 26 9 is_stmt 1 view .LVU32
+  27:Core/Src/utils/crypto/crc_hash.cpp ****         uint8_t remainder = 0;
+ 144              		.loc 1 27 9 view .LVU33
+ 145              	.LVL14:
+  28:Core/Src/utils/crypto/crc_hash.cpp **** 
+  29:Core/Src/utils/crypto/crc_hash.cpp ****         for(uint16_t index = 0; index < len; ++index) {
+ 146              		.loc 1 29 9 view .LVU34
+ 147              	.LBB9:
+ 148              		.loc 1 29 22 is_stmt 0 view .LVU35
+ 149 0004 0023     		movs	r3, #0
+ 150              	.LBE9:
+  27:Core/Src/utils/crypto/crc_hash.cpp ****         uint8_t remainder = 0;
+ 151              		.loc 1 27 17 view .LVU36
+ 152 0006 1846     		mov	r0, r3
+ 153              	.LVL15:
+  27:Core/Src/utils/crypto/crc_hash.cpp ****         uint8_t remainder = 0;
+ 154              		.loc 1 27 17 view .LVU37
+ 155 0008 08E0     		b	.L10
+ 156              	.LVL16:
+ 157              	.L12:
+ 158              	.LBB10:
+  30:Core/Src/utils/crypto/crc_hash.cpp ****                 data = buf[index] ^ (remainder >> (WIDTH - 8));
+ 159              		.loc 1 30 17 is_stmt 1 discriminator 2 view .LVU38
+ 160              		.loc 1 30 33 is_stmt 0 discriminator 2 view .LVU39
+ 161 000a 11F803C0 		ldrb	ip, [r1, r3]	@ zero_extendqisi2
+ 162              		.loc 1 30 22 discriminator 2 view .LVU40
+ 163 000e 8CEA0000 		eor	r0, ip, r0
+ 164              	.LVL17:
+  31:Core/Src/utils/crypto/crc_hash.cpp ****                 remainder = table_[data] ^ (remainder << 8);
+ 165              		.loc 1 31 17 is_stmt 1 discriminator 2 view .LVU41
+ 166              		.loc 1 31 40 is_stmt 0 discriminator 2 view .LVU42
+ 167 0012 1EF90000 		ldrsb	r0, [lr, r0]
+ 168              	.LVL18:
+ 169              		.loc 1 31 27 discriminator 2 view .LVU43
+ 170 0016 C0B2     		uxtb	r0, r0
+ 171              	.LVL19:
+  29:Core/Src/utils/crypto/crc_hash.cpp ****                 data = buf[index] ^ (remainder >> (WIDTH - 8));
+ 172              		.loc 1 29 9 is_stmt 1 discriminator 2 view .LVU44
+ 173 0018 0133     		adds	r3, r3, #1
+ 174              	.LVL20:
+  29:Core/Src/utils/crypto/crc_hash.cpp ****                 data = buf[index] ^ (remainder >> (WIDTH - 8));
+ 175              		.loc 1 29 9 is_stmt 0 discriminator 2 view .LVU45
+ 176 001a 9BB2     		uxth	r3, r3
+ 177              	.LVL21:
+ 178              	.L10:
+ARM GAS  /tmp/cc4cHVqs.s 			page 5
+
+
+  29:Core/Src/utils/crypto/crc_hash.cpp ****                 data = buf[index] ^ (remainder >> (WIDTH - 8));
+ 179              		.loc 1 29 39 is_stmt 1 discriminator 3 view .LVU46
+ 180 001c 9342     		cmp	r3, r2
+ 181 001e F4D3     		bcc	.L12
+ 182              	.LBE10:
+  32:Core/Src/utils/crypto/crc_hash.cpp ****         }
+  33:Core/Src/utils/crypto/crc_hash.cpp **** 
+  34:Core/Src/utils/crypto/crc_hash.cpp ****         return (remainder);
+ 183              		.loc 1 34 9 view .LVU47
+  35:Core/Src/utils/crypto/crc_hash.cpp **** }
+ 184              		.loc 1 35 1 is_stmt 0 view .LVU48
+ 185 0020 5DF804FB 		ldr	pc, [sp], #4
+ 186              		.cfi_endproc
+ 187              	.LFE136:
+ 189              		.text
+ 190              	.Letext0:
+ 191              		.file 2 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 192              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 193              		.file 4 "Core/Inc/utils/crypto/crc_hash.h"
+ARM GAS  /tmp/cc4cHVqs.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 crc_hash.cpp
+     /tmp/cc4cHVqs.s:18     .text._ZN8CRC_HashC2Eh:0000000000000000 $t
+     /tmp/cc4cHVqs.s:26     .text._ZN8CRC_HashC2Eh:0000000000000000 _ZN8CRC_HashC2Eh
+     /tmp/cc4cHVqs.s:26     .text._ZN8CRC_HashC2Eh:0000000000000000 _ZN8CRC_HashC1Eh
+     /tmp/cc4cHVqs.s:123    .text._ZN8CRC_Hash8get_HashEPht:0000000000000000 $t
+     /tmp/cc4cHVqs.s:130    .text._ZN8CRC_Hash8get_HashEPht:0000000000000000 _ZN8CRC_Hash8get_HashEPht
+
+NO UNDEFINED SYMBOLS

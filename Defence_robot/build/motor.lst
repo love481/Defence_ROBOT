@@ -1,0 +1,1011 @@
+ARM GAS  /tmp/cc0MBHPH.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"motor.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text._ZL11time_periodt,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	_ZL11time_periodt:
+  26              	.LVL0:
+  27              	.LFB381:
+  28              		.file 1 "Core/Src/actuator/motor.cpp"
+   1:Core/Src/actuator/motor.cpp **** #include "motor.h"
+   2:Core/Src/actuator/motor.cpp **** #include"cmsis_os.h"
+   3:Core/Src/actuator/motor.cpp **** float tar;
+   4:Core/Src/actuator/motor.cpp **** float inp;
+   5:Core/Src/actuator/motor.cpp **** static uint16_t time_period(uint16_t PWM_frequency)
+   6:Core/Src/actuator/motor.cpp **** {
+  29              		.loc 1 6 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   7:Core/Src/actuator/motor.cpp ****         if (PWM_frequency < 2000)
+  34              		.loc 1 7 9 view .LVU1
+   8:Core/Src/actuator/motor.cpp ****         { //MIN PWM_FREQUENCY = 1281.738 for time period to be 16 bit
+   9:Core/Src/actuator/motor.cpp ****                 //_Error_Handler(__FILE__, __LINE__);
+  10:Core/Src/actuator/motor.cpp ****         }
+  11:Core/Src/actuator/motor.cpp ****         return ((168000000 / 2) / PWM_frequency) - 1; // In Center aligned mode period doubles henc
+  35              		.loc 1 11 9 view .LVU2
+  36              		.loc 1 11 33 is_stmt 0 view .LVU3
+  37 0000 034B     		ldr	r3, .L2
+  38 0002 93FBF0F0 		sdiv	r0, r3, r0
+  39              	.LVL1:
+  40              		.loc 1 11 50 view .LVU4
+  41 0006 80B2     		uxth	r0, r0
+  42              		.loc 1 11 52 view .LVU5
+  43 0008 0138     		subs	r0, r0, #1
+  12:Core/Src/actuator/motor.cpp **** }
+  44              		.loc 1 12 1 view .LVU6
+  45 000a 80B2     		uxth	r0, r0
+  46 000c 7047     		bx	lr
+ARM GAS  /tmp/cc0MBHPH.s 			page 2
+
+
+  47              	.L3:
+  48 000e 00BF     		.align	2
+  49              	.L2:
+  50 0010 00BD0105 		.word	84000000
+  51              		.cfi_endproc
+  52              	.LFE381:
+  54              		.section	.text._ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt,"ax",%progbits
+  55              		.align	1
+  56              		.syntax unified
+  57              		.thumb
+  58              		.thumb_func
+  59              		.fpu fpv4-sp-d16
+  61              	_ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt:
+  62              	.LVL2:
+  63              	.LFB382:
+  13:Core/Src/actuator/motor.cpp **** 
+  14:Core/Src/actuator/motor.cpp **** /* SET DUTYCYCLE primary function */
+  15:Core/Src/actuator/motor.cpp **** static void set_DutyCycle_Primary(TIM_HandleTypeDef *htim, uint32_t Channel, uint16_t dutyCycle)
+  16:Core/Src/actuator/motor.cpp **** {
+  64              		.loc 1 16 1 is_stmt 1 view -0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68              		.loc 1 16 1 is_stmt 0 view .LVU8
+  69 0000 70B5     		push	{r4, r5, r6, lr}
+  70              	.LCFI0:
+  71              		.cfi_def_cfa_offset 16
+  72              		.cfi_offset 4, -16
+  73              		.cfi_offset 5, -12
+  74              		.cfi_offset 6, -8
+  75              		.cfi_offset 14, -4
+  76 0002 0546     		mov	r5, r0
+  77 0004 0C46     		mov	r4, r1
+  78 0006 1646     		mov	r6, r2
+  17:Core/Src/actuator/motor.cpp ****         uint16_t mapped_value;
+  79              		.loc 1 17 9 is_stmt 1 view .LVU9
+  18:Core/Src/actuator/motor.cpp ****         mapped_value = (time_period(8000) *dutyCycle) / 65535;
+  80              		.loc 1 18 9 view .LVU10
+  81              		.loc 1 18 36 is_stmt 0 view .LVU11
+  82 0008 4FF4FA50 		mov	r0, #8000
+  83              	.LVL3:
+  84              		.loc 1 18 36 view .LVU12
+  85 000c FFF7FEFF 		bl	_ZL11time_periodt
+  86              	.LVL4:
+  87              		.loc 1 18 43 view .LVU13
+  88 0010 06FB00F2 		mul	r2, r6, r0
+  89              		.loc 1 18 55 view .LVU14
+  90 0014 0D4B     		ldr	r3, .L12
+  91 0016 83FB0213 		smull	r1, r3, r3, r2
+  92 001a 1344     		add	r3, r3, r2
+  93 001c D217     		asrs	r2, r2, #31
+  94 001e C2EBE332 		rsb	r2, r2, r3, asr #15
+  95              	.LVL5:
+  19:Core/Src/actuator/motor.cpp ****         //htim->Instance->CCR3=299; 
+  20:Core/Src/actuator/motor.cpp ****          __HAL_TIM_SET_COMPARE(htim, Channel, mapped_value);
+  96              		.loc 1 20 10 is_stmt 1 view .LVU15
+  97 0022 1CB9     		cbnz	r4, .L5
+ARM GAS  /tmp/cc0MBHPH.s 			page 3
+
+
+  98              		.loc 1 20 10 is_stmt 0 discriminator 1 view .LVU16
+  99 0024 2B68     		ldr	r3, [r5]
+ 100 0026 92B2     		uxth	r2, r2
+ 101              		.loc 1 20 10 discriminator 1 view .LVU17
+ 102 0028 5A63     		str	r2, [r3, #52]
+ 103              	.LVL6:
+ 104              	.L4:
+  21:Core/Src/actuator/motor.cpp **** }
+ 105              		.loc 1 21 1 view .LVU18
+ 106 002a 70BD     		pop	{r4, r5, r6, pc}
+ 107              	.LVL7:
+ 108              	.L5:
+  20:Core/Src/actuator/motor.cpp **** }
+ 109              		.loc 1 20 10 discriminator 2 view .LVU19
+ 110 002c 042C     		cmp	r4, #4
+ 111 002e 05D0     		beq	.L10
+  20:Core/Src/actuator/motor.cpp **** }
+ 112              		.loc 1 20 10 discriminator 4 view .LVU20
+ 113 0030 082C     		cmp	r4, #8
+ 114 0032 07D0     		beq	.L11
+  20:Core/Src/actuator/motor.cpp **** }
+ 115              		.loc 1 20 10 discriminator 6 view .LVU21
+ 116 0034 2B68     		ldr	r3, [r5]
+ 117 0036 92B2     		uxth	r2, r2
+  20:Core/Src/actuator/motor.cpp **** }
+ 118              		.loc 1 20 10 discriminator 6 view .LVU22
+ 119 0038 1A64     		str	r2, [r3, #64]
+ 120              		.loc 1 21 1 discriminator 6 view .LVU23
+ 121 003a F6E7     		b	.L4
+ 122              	.L10:
+  20:Core/Src/actuator/motor.cpp **** }
+ 123              		.loc 1 20 10 discriminator 3 view .LVU24
+ 124 003c 2B68     		ldr	r3, [r5]
+ 125 003e 92B2     		uxth	r2, r2
+  20:Core/Src/actuator/motor.cpp **** }
+ 126              		.loc 1 20 10 discriminator 3 view .LVU25
+ 127 0040 9A63     		str	r2, [r3, #56]
+ 128 0042 F2E7     		b	.L4
+ 129              	.L11:
+  20:Core/Src/actuator/motor.cpp **** }
+ 130              		.loc 1 20 10 discriminator 5 view .LVU26
+ 131 0044 2B68     		ldr	r3, [r5]
+ 132 0046 92B2     		uxth	r2, r2
+  20:Core/Src/actuator/motor.cpp **** }
+ 133              		.loc 1 20 10 discriminator 5 view .LVU27
+ 134 0048 DA63     		str	r2, [r3, #60]
+ 135 004a EEE7     		b	.L4
+ 136              	.L13:
+ 137              		.align	2
+ 138              	.L12:
+ 139 004c 01800080 		.word	-2147450879
+ 140              		.cfi_endproc
+ 141              	.LFE382:
+ 143              		.section	.text._ZL13set_DutyCycleP12Motor_configt,"ax",%progbits
+ 144              		.align	1
+ 145              		.syntax unified
+ 146              		.thumb
+ARM GAS  /tmp/cc0MBHPH.s 			page 4
+
+
+ 147              		.thumb_func
+ 148              		.fpu fpv4-sp-d16
+ 150              	_ZL13set_DutyCycleP12Motor_configt:
+ 151              	.LVL8:
+ 152              	.LFB383:
+  22:Core/Src/actuator/motor.cpp **** 
+  23:Core/Src/actuator/motor.cpp **** static void set_DutyCycle(Motor_config *m, uint16_t dutyCycle)
+  24:Core/Src/actuator/motor.cpp **** {
+ 153              		.loc 1 24 1 is_stmt 1 view -0
+ 154              		.cfi_startproc
+ 155              		@ args = 0, pretend = 0, frame = 0
+ 156              		@ frame_needed = 0, uses_anonymous_args = 0
+ 157              		.loc 1 24 1 is_stmt 0 view .LVU29
+ 158 0000 08B5     		push	{r3, lr}
+ 159              	.LCFI1:
+ 160              		.cfi_def_cfa_offset 8
+ 161              		.cfi_offset 3, -8
+ 162              		.cfi_offset 14, -4
+ 163 0002 0A46     		mov	r2, r1
+  25:Core/Src/actuator/motor.cpp ****         set_DutyCycle_Primary(m->htim, m->channel, dutyCycle);
+ 164              		.loc 1 25 9 is_stmt 1 view .LVU30
+ 165              		.loc 1 25 30 is_stmt 0 view .LVU31
+ 166 0004 4169     		ldr	r1, [r0, #20]
+ 167              	.LVL9:
+ 168              		.loc 1 25 30 view .LVU32
+ 169 0006 0069     		ldr	r0, [r0, #16]
+ 170              	.LVL10:
+ 171              		.loc 1 25 30 view .LVU33
+ 172 0008 FFF7FEFF 		bl	_ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt
+ 173              	.LVL11:
+  26:Core/Src/actuator/motor.cpp **** }
+ 174              		.loc 1 26 1 view .LVU34
+ 175 000c 08BD     		pop	{r3, pc}
+ 176              		.cfi_endproc
+ 177              	.LFE383:
+ 179              		.global	__aeabi_f2d
+ 180              		.global	__aeabi_ddiv
+ 181              		.global	__aeabi_dmul
+ 182              		.global	__aeabi_d2uiz
+ 183              		.section	.text._ZL14set_motorOmegaP12Motor_configf,"ax",%progbits
+ 184              		.align	1
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 188              		.fpu fpv4-sp-d16
+ 190              	_ZL14set_motorOmegaP12Motor_configf:
+ 191              	.LVL12:
+ 192              	.LFB385:
+  27:Core/Src/actuator/motor.cpp **** static void set_motorDirection(Motor_config *m, Direction d)
+  28:Core/Src/actuator/motor.cpp **** {     
+  29:Core/Src/actuator/motor.cpp ****         if (d == Direction::CLOCKWISE)
+  30:Core/Src/actuator/motor.cpp ****         {
+  31:Core/Src/actuator/motor.cpp ****                 HAL_GPIO_WritePin(m->in_port, m->in_pin, GPIO_PIN_SET);
+  32:Core/Src/actuator/motor.cpp ****         }
+  33:Core/Src/actuator/motor.cpp ****         else if (d == Direction::ANTICLOCKWISE)
+  34:Core/Src/actuator/motor.cpp ****         {
+  35:Core/Src/actuator/motor.cpp ****                 HAL_GPIO_WritePin(m->in_port, m->in_pin, GPIO_PIN_RESET);
+ARM GAS  /tmp/cc0MBHPH.s 			page 5
+
+
+  36:Core/Src/actuator/motor.cpp ****         }
+  37:Core/Src/actuator/motor.cpp **** }
+  38:Core/Src/actuator/motor.cpp **** static void set_motorOmega(Motor_config *m, float omega)
+  39:Core/Src/actuator/motor.cpp **** {
+ 193              		.loc 1 39 1 is_stmt 1 view -0
+ 194              		.cfi_startproc
+ 195              		@ args = 0, pretend = 0, frame = 0
+ 196              		@ frame_needed = 0, uses_anonymous_args = 0
+ 197              		.loc 1 39 1 is_stmt 0 view .LVU36
+ 198 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 199              	.LCFI2:
+ 200              		.cfi_def_cfa_offset 24
+ 201              		.cfi_offset 3, -24
+ 202              		.cfi_offset 4, -20
+ 203              		.cfi_offset 5, -16
+ 204              		.cfi_offset 6, -12
+ 205              		.cfi_offset 7, -8
+ 206              		.cfi_offset 14, -4
+ 207 0002 0446     		mov	r4, r0
+ 208 0004 10EE105A 		vmov	r5, s0
+  40:Core/Src/actuator/motor.cpp ****         uint16_t new_omega = (65535.0 / m->max_omega) * (omega);
+ 209              		.loc 1 40 9 is_stmt 1 view .LVU37
+ 210              		.loc 1 40 44 is_stmt 0 view .LVU38
+ 211 0008 0068     		ldr	r0, [r0]	@ float
+ 212              	.LVL13:
+ 213              		.loc 1 40 44 view .LVU39
+ 214 000a FFF7FEFF 		bl	__aeabi_f2d
+ 215              	.LVL14:
+ 216              		.loc 1 40 44 view .LVU40
+ 217 000e 0246     		mov	r2, r0
+ 218 0010 0B46     		mov	r3, r1
+ 219              		.loc 1 40 39 view .LVU41
+ 220 0012 0BA1     		adr	r1, .L18
+ 221 0014 D1E90001 		ldrd	r0, [r1]
+ 222 0018 FFF7FEFF 		bl	__aeabi_ddiv
+ 223              	.LVL15:
+ 224 001c 0646     		mov	r6, r0
+ 225 001e 0F46     		mov	r7, r1
+ 226              		.loc 1 40 58 view .LVU42
+ 227 0020 2846     		mov	r0, r5	@ float
+ 228 0022 FFF7FEFF 		bl	__aeabi_f2d
+ 229              	.LVL16:
+ 230 0026 0246     		mov	r2, r0
+ 231 0028 0B46     		mov	r3, r1
+ 232              		.loc 1 40 55 view .LVU43
+ 233 002a 3046     		mov	r0, r6
+ 234 002c 3946     		mov	r1, r7
+ 235 002e FFF7FEFF 		bl	__aeabi_dmul
+ 236              	.LVL17:
+ 237              		.loc 1 40 18 view .LVU44
+ 238 0032 FFF7FEFF 		bl	__aeabi_d2uiz
+ 239              	.LVL18:
+  41:Core/Src/actuator/motor.cpp ****         set_DutyCycle(m, new_omega);
+ 240              		.loc 1 41 9 is_stmt 1 view .LVU45
+ 241              		.loc 1 41 22 is_stmt 0 view .LVU46
+ 242 0036 81B2     		uxth	r1, r0
+ 243 0038 2046     		mov	r0, r4
+ARM GAS  /tmp/cc0MBHPH.s 			page 6
+
+
+ 244              	.LVL19:
+ 245              		.loc 1 41 22 view .LVU47
+ 246 003a FFF7FEFF 		bl	_ZL13set_DutyCycleP12Motor_configt
+ 247              	.LVL20:
+  42:Core/Src/actuator/motor.cpp **** }
+ 248              		.loc 1 42 1 view .LVU48
+ 249 003e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 250              	.LVL21:
+ 251              	.L19:
+ 252              		.loc 1 42 1 view .LVU49
+ 253              		.align	3
+ 254              	.L18:
+ 255 0040 00000000 		.word	0
+ 256 0044 E0FFEF40 		.word	1089470432
+ 257              		.cfi_endproc
+ 258              	.LFE385:
+ 260              		.section	.text._ZL18set_motorDirectionP12Motor_config9Direction,"ax",%progbits
+ 261              		.align	1
+ 262              		.syntax unified
+ 263              		.thumb
+ 264              		.thumb_func
+ 265              		.fpu fpv4-sp-d16
+ 267              	_ZL18set_motorDirectionP12Motor_config9Direction:
+ 268              	.LVL22:
+ 269              	.LFB384:
+  28:Core/Src/actuator/motor.cpp ****         if (d == Direction::CLOCKWISE)
+ 270              		.loc 1 28 1 is_stmt 1 view -0
+ 271              		.cfi_startproc
+ 272              		@ args = 0, pretend = 0, frame = 0
+ 273              		@ frame_needed = 0, uses_anonymous_args = 0
+  28:Core/Src/actuator/motor.cpp ****         if (d == Direction::CLOCKWISE)
+ 274              		.loc 1 28 1 is_stmt 0 view .LVU51
+ 275 0000 08B5     		push	{r3, lr}
+ 276              	.LCFI3:
+ 277              		.cfi_def_cfa_offset 8
+ 278              		.cfi_offset 3, -8
+ 279              		.cfi_offset 14, -4
+  29:Core/Src/actuator/motor.cpp ****         {
+ 280              		.loc 1 29 9 is_stmt 1 view .LVU52
+ 281 0002 11B1     		cbz	r1, .L24
+  33:Core/Src/actuator/motor.cpp ****         {
+ 282              		.loc 1 33 14 view .LVU53
+ 283 0004 0129     		cmp	r1, #1
+ 284 0006 06D0     		beq	.L25
+ 285              	.LVL23:
+ 286              	.L20:
+  37:Core/Src/actuator/motor.cpp **** static void set_motorOmega(Motor_config *m, float omega)
+ 287              		.loc 1 37 1 is_stmt 0 view .LVU54
+ 288 0008 08BD     		pop	{r3, pc}
+ 289              	.LVL24:
+ 290              	.L24:
+  31:Core/Src/actuator/motor.cpp ****         }
+ 291              		.loc 1 31 17 is_stmt 1 view .LVU55
+  31:Core/Src/actuator/motor.cpp ****         }
+ 292              		.loc 1 31 34 is_stmt 0 view .LVU56
+ 293 000a 0122     		movs	r2, #1
+ 294 000c 8189     		ldrh	r1, [r0, #12]
+ARM GAS  /tmp/cc0MBHPH.s 			page 7
+
+
+ 295              	.LVL25:
+  31:Core/Src/actuator/motor.cpp ****         }
+ 296              		.loc 1 31 34 view .LVU57
+ 297 000e 8068     		ldr	r0, [r0, #8]
+ 298              	.LVL26:
+  31:Core/Src/actuator/motor.cpp ****         }
+ 299              		.loc 1 31 34 view .LVU58
+ 300 0010 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 301              	.LVL27:
+ 302 0014 F8E7     		b	.L20
+ 303              	.LVL28:
+ 304              	.L25:
+  35:Core/Src/actuator/motor.cpp ****         }
+ 305              		.loc 1 35 17 is_stmt 1 view .LVU59
+  35:Core/Src/actuator/motor.cpp ****         }
+ 306              		.loc 1 35 34 is_stmt 0 view .LVU60
+ 307 0016 0022     		movs	r2, #0
+ 308 0018 8189     		ldrh	r1, [r0, #12]
+ 309              	.LVL29:
+  35:Core/Src/actuator/motor.cpp ****         }
+ 310              		.loc 1 35 34 view .LVU61
+ 311 001a 8068     		ldr	r0, [r0, #8]
+ 312              	.LVL30:
+  35:Core/Src/actuator/motor.cpp ****         }
+ 313              		.loc 1 35 34 view .LVU62
+ 314 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 315              	.LVL31:
+  37:Core/Src/actuator/motor.cpp **** static void set_motorOmega(Motor_config *m, float omega)
+ 316              		.loc 1 37 1 view .LVU63
+ 317 0020 F2E7     		b	.L20
+ 318              		.cfi_endproc
+ 319              	.LFE384:
+ 321              		.section	.text._ZN5motor12computeOmegaEff13pid_Algorithm,"ax",%progbits
+ 322              		.align	1
+ 323              		.global	_ZN5motor12computeOmegaEff13pid_Algorithm
+ 324              		.syntax unified
+ 325              		.thumb
+ 326              		.thumb_func
+ 327              		.fpu fpv4-sp-d16
+ 329              	_ZN5motor12computeOmegaEff13pid_Algorithm:
+ 330              	.LVL32:
+ 331              	.LFB386:
+  43:Core/Src/actuator/motor.cpp **** float motor::computeOmega(float setpoint, float input,pid_Algorithm pid)
+  44:Core/Src/actuator/motor.cpp **** {       tar=setpoint;
+ 332              		.loc 1 44 1 is_stmt 1 view -0
+ 333              		.cfi_startproc
+ 334              		@ args = 0, pretend = 0, frame = 0
+ 335              		@ frame_needed = 0, uses_anonymous_args = 0
+ 336              		.loc 1 44 1 is_stmt 0 view .LVU65
+ 337 0000 08B5     		push	{r3, lr}
+ 338              	.LCFI4:
+ 339              		.cfi_def_cfa_offset 8
+ 340              		.cfi_offset 3, -8
+ 341              		.cfi_offset 14, -4
+ 342              		.loc 1 44 9 is_stmt 1 view .LVU66
+ 343              		.loc 1 44 12 is_stmt 0 view .LVU67
+ 344 0002 0C4B     		ldr	r3, .L35
+ARM GAS  /tmp/cc0MBHPH.s 			page 8
+
+
+ 345 0004 83ED000A 		vstr.32	s0, [r3]
+  45:Core/Src/actuator/motor.cpp ****         inp=input;
+ 346              		.loc 1 45 9 is_stmt 1 view .LVU68
+ 347              		.loc 1 45 12 is_stmt 0 view .LVU69
+ 348 0008 0B4B     		ldr	r3, .L35+4
+ 349 000a C3ED000A 		vstr.32	s1, [r3]
+  46:Core/Src/actuator/motor.cpp ****         //printf("tar:%f\n",setpoint);
+  47:Core/Src/actuator/motor.cpp ****         //printf("%f\n",input);
+  48:Core/Src/actuator/motor.cpp ****         if (pid==pid_Algorithm::CONTINOUS)
+ 350              		.loc 1 48 9 is_stmt 1 view .LVU70
+ 351 000e 21B1     		cbz	r1, .L32
+  49:Core/Src/actuator/motor.cpp ****            return c_pid.Compute(setpoint, input);  
+  50:Core/Src/actuator/motor.cpp ****         else if(pid==pid_Algorithm::DISCRETE)
+ 352              		.loc 1 50 14 view .LVU71
+ 353 0010 0129     		cmp	r1, #1
+ 354 0012 07D0     		beq	.L33
+  51:Core/Src/actuator/motor.cpp ****            return d_pid.Compute(setpoint, input); 
+  52:Core/Src/actuator/motor.cpp ****         else if(pid==pid_Algorithm::FUZZY)
+ 355              		.loc 1 52 14 view .LVU72
+ 356 0014 0229     		cmp	r1, #2
+ 357 0016 09D0     		beq	.L34
+ 358              	.LVL33:
+ 359              	.L26:
+  53:Core/Src/actuator/motor.cpp ****            return f_pid.compute_fuzzy_selfTuning_PID(setpoint,input);
+  54:Core/Src/actuator/motor.cpp ****         else return setpoint;
+  55:Core/Src/actuator/motor.cpp **** }
+ 360              		.loc 1 55 1 is_stmt 0 view .LVU73
+ 361 0018 08BD     		pop	{r3, pc}
+ 362              	.LVL34:
+ 363              	.L32:
+  49:Core/Src/actuator/motor.cpp ****         else if(pid==pid_Algorithm::DISCRETE)
+ 364              		.loc 1 49 12 is_stmt 1 view .LVU74
+  49:Core/Src/actuator/motor.cpp ****         else if(pid==pid_Algorithm::DISCRETE)
+ 365              		.loc 1 49 32 is_stmt 0 view .LVU75
+ 366 001a 00F5B670 		add	r0, r0, #364
+ 367              	.LVL35:
+  49:Core/Src/actuator/motor.cpp ****         else if(pid==pid_Algorithm::DISCRETE)
+ 368              		.loc 1 49 32 view .LVU76
+ 369 001e FFF7FEFF 		bl	_ZN14continuous_PID7ComputeEff
+ 370              	.LVL36:
+  49:Core/Src/actuator/motor.cpp ****         else if(pid==pid_Algorithm::DISCRETE)
+ 371              		.loc 1 49 48 view .LVU77
+ 372 0022 F9E7     		b	.L26
+ 373              	.LVL37:
+ 374              	.L33:
+  51:Core/Src/actuator/motor.cpp ****            return d_pid.Compute(setpoint, input); 
+ 375              		.loc 1 51 12 is_stmt 1 view .LVU78
+  51:Core/Src/actuator/motor.cpp ****            return d_pid.Compute(setpoint, input); 
+ 376              		.loc 1 51 32 is_stmt 0 view .LVU79
+ 377 0024 0430     		adds	r0, r0, #4
+ 378              	.LVL38:
+  51:Core/Src/actuator/motor.cpp ****            return d_pid.Compute(setpoint, input); 
+ 379              		.loc 1 51 32 view .LVU80
+ 380 0026 FFF7FEFF 		bl	_ZN12discrete_PID7ComputeEff
+ 381              	.LVL39:
+  51:Core/Src/actuator/motor.cpp ****            return d_pid.Compute(setpoint, input); 
+ 382              		.loc 1 51 48 view .LVU81
+ARM GAS  /tmp/cc0MBHPH.s 			page 9
+
+
+ 383 002a F5E7     		b	.L26
+ 384              	.LVL40:
+ 385              	.L34:
+  53:Core/Src/actuator/motor.cpp ****            return f_pid.compute_fuzzy_selfTuning_PID(setpoint,input);
+ 386              		.loc 1 53 12 is_stmt 1 view .LVU82
+  53:Core/Src/actuator/motor.cpp ****            return f_pid.compute_fuzzy_selfTuning_PID(setpoint,input);
+ 387              		.loc 1 53 53 is_stmt 0 view .LVU83
+ 388 002c 2C30     		adds	r0, r0, #44
+ 389              	.LVL41:
+  53:Core/Src/actuator/motor.cpp ****            return f_pid.compute_fuzzy_selfTuning_PID(setpoint,input);
+ 390              		.loc 1 53 53 view .LVU84
+ 391 002e FFF7FEFF 		bl	_ZN9fuzzy_pid28compute_fuzzy_selfTuning_PIDEff
+ 392              	.LVL42:
+  53:Core/Src/actuator/motor.cpp ****            return f_pid.compute_fuzzy_selfTuning_PID(setpoint,input);
+ 393              		.loc 1 53 68 view .LVU85
+ 394 0032 F1E7     		b	.L26
+ 395              	.L36:
+ 396              		.align	2
+ 397              	.L35:
+ 398 0034 00000000 		.word	.LANCHOR0
+ 399 0038 00000000 		.word	.LANCHOR1
+ 400              		.cfi_endproc
+ 401              	.LFE386:
+ 403              		.section	.text._ZN5motor9set_omegaEf,"ax",%progbits
+ 404              		.align	1
+ 405              		.global	_ZN5motor9set_omegaEf
+ 406              		.syntax unified
+ 407              		.thumb
+ 408              		.thumb_func
+ 409              		.fpu fpv4-sp-d16
+ 411              	_ZN5motor9set_omegaEf:
+ 412              	.LVL43:
+ 413              	.LFB387:
+  56:Core/Src/actuator/motor.cpp **** void motor::set_omega(float omega)
+  57:Core/Src/actuator/motor.cpp **** {
+ 414              		.loc 1 57 1 is_stmt 1 view -0
+ 415              		.cfi_startproc
+ 416              		@ args = 0, pretend = 0, frame = 0
+ 417              		@ frame_needed = 0, uses_anonymous_args = 0
+ 418              		.loc 1 57 1 is_stmt 0 view .LVU87
+ 419 0000 10B5     		push	{r4, lr}
+ 420              	.LCFI5:
+ 421              		.cfi_def_cfa_offset 8
+ 422              		.cfi_offset 4, -8
+ 423              		.cfi_offset 14, -4
+ 424 0002 2DED028B 		vpush.64	{d8}
+ 425              	.LCFI6:
+ 426              		.cfi_def_cfa_offset 16
+ 427              		.cfi_offset 80, -16
+ 428              		.cfi_offset 81, -12
+ 429 0006 0446     		mov	r4, r0
+  58:Core/Src/actuator/motor.cpp ****         if (omega > motor_->max_omega)
+ 430              		.loc 1 58 9 is_stmt 1 view .LVU88
+ 431              		.loc 1 58 21 is_stmt 0 view .LVU89
+ 432 0008 0068     		ldr	r0, [r0]
+ 433              	.LVL44:
+ 434              		.loc 1 58 29 view .LVU90
+ARM GAS  /tmp/cc0MBHPH.s 			page 10
+
+
+ 435 000a 90ED008A 		vldr.32	s16, [r0]
+ 436              		.loc 1 58 9 view .LVU91
+ 437 000e B4EEC08A 		vcmpe.f32	s16, s0
+ 438 0012 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 439 0016 08D4     		bmi	.L38
+  59:Core/Src/actuator/motor.cpp ****         {
+  60:Core/Src/actuator/motor.cpp ****                 omega = motor_->max_omega;
+  61:Core/Src/actuator/motor.cpp ****         }
+  62:Core/Src/actuator/motor.cpp ****         else if (omega < -motor_->max_omega)
+ 440              		.loc 1 62 14 is_stmt 1 view .LVU92
+ 441              		.loc 1 62 26 is_stmt 0 view .LVU93
+ 442 0018 B1EE488A 		vneg.f32	s16, s16
+ 443              		.loc 1 62 14 view .LVU94
+ 444 001c B4EEC08A 		vcmpe.f32	s16, s0
+ 445 0020 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 446 0024 01DC     		bgt	.L38
+ 447 0026 B0EE408A 		vmov.f32	s16, s0
+ 448              	.L38:
+ 449              	.LVL45:
+  63:Core/Src/actuator/motor.cpp ****         {
+  64:Core/Src/actuator/motor.cpp ****                 omega = -motor_->max_omega;
+  65:Core/Src/actuator/motor.cpp ****         }
+  66:Core/Src/actuator/motor.cpp ****         if (omega < -motor_->tolerance)
+ 450              		.loc 1 66 9 is_stmt 1 view .LVU95
+ 451              		.loc 1 66 30 is_stmt 0 view .LVU96
+ 452 002a D0ED017A 		vldr.32	s15, [r0, #4]
+ 453              		.loc 1 66 21 view .LVU97
+ 454 002e B1EE677A 		vneg.f32	s14, s15
+ 455              		.loc 1 66 9 view .LVU98
+ 456 0032 B4EEC87A 		vcmpe.f32	s14, s16
+ 457 0036 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 458 003a 0FDC     		bgt	.L49
+  67:Core/Src/actuator/motor.cpp ****         {
+  68:Core/Src/actuator/motor.cpp ****                 set_motorDirection(motor_, Direction::ANTICLOCKWISE);
+  69:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, fabs(omega));
+  70:Core/Src/actuator/motor.cpp ****         }
+  71:Core/Src/actuator/motor.cpp ****         else if (omega > motor_->tolerance)
+ 459              		.loc 1 71 14 is_stmt 1 view .LVU99
+ 460 003c F4EEC87A 		vcmpe.f32	s15, s16
+ 461 0040 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 462 0044 13D5     		bpl	.L47
+  72:Core/Src/actuator/motor.cpp ****         {
+  73:Core/Src/actuator/motor.cpp ****                 set_motorDirection(motor_, Direction::CLOCKWISE);
+ 463              		.loc 1 73 17 view .LVU100
+ 464              		.loc 1 73 35 is_stmt 0 view .LVU101
+ 465 0046 0021     		movs	r1, #0
+ 466 0048 FFF7FEFF 		bl	_ZL18set_motorDirectionP12Motor_config9Direction
+ 467              	.LVL46:
+  74:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, fabs(omega));
+ 468              		.loc 1 74 17 is_stmt 1 view .LVU102
+ 469              	.LBB6:
+ 470              	.LBI6:
+ 471              		.file 2 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/
+   1:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // -*- C++ -*- C forwarding header.
+   2:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+   3:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // Copyright (C) 1997-2020 Free Software Foundation, Inc.
+   4:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** //
+ARM GAS  /tmp/cc0MBHPH.s 			page 11
+
+
+   5:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // software; you can redistribute it and/or modify it under the
+   7:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // terms of the GNU General Public License as published by the
+   8:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // Free Software Foundation; either version 3, or (at your option)
+   9:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // any later version.
+  10:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  11:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // This library is distributed in the hope that it will be useful,
+  12:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // GNU General Public License for more details.
+  15:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  16:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // permissions described in the GCC Runtime Library Exception, version
+  18:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // 3.1, as published by the Free Software Foundation.
+  19:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  20:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // You should have received a copy of the GNU General Public License and
+  21:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // <http://www.gnu.org/licenses/>.
+  24:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  25:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** /** @file include/cmath
+  26:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *  This is a Standard C++ Library file.  You should @c \#include this file
+  27:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *  in your programs, rather than any of the @a *.h implementation files.
+  28:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *
+  29:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *  This is the C++ version of the Standard C Library header @c math.h,
+  30:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *  and its contents are (mostly) the same as that header, but are all
+  31:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *  contained in the namespace @c std (except for names which are defined
+  32:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  *  as macros in C).
+  33:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****  */
+  34:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  35:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** //
+  36:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // ISO C++ 14882: 26.5  C library
+  37:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** //
+  38:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  39:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #pragma GCC system_header
+  40:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  41:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #include <bits/c++config.h>
+  42:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #include <bits/cpp_type_traits.h>
+  43:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #include <ext/type_traits.h>
+  44:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #define _GLIBCXX_INCLUDE_NEXT_C_HEADERS
+  45:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #include_next <math.h>
+  46:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef _GLIBCXX_INCLUDE_NEXT_C_HEADERS
+  47:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #include <bits/std_abs.h>
+  48:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  49:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef _GLIBCXX_CMATH
+  50:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #define _GLIBCXX_CMATH 1
+  51:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  52:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** // Get rid of those macros defined in <math.h> in lieu of real functions.
+  53:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef div
+  54:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef acos
+  55:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef asin
+  56:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef atan
+  57:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef atan2
+  58:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef ceil
+  59:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef cos
+  60:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef cosh
+  61:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef exp
+ARM GAS  /tmp/cc0MBHPH.s 			page 12
+
+
+  62:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef fabs
+  63:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef floor
+  64:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef fmod
+  65:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef frexp
+  66:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef ldexp
+  67:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef log
+  68:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef log10
+  69:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef modf
+  70:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef pow
+  71:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef sin
+  72:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef sinh
+  73:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef sqrt
+  74:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef tan
+  75:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #undef tanh
+  76:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  77:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** extern "C++"
+  78:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** {
+  79:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** namespace std _GLIBCXX_VISIBILITY(default)
+  80:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** {
+  81:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+  82:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  83:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::acos;
+  84:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  85:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+  86:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+  87:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   acos(float __x)
+  88:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_acosf(__x); }
+  89:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  90:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+  91:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   acos(long double __x)
+  92:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_acosl(__x); }
+  93:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+  94:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+  95:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+  96:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+  97:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value, 
+  98:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+  99:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     acos(_Tp __x)
+ 100:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_acos(__x); }
+ 101:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 102:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::asin;
+ 103:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 104:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 105:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 106:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   asin(float __x)
+ 107:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_asinf(__x); }
+ 108:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 109:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 110:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   asin(long double __x)
+ 111:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_asinl(__x); }
+ 112:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 113:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 114:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+ 115:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 116:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+ 117:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+ 118:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     asin(_Tp __x)
+ARM GAS  /tmp/cc0MBHPH.s 			page 13
+
+
+ 119:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_asin(__x); }
+ 120:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 121:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::atan;
+ 122:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 123:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 124:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 125:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   atan(float __x)
+ 126:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_atanf(__x); }
+ 127:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 128:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 129:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   atan(long double __x)
+ 130:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_atanl(__x); }
+ 131:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 132:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 133:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+ 134:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 135:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+ 136:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+ 137:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     atan(_Tp __x)
+ 138:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_atan(__x); }
+ 139:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 140:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::atan2;
+ 141:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 142:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 143:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 144:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   atan2(float __y, float __x)
+ 145:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_atan2f(__y, __x); }
+ 146:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 147:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 148:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   atan2(long double __y, long double __x)
+ 149:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_atan2l(__y, __x); }
+ 150:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 151:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 152:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp, typename _Up>
+ 153:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 154:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__promote_2<_Tp, _Up>::__type
+ 155:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     atan2(_Tp __y, _Up __x)
+ 156:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     {
+ 157:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****       typedef typename __gnu_cxx::__promote_2<_Tp, _Up>::__type __type;
+ 158:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****       return atan2(__type(__y), __type(__x));
+ 159:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     }
+ 160:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 161:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::ceil;
+ 162:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 163:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 164:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 165:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   ceil(float __x)
+ 166:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_ceilf(__x); }
+ 167:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 168:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 169:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   ceil(long double __x)
+ 170:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_ceill(__x); }
+ 171:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 172:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 173:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+ 174:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 175:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value, 
+ARM GAS  /tmp/cc0MBHPH.s 			page 14
+
+
+ 176:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+ 177:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     ceil(_Tp __x)
+ 178:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_ceil(__x); }
+ 179:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 180:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::cos;
+ 181:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 182:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 183:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 184:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   cos(float __x)
+ 185:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_cosf(__x); }
+ 186:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 187:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 188:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   cos(long double __x)
+ 189:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_cosl(__x); }
+ 190:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 191:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 192:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+ 193:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 194:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+ 195:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+ 196:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     cos(_Tp __x)
+ 197:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_cos(__x); }
+ 198:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 199:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::cosh;
+ 200:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 201:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 202:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 203:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   cosh(float __x)
+ 204:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_coshf(__x); }
+ 205:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 206:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 207:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   cosh(long double __x)
+ 208:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_coshl(__x); }
+ 209:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 210:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 211:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+ 212:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 213:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+ 214:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+ 215:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     cosh(_Tp __x)
+ 216:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_cosh(__x); }
+ 217:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 218:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::exp;
+ 219:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 220:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 221:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 222:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   exp(float __x)
+ 223:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_expf(__x); }
+ 224:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 225:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR long double
+ 226:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   exp(long double __x)
+ 227:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_expl(__x); }
+ 228:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #endif
+ 229:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 230:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   template<typename _Tp>
+ 231:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     inline _GLIBCXX_CONSTEXPR
+ 232:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
+ARM GAS  /tmp/cc0MBHPH.s 			page 15
+
+
+ 233:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****                                     double>::__type
+ 234:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     exp(_Tp __x)
+ 235:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****     { return __builtin_exp(__x); }
+ 236:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 237:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   using ::fabs;
+ 238:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** 
+ 239:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+ 240:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
+ 241:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   fabs(float __x)
+ 472              		.loc 2 241 3 view .LVU103
+ 473              	.LBB7:
+ 242:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_fabsf(__x); }
+ 474              		.loc 2 242 5 view .LVU104
+ 475              		.loc 2 242 5 is_stmt 0 view .LVU105
+ 476              	.LBE7:
+ 477              	.LBE6:
+ 478              		.loc 1 74 31 view .LVU106
+ 479 004c B0EEC80A 		vabs.f32	s0, s16
+ 480 0050 2068     		ldr	r0, [r4]
+ 481 0052 FFF7FEFF 		bl	_ZL14set_motorOmegaP12Motor_configf
+ 482              	.LVL47:
+ 483              	.L37:
+  75:Core/Src/actuator/motor.cpp ****         }
+  76:Core/Src/actuator/motor.cpp ****         else
+  77:Core/Src/actuator/motor.cpp ****         {
+  78:Core/Src/actuator/motor.cpp ****                 set_motorDirection(motor_, Direction::STOP);
+  79:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, 0);
+  80:Core/Src/actuator/motor.cpp ****         }
+  81:Core/Src/actuator/motor.cpp **** }
+ 484              		.loc 1 81 1 view .LVU107
+ 485 0056 BDEC028B 		vldm	sp!, {d8}
+ 486              	.LCFI7:
+ 487              		.cfi_remember_state
+ 488              		.cfi_restore 80
+ 489              		.cfi_restore 81
+ 490              		.cfi_def_cfa_offset 8
+ 491              	.LVL48:
+ 492              		.loc 1 81 1 view .LVU108
+ 493 005a 10BD     		pop	{r4, pc}
+ 494              	.LVL49:
+ 495              	.L49:
+ 496              	.LCFI8:
+ 497              		.cfi_restore_state
+  68:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, fabs(omega));
+ 498              		.loc 1 68 17 is_stmt 1 view .LVU109
+  68:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, fabs(omega));
+ 499              		.loc 1 68 35 is_stmt 0 view .LVU110
+ 500 005c 0121     		movs	r1, #1
+ 501 005e FFF7FEFF 		bl	_ZL18set_motorDirectionP12Motor_config9Direction
+ 502              	.LVL50:
+  69:Core/Src/actuator/motor.cpp ****         }
+ 503              		.loc 1 69 17 is_stmt 1 view .LVU111
+ 504              	.LBB8:
+ 505              	.LBI8:
+ 241:/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/cmath ****   { return __builtin_fabsf(__x); }
+ 506              		.loc 2 241 3 view .LVU112
+ 507              	.LBB9:
+ARM GAS  /tmp/cc0MBHPH.s 			page 16
+
+
+ 508              		.loc 2 242 5 view .LVU113
+ 509              		.loc 2 242 5 is_stmt 0 view .LVU114
+ 510              	.LBE9:
+ 511              	.LBE8:
+  69:Core/Src/actuator/motor.cpp ****         }
+ 512              		.loc 1 69 31 view .LVU115
+ 513 0062 B0EEC80A 		vabs.f32	s0, s16
+ 514 0066 2068     		ldr	r0, [r4]
+ 515 0068 FFF7FEFF 		bl	_ZL14set_motorOmegaP12Motor_configf
+ 516              	.LVL51:
+ 517 006c F3E7     		b	.L37
+ 518              	.L47:
+  78:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, 0);
+ 519              		.loc 1 78 17 is_stmt 1 view .LVU116
+  78:Core/Src/actuator/motor.cpp ****                 set_motorOmega(motor_, 0);
+ 520              		.loc 1 78 35 is_stmt 0 view .LVU117
+ 521 006e 0221     		movs	r1, #2
+ 522 0070 FFF7FEFF 		bl	_ZL18set_motorDirectionP12Motor_config9Direction
+ 523              	.LVL52:
+  79:Core/Src/actuator/motor.cpp ****         }
+ 524              		.loc 1 79 17 is_stmt 1 view .LVU118
+  79:Core/Src/actuator/motor.cpp ****         }
+ 525              		.loc 1 79 31 is_stmt 0 view .LVU119
+ 526 0074 9FED020A 		vldr.32	s0, .L50
+ 527 0078 2068     		ldr	r0, [r4]
+ 528 007a FFF7FEFF 		bl	_ZL14set_motorOmegaP12Motor_configf
+ 529              	.LVL53:
+ 530              		.loc 1 81 1 view .LVU120
+ 531 007e EAE7     		b	.L37
+ 532              	.L51:
+ 533              		.align	2
+ 534              	.L50:
+ 535 0080 00000000 		.word	0
+ 536              		.cfi_endproc
+ 537              	.LFE387:
+ 539              		.global	inp
+ 540              		.global	tar
+ 541              		.section	.bss.inp,"aw",%nobits
+ 542              		.align	2
+ 543              		.set	.LANCHOR1,. + 0
+ 546              	inp:
+ 547 0000 00000000 		.space	4
+ 548              		.section	.bss.tar,"aw",%nobits
+ 549              		.align	2
+ 550              		.set	.LANCHOR0,. + 0
+ 553              	tar:
+ 554 0000 00000000 		.space	4
+ 555              		.text
+ 556              	.Letext0:
+ 557              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 558              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 559              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 560              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 561              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 562              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 563              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 564              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ARM GAS  /tmp/cc0MBHPH.s 			page 17
+
+
+ 565              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 566              		.file 12 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 567              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 568              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 569              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 570              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 571              		.file 17 "Core/Inc/control/pid.h"
+ 572              		.file 18 "Core/Inc/control/fuzzy_pid.h"
+ 573              		.file 19 "Core/Inc/actuator/motor.h"
+ 574              		.file 20 "<built-in>"
+ARM GAS  /tmp/cc0MBHPH.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 motor.cpp
+     /tmp/cc0MBHPH.s:18     .text._ZL11time_periodt:0000000000000000 $t
+     /tmp/cc0MBHPH.s:25     .text._ZL11time_periodt:0000000000000000 _ZL11time_periodt
+     /tmp/cc0MBHPH.s:50     .text._ZL11time_periodt:0000000000000010 $d
+     /tmp/cc0MBHPH.s:55     .text._ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt:0000000000000000 $t
+     /tmp/cc0MBHPH.s:61     .text._ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt:0000000000000000 _ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt
+     /tmp/cc0MBHPH.s:139    .text._ZL21set_DutyCycle_PrimaryP17TIM_HandleTypeDefmt:000000000000004c $d
+     /tmp/cc0MBHPH.s:144    .text._ZL13set_DutyCycleP12Motor_configt:0000000000000000 $t
+     /tmp/cc0MBHPH.s:150    .text._ZL13set_DutyCycleP12Motor_configt:0000000000000000 _ZL13set_DutyCycleP12Motor_configt
+     /tmp/cc0MBHPH.s:184    .text._ZL14set_motorOmegaP12Motor_configf:0000000000000000 $t
+     /tmp/cc0MBHPH.s:190    .text._ZL14set_motorOmegaP12Motor_configf:0000000000000000 _ZL14set_motorOmegaP12Motor_configf
+     /tmp/cc0MBHPH.s:255    .text._ZL14set_motorOmegaP12Motor_configf:0000000000000040 $d
+     /tmp/cc0MBHPH.s:261    .text._ZL18set_motorDirectionP12Motor_config9Direction:0000000000000000 $t
+     /tmp/cc0MBHPH.s:267    .text._ZL18set_motorDirectionP12Motor_config9Direction:0000000000000000 _ZL18set_motorDirectionP12Motor_config9Direction
+     /tmp/cc0MBHPH.s:322    .text._ZN5motor12computeOmegaEff13pid_Algorithm:0000000000000000 $t
+     /tmp/cc0MBHPH.s:329    .text._ZN5motor12computeOmegaEff13pid_Algorithm:0000000000000000 _ZN5motor12computeOmegaEff13pid_Algorithm
+     /tmp/cc0MBHPH.s:398    .text._ZN5motor12computeOmegaEff13pid_Algorithm:0000000000000034 $d
+     /tmp/cc0MBHPH.s:404    .text._ZN5motor9set_omegaEf:0000000000000000 $t
+     /tmp/cc0MBHPH.s:411    .text._ZN5motor9set_omegaEf:0000000000000000 _ZN5motor9set_omegaEf
+     /tmp/cc0MBHPH.s:535    .text._ZN5motor9set_omegaEf:0000000000000080 $d
+     /tmp/cc0MBHPH.s:546    .bss.inp:0000000000000000 inp
+     /tmp/cc0MBHPH.s:553    .bss.tar:0000000000000000 tar
+     /tmp/cc0MBHPH.s:542    .bss.inp:0000000000000000 $d
+     /tmp/cc0MBHPH.s:549    .bss.tar:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_f2d
+__aeabi_ddiv
+__aeabi_dmul
+__aeabi_d2uiz
+HAL_GPIO_WritePin
+_ZN14continuous_PID7ComputeEff
+_ZN12discrete_PID7ComputeEff
+_ZN9fuzzy_pid28compute_fuzzy_selfTuning_PIDEff

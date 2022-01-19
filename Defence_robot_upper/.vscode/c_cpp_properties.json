@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "name": "STM32 Debug", 
+            "includePath": [ 
+                "${workspaceRoot}",
+                "${workspaceRoot}/Core/Inc",
+                "${workspaceRoot}/Core/Inc/actuator",
+                "${workspaceRoot}/Core/Inc/control",
+                "${workspaceRoot}/Core/Inc/periphs",
+                "${workspaceRoot}/Core/Inc/robot",
+                "${workspaceRoot}/Core/Inc/sys",
+                "${workspaceRoot}/Core/Inc/utils",
+                "${workspaceRoot}/Core/Inc/utils/crypto",
+                "${workspaceRoot}/Core/Inc/utils/container",
+                "${workspaceRoot}/Core/Inc/devs",
+                 
+                "${workspaceRoot}/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "${workspaceRoot}/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+                "${workspaceRoot}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                "${workspaceRoot}/Drivers/CMSIS/Include",
+                "${workspaceRoot}/Middlewares/Third_Party/FreeRTOS/Source/include",
+                "${workspaceRoot}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS",
+                "${workspaceRoot}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F"
+            ],
+            "defines": ["STM32F407xx"],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "${default}",
+            "compilerPath": "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-g++"
+        }
+    ],
+    "version": 4
+}

@@ -1,0 +1,897 @@
+ARM GAS  /tmp/ccHojXh8.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	__aeabi_f2d
+  18              		.global	__aeabi_dcmpge
+  19              		.global	__aeabi_dcmple
+  20              		.global	__aeabi_dcmpgt
+  21              		.global	__aeabi_dcmplt
+  22              		.section	.text._ZN3arm13motor_actuateEv,"ax",%progbits
+  23              		.align	1
+  24              		.global	_ZN3arm13motor_actuateEv
+  25              		.arch armv7e-m
+  26              		.syntax unified
+  27              		.thumb
+  28              		.thumb_func
+  29              		.fpu fpv4-sp-d16
+  31              	_ZN3arm13motor_actuateEv:
+  32              	.LVL0:
+  33              	.LFB1682:
+  34              		.file 1 "Core/Src/actuator/arm.cpp"
+   1:Core/Src/actuator/arm.cpp **** #include"arm.h"
+   2:Core/Src/actuator/arm.cpp **** extern pid_Algorithm pid_algo_joint[2];
+   3:Core/Src/actuator/arm.cpp **** extern encoder e_joint[2];
+   4:Core/Src/actuator/arm.cpp **** extern motor m_joint[2];
+   5:Core/Src/actuator/arm.cpp **** bool first_entered=false;
+   6:Core/Src/actuator/arm.cpp **** void arm::motor_actuate()
+   7:Core/Src/actuator/arm.cpp **** {   
+  35              		.loc 1 7 1 view -0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  39              		.loc 1 7 1 is_stmt 0 view .LVU1
+  40 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  41              	.LCFI0:
+  42              		.cfi_def_cfa_offset 24
+  43              		.cfi_offset 3, -24
+  44              		.cfi_offset 4, -20
+  45              		.cfi_offset 5, -16
+  46              		.cfi_offset 6, -12
+  47              		.cfi_offset 7, -8
+  48              		.cfi_offset 14, -4
+  49 0002 2DED028B 		vpush.64	{d8}
+  50              	.LCFI1:
+  51              		.cfi_def_cfa_offset 32
+ARM GAS  /tmp/ccHojXh8.s 			page 2
+
+
+  52              		.cfi_offset 80, -32
+  53              		.cfi_offset 81, -28
+  54 0006 0446     		mov	r4, r0
+   8:Core/Src/actuator/arm.cpp ****  //HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3,GPIO_PIN_RESET);
+   9:Core/Src/actuator/arm.cpp ****    // printf("%f %f \n",e_joint[1].get_angle(),e_joint[1].get_omega());
+  10:Core/Src/actuator/arm.cpp ****  if(pneuHoldState==true)
+  55              		.loc 1 10 2 is_stmt 1 view .LVU2
+  56              		.loc 1 10 5 is_stmt 0 view .LVU3
+  57 0008 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+  58              		.loc 1 10 2 view .LVU4
+  59 000a 53BB     		cbnz	r3, .L25
+  60              	.LVL1:
+  61              	.L2:
+  11:Core/Src/actuator/arm.cpp ****   {
+  12:Core/Src/actuator/arm.cpp ****    HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_SET);
+  13:Core/Src/actuator/arm.cpp ****    pneuHoldState=false;
+  14:Core/Src/actuator/arm.cpp ****   }
+  15:Core/Src/actuator/arm.cpp ****   if(joint[0]==Direction::ANTICLOCKWISE)
+  62              		.loc 1 15 3 is_stmt 1 view .LVU5
+  63              	.LBB2:
+  64              		.loc 1 15 13 is_stmt 0 view .LVU6
+  65 000c 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+  66              		.loc 1 15 3 view .LVU7
+  67 000e 012B     		cmp	r3, #1
+  68 0010 30D0     		beq	.L26
+  69              	.LBE2:
+  16:Core/Src/actuator/arm.cpp ****    { float tunedOmega;
+  17:Core/Src/actuator/arm.cpp ****    if(first_entered==false)
+  18:Core/Src/actuator/arm.cpp ****    {
+  19:Core/Src/actuator/arm.cpp ****       //tunedOmega = m_joint[0].computeOmega(-10, e_joint[0].get_omega(),pid_algo_joint[0]);
+  20:Core/Src/actuator/arm.cpp **** 		m_joint[0].set_omega(-5);
+  21:Core/Src/actuator/arm.cpp ****    }
+  22:Core/Src/actuator/arm.cpp ****    else  if(first_entered==true)
+  23:Core/Src/actuator/arm.cpp ****    {
+  24:Core/Src/actuator/arm.cpp ****       //tunedOmega = m_joint[0].computeOmega(-10, e_joint[0].get_omega(),pid_algo_joint[0]);
+  25:Core/Src/actuator/arm.cpp **** 		m_joint[0].set_omega(-5);
+  26:Core/Src/actuator/arm.cpp ****    }
+  27:Core/Src/actuator/arm.cpp ****       if(e_joint[0].get_angle()>=1.4 && first_entered==false)
+  28:Core/Src/actuator/arm.cpp ****    {
+  29:Core/Src/actuator/arm.cpp ****       e_joint[0].reset_angle();
+  30:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+  31:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+  32:Core/Src/actuator/arm.cpp ****       first_entered=true;
+  33:Core/Src/actuator/arm.cpp ****    }
+  34:Core/Src/actuator/arm.cpp ****      if(e_joint[0].get_angle()>=0.3 && first_entered==true)
+  35:Core/Src/actuator/arm.cpp ****    {
+  36:Core/Src/actuator/arm.cpp ****       e_joint[0].reset_angle();
+  37:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+  38:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+  39:Core/Src/actuator/arm.cpp ****       first_entered=false;
+  40:Core/Src/actuator/arm.cpp ****    }
+  41:Core/Src/actuator/arm.cpp ****    }
+  42:Core/Src/actuator/arm.cpp ****     else if(joint[0]==Direction::CLOCKWISE)
+  70              		.loc 1 42 10 is_stmt 1 view .LVU8
+  71              	.LBB7:
+  72              	.LBB3:
+  73 0012 002B     		cmp	r3, #0
+ARM GAS  /tmp/ccHojXh8.s 			page 3
+
+
+  74 0014 7BD0     		beq	.L27
+  43:Core/Src/actuator/arm.cpp ****   { 
+  44:Core/Src/actuator/arm.cpp ****       float tunedOmega = m_joint[0].computeOmega(5, e_joint[0].get_omega(),pid_algo_joint[0]);
+  45:Core/Src/actuator/arm.cpp **** 		m_joint[0].set_omega(tunedOmega);
+  46:Core/Src/actuator/arm.cpp ****       if(e_joint[0].get_angle()<=-1.7)
+  47:Core/Src/actuator/arm.cpp ****    {
+  48:Core/Src/actuator/arm.cpp ****       e_joint[0].reset_angle();
+  49:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+  50:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+  51:Core/Src/actuator/arm.cpp ****    }
+  52:Core/Src/actuator/arm.cpp ****   }
+  53:Core/Src/actuator/arm.cpp ****   else if(joint[1]==Direction::ANTICLOCKWISE)
+  75              		.loc 1 53 8 view .LVU9
+  76              		.loc 1 53 18 is_stmt 0 view .LVU10
+  77 0016 6378     		ldrb	r3, [r4, #1]	@ zero_extendqisi2
+  78              		.loc 1 53 8 view .LVU11
+  79 0018 012B     		cmp	r3, #1
+  80 001a 00F0A180 		beq	.L28
+  54:Core/Src/actuator/arm.cpp ****    {
+  55:Core/Src/actuator/arm.cpp ****   // float tunedOmega = m_joint[1].computeOmega(1.57, e_joint[1].get_angle(),pid_algo_joint[1]);
+  56:Core/Src/actuator/arm.cpp **** 	m_joint[1].set_omega(2);
+  57:Core/Src/actuator/arm.cpp ****     if(e_joint[1].get_angle()>1.57)
+  58:Core/Src/actuator/arm.cpp ****    {
+  59:Core/Src/actuator/arm.cpp ****       e_joint[1].reset_angle();
+  60:Core/Src/actuator/arm.cpp ****       m_joint[1].set_omega(0);
+  61:Core/Src/actuator/arm.cpp ****       joint[1]=Direction::STOP;
+  62:Core/Src/actuator/arm.cpp ****    }
+  63:Core/Src/actuator/arm.cpp ****    }
+  64:Core/Src/actuator/arm.cpp ****    else if(joint[1]==Direction::CLOCKWISE)
+  81              		.loc 1 64 9 is_stmt 1 view .LVU12
+  82 001e 002B     		cmp	r3, #0
+  83 0020 40F0BB80 		bne	.L14
+  65:Core/Src/actuator/arm.cpp ****    {
+  66:Core/Src/actuator/arm.cpp ****    //float tunedOmega = m_joint[1].computeOmega(-1.57, e_joint[1].get_angle(),pid_algo_joint[1]);
+  67:Core/Src/actuator/arm.cpp **** 	m_joint[1].set_omega(-2);
+  84              		.loc 1 67 2 view .LVU13
+  85              		.loc 1 67 22 is_stmt 0 view .LVU14
+  86 0024 B8EE000A 		vmov.f32	s0, #-2.0e+0
+  87 0028 9148     		ldr	r0, .L33+40
+  88 002a FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+  89              	.LVL2:
+  68:Core/Src/actuator/arm.cpp ****     if(e_joint[1].get_angle()<-1.57)
+  90              		.loc 1 68 5 is_stmt 1 view .LVU15
+  91              		.loc 1 68 28 is_stmt 0 view .LVU16
+  92 002e 9148     		ldr	r0, .L33+44
+  93 0030 FFF7FEFF 		bl	_ZN7encoder9get_angleEv
+  94              	.LVL3:
+  95 0034 10EE100A 		vmov	r0, s0
+  96 0038 FFF7FEFF 		bl	__aeabi_f2d
+  97              	.LVL4:
+  98              		.loc 1 68 5 view .LVU17
+  99 003c 82A3     		adr	r3, .L33
+ 100 003e D3E90023 		ldrd	r2, [r3]
+ 101 0042 FFF7FEFF 		bl	__aeabi_dcmplt
+ 102              	.LVL5:
+ 103 0046 0028     		cmp	r0, #0
+ 104 0048 00F0AF80 		beq	.L8
+ARM GAS  /tmp/ccHojXh8.s 			page 4
+
+
+  69:Core/Src/actuator/arm.cpp ****    {
+  70:Core/Src/actuator/arm.cpp ****       e_joint[1].reset_angle();
+ 105              		.loc 1 70 7 is_stmt 1 view .LVU18
+ 106              		.loc 1 70 29 is_stmt 0 view .LVU19
+ 107 004c 8948     		ldr	r0, .L33+44
+ 108 004e FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 109              	.LVL6:
+  71:Core/Src/actuator/arm.cpp ****       m_joint[1].set_omega(0);
+ 110              		.loc 1 71 7 is_stmt 1 view .LVU20
+ 111              		.loc 1 71 27 is_stmt 0 view .LVU21
+ 112 0052 9FED890A 		vldr.32	s0, .L33+48
+ 113 0056 8648     		ldr	r0, .L33+40
+ 114 0058 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 115              	.LVL7:
+  72:Core/Src/actuator/arm.cpp ****       joint[1]=Direction::STOP;
+ 116              		.loc 1 72 7 is_stmt 1 view .LVU22
+ 117              		.loc 1 72 15 is_stmt 0 view .LVU23
+ 118 005c 0223     		movs	r3, #2
+ 119 005e 6370     		strb	r3, [r4, #1]
+ 120 0060 A3E0     		b	.L8
+ 121              	.LVL8:
+ 122              	.L25:
+ 123              		.loc 1 72 15 view .LVU24
+ 124              	.LBE3:
+ 125              	.LBE7:
+  12:Core/Src/actuator/arm.cpp ****    pneuHoldState=false;
+ 126              		.loc 1 12 4 is_stmt 1 view .LVU25
+  12:Core/Src/actuator/arm.cpp ****    pneuHoldState=false;
+ 127              		.loc 1 12 21 is_stmt 0 view .LVU26
+ 128 0062 0122     		movs	r2, #1
+ 129 0064 4FF40051 		mov	r1, #8192
+ 130 0068 8448     		ldr	r0, .L33+52
+ 131              	.LVL9:
+  12:Core/Src/actuator/arm.cpp ****    pneuHoldState=false;
+ 132              		.loc 1 12 21 view .LVU27
+ 133 006a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 134              	.LVL10:
+  13:Core/Src/actuator/arm.cpp ****   }
+ 135              		.loc 1 13 4 is_stmt 1 view .LVU28
+  13:Core/Src/actuator/arm.cpp ****   }
+ 136              		.loc 1 13 17 is_stmt 0 view .LVU29
+ 137 006e 0023     		movs	r3, #0
+ 138 0070 A370     		strb	r3, [r4, #2]
+ 139 0072 CBE7     		b	.L2
+ 140              	.L26:
+ 141              	.LBB8:
+ 142              	.LBB5:
+  16:Core/Src/actuator/arm.cpp ****    if(first_entered==false)
+ 143              		.loc 1 16 6 is_stmt 1 view .LVU30
+  17:Core/Src/actuator/arm.cpp ****    {
+ 144              		.loc 1 17 4 view .LVU31
+  17:Core/Src/actuator/arm.cpp ****    {
+ 145              		.loc 1 17 20 is_stmt 0 view .LVU32
+ 146 0074 824B     		ldr	r3, .L33+56
+ 147 0076 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  17:Core/Src/actuator/arm.cpp ****    {
+ 148              		.loc 1 17 4 view .LVU33
+ARM GAS  /tmp/ccHojXh8.s 			page 5
+
+
+ 149 0078 002B     		cmp	r3, #0
+ 150 007a 34D1     		bne	.L4
+  20:Core/Src/actuator/arm.cpp ****    }
+ 151              		.loc 1 20 3 is_stmt 1 view .LVU34
+  20:Core/Src/actuator/arm.cpp ****    }
+ 152              		.loc 1 20 23 is_stmt 0 view .LVU35
+ 153 007c B9EE040A 		vmov.f32	s0, #-5.0e+0
+ 154 0080 8048     		ldr	r0, .L33+60
+ 155 0082 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 156              	.LVL11:
+ 157              	.L5:
+  27:Core/Src/actuator/arm.cpp ****    {
+ 158              		.loc 1 27 7 is_stmt 1 view .LVU36
+  27:Core/Src/actuator/arm.cpp ****    {
+ 159              		.loc 1 27 30 is_stmt 0 view .LVU37
+ 160 0086 8048     		ldr	r0, .L33+64
+ 161 0088 FFF7FEFF 		bl	_ZN7encoder9get_angleEv
+ 162              	.LVL12:
+ 163 008c 10EE100A 		vmov	r0, s0
+ 164 0090 FFF7FEFF 		bl	__aeabi_f2d
+ 165              	.LVL13:
+  27:Core/Src/actuator/arm.cpp ****    {
+ 166              		.loc 1 27 38 view .LVU38
+ 167 0094 6EA3     		adr	r3, .L33+8
+ 168 0096 D3E90023 		ldrd	r2, [r3]
+ 169 009a FFF7FEFF 		bl	__aeabi_dcmpge
+ 170              	.LVL14:
+ 171 009e 10B1     		cbz	r0, .L6
+  27:Core/Src/actuator/arm.cpp ****    {
+ 172              		.loc 1 27 54 discriminator 1 view .LVU39
+ 173 00a0 774B     		ldr	r3, .L33+56
+ 174 00a2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  27:Core/Src/actuator/arm.cpp ****    {
+ 175              		.loc 1 27 38 discriminator 1 view .LVU40
+ 176 00a4 2BB3     		cbz	r3, .L29
+ 177              	.L6:
+  34:Core/Src/actuator/arm.cpp ****    {
+ 178              		.loc 1 34 6 is_stmt 1 view .LVU41
+  34:Core/Src/actuator/arm.cpp ****    {
+ 179              		.loc 1 34 29 is_stmt 0 view .LVU42
+ 180 00a6 7848     		ldr	r0, .L33+64
+ 181 00a8 FFF7FEFF 		bl	_ZN7encoder9get_angleEv
+ 182              	.LVL15:
+ 183 00ac 10EE100A 		vmov	r0, s0
+ 184 00b0 FFF7FEFF 		bl	__aeabi_f2d
+ 185              	.LVL16:
+  34:Core/Src/actuator/arm.cpp ****    {
+ 186              		.loc 1 34 37 view .LVU43
+ 187 00b4 68A3     		adr	r3, .L33+16
+ 188 00b6 D3E90023 		ldrd	r2, [r3]
+ 189 00ba FFF7FEFF 		bl	__aeabi_dcmpge
+ 190              	.LVL17:
+ 191 00be 0028     		cmp	r0, #0
+ 192 00c0 73D0     		beq	.L8
+  34:Core/Src/actuator/arm.cpp ****    {
+ 193              		.loc 1 34 53 discriminator 1 view .LVU44
+ 194 00c2 6F4B     		ldr	r3, .L33+56
+ARM GAS  /tmp/ccHojXh8.s 			page 6
+
+
+ 195 00c4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  34:Core/Src/actuator/arm.cpp ****    {
+ 196              		.loc 1 34 37 discriminator 1 view .LVU45
+ 197 00c6 002B     		cmp	r3, #0
+ 198 00c8 6FD0     		beq	.L8
+  36:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+ 199              		.loc 1 36 7 is_stmt 1 view .LVU46
+  36:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+ 200              		.loc 1 36 29 is_stmt 0 view .LVU47
+ 201 00ca 6F48     		ldr	r0, .L33+64
+ 202 00cc FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 203              	.LVL18:
+  37:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+ 204              		.loc 1 37 7 is_stmt 1 view .LVU48
+  37:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+ 205              		.loc 1 37 27 is_stmt 0 view .LVU49
+ 206 00d0 9FED690A 		vldr.32	s0, .L33+48
+ 207 00d4 6B48     		ldr	r0, .L33+60
+ 208 00d6 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 209              	.LVL19:
+  38:Core/Src/actuator/arm.cpp ****       first_entered=false;
+ 210              		.loc 1 38 7 is_stmt 1 view .LVU50
+  38:Core/Src/actuator/arm.cpp ****       first_entered=false;
+ 211              		.loc 1 38 15 is_stmt 0 view .LVU51
+ 212 00da 0223     		movs	r3, #2
+ 213 00dc 2370     		strb	r3, [r4]
+  39:Core/Src/actuator/arm.cpp ****    }
+ 214              		.loc 1 39 7 is_stmt 1 view .LVU52
+  39:Core/Src/actuator/arm.cpp ****    }
+ 215              		.loc 1 39 20 is_stmt 0 view .LVU53
+ 216 00de 684B     		ldr	r3, .L33+56
+ 217 00e0 0022     		movs	r2, #0
+ 218 00e2 1A70     		strb	r2, [r3]
+ 219 00e4 61E0     		b	.L8
+ 220              	.L4:
+  22:Core/Src/actuator/arm.cpp ****    {
+ 221              		.loc 1 22 10 is_stmt 1 view .LVU54
+  25:Core/Src/actuator/arm.cpp ****    }
+ 222              		.loc 1 25 3 view .LVU55
+  25:Core/Src/actuator/arm.cpp ****    }
+ 223              		.loc 1 25 23 is_stmt 0 view .LVU56
+ 224 00e6 B9EE040A 		vmov.f32	s0, #-5.0e+0
+ 225 00ea 6648     		ldr	r0, .L33+60
+ 226 00ec FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 227              	.LVL20:
+ 228 00f0 C9E7     		b	.L5
+ 229              	.L29:
+  29:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+ 230              		.loc 1 29 7 is_stmt 1 view .LVU57
+  29:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+ 231              		.loc 1 29 29 is_stmt 0 view .LVU58
+ 232 00f2 6548     		ldr	r0, .L33+64
+ 233 00f4 FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 234              	.LVL21:
+  30:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+ 235              		.loc 1 30 7 is_stmt 1 view .LVU59
+  30:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+ARM GAS  /tmp/ccHojXh8.s 			page 7
+
+
+ 236              		.loc 1 30 27 is_stmt 0 view .LVU60
+ 237 00f8 9FED5F0A 		vldr.32	s0, .L33+48
+ 238 00fc 6148     		ldr	r0, .L33+60
+ 239 00fe FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 240              	.LVL22:
+  31:Core/Src/actuator/arm.cpp ****       first_entered=true;
+ 241              		.loc 1 31 7 is_stmt 1 view .LVU61
+  31:Core/Src/actuator/arm.cpp ****       first_entered=true;
+ 242              		.loc 1 31 15 is_stmt 0 view .LVU62
+ 243 0102 0223     		movs	r3, #2
+ 244 0104 2370     		strb	r3, [r4]
+  32:Core/Src/actuator/arm.cpp ****    }
+ 245              		.loc 1 32 7 is_stmt 1 view .LVU63
+  32:Core/Src/actuator/arm.cpp ****    }
+ 246              		.loc 1 32 20 is_stmt 0 view .LVU64
+ 247 0106 5E4B     		ldr	r3, .L33+56
+ 248 0108 0122     		movs	r2, #1
+ 249 010a 1A70     		strb	r2, [r3]
+ 250 010c CBE7     		b	.L6
+ 251              	.L27:
+  32:Core/Src/actuator/arm.cpp ****    }
+ 252              		.loc 1 32 20 view .LVU65
+ 253              	.LBE5:
+ 254              	.LBB6:
+ 255              	.LBB4:
+  44:Core/Src/actuator/arm.cpp **** 		m_joint[0].set_omega(tunedOmega);
+ 256              		.loc 1 44 7 is_stmt 1 view .LVU66
+  44:Core/Src/actuator/arm.cpp **** 		m_joint[0].set_omega(tunedOmega);
+ 257              		.loc 1 44 49 is_stmt 0 view .LVU67
+ 258 010e 5E4D     		ldr	r5, .L33+64
+ 259 0110 2846     		mov	r0, r5
+ 260 0112 FFF7FEFF 		bl	_ZN7encoder9get_omegaEv
+ 261              	.LVL23:
+ 262 0116 F0EE400A 		vmov.f32	s1, s0
+ 263 011a 5A4E     		ldr	r6, .L33+60
+ 264 011c 5B4B     		ldr	r3, .L33+68
+ 265 011e 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 266 0120 B1EE040A 		vmov.f32	s0, #5.0e+0
+ 267 0124 3046     		mov	r0, r6
+ 268 0126 FFF7FEFF 		bl	_ZN5motor12computeOmegaEff13pid_Algorithm
+ 269              	.LVL24:
+  45:Core/Src/actuator/arm.cpp ****       if(e_joint[0].get_angle()<=-1.7)
+ 270              		.loc 1 45 3 is_stmt 1 view .LVU68
+  45:Core/Src/actuator/arm.cpp ****       if(e_joint[0].get_angle()<=-1.7)
+ 271              		.loc 1 45 23 is_stmt 0 view .LVU69
+ 272 012a 3046     		mov	r0, r6
+ 273 012c FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 274              	.LVL25:
+  46:Core/Src/actuator/arm.cpp ****    {
+ 275              		.loc 1 46 7 is_stmt 1 view .LVU70
+  46:Core/Src/actuator/arm.cpp ****    {
+ 276              		.loc 1 46 30 is_stmt 0 view .LVU71
+ 277 0130 2846     		mov	r0, r5
+ 278 0132 FFF7FEFF 		bl	_ZN7encoder9get_angleEv
+ 279              	.LVL26:
+ 280 0136 10EE100A 		vmov	r0, s0
+ 281 013a FFF7FEFF 		bl	__aeabi_f2d
+ARM GAS  /tmp/ccHojXh8.s 			page 8
+
+
+ 282              	.LVL27:
+  46:Core/Src/actuator/arm.cpp ****    {
+ 283              		.loc 1 46 7 view .LVU72
+ 284 013e 48A3     		adr	r3, .L33+24
+ 285 0140 D3E90023 		ldrd	r2, [r3]
+ 286 0144 FFF7FEFF 		bl	__aeabi_dcmple
+ 287              	.LVL28:
+ 288 0148 78B3     		cbz	r0, .L8
+  48:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+ 289              		.loc 1 48 7 is_stmt 1 view .LVU73
+  48:Core/Src/actuator/arm.cpp ****       m_joint[0].set_omega(0);
+ 290              		.loc 1 48 29 is_stmt 0 view .LVU74
+ 291 014a 2846     		mov	r0, r5
+ 292 014c FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 293              	.LVL29:
+  49:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+ 294              		.loc 1 49 7 is_stmt 1 view .LVU75
+  49:Core/Src/actuator/arm.cpp ****       joint[0]=Direction::STOP;
+ 295              		.loc 1 49 27 is_stmt 0 view .LVU76
+ 296 0150 9FED490A 		vldr.32	s0, .L33+48
+ 297 0154 3046     		mov	r0, r6
+ 298 0156 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 299              	.LVL30:
+  50:Core/Src/actuator/arm.cpp ****    }
+ 300              		.loc 1 50 7 is_stmt 1 view .LVU77
+  50:Core/Src/actuator/arm.cpp ****    }
+ 301              		.loc 1 50 15 is_stmt 0 view .LVU78
+ 302 015a 0223     		movs	r3, #2
+ 303 015c 2370     		strb	r3, [r4]
+ 304 015e 24E0     		b	.L8
+ 305              	.L28:
+  50:Core/Src/actuator/arm.cpp ****    }
+ 306              		.loc 1 50 15 view .LVU79
+ 307              	.LBE4:
+  56:Core/Src/actuator/arm.cpp ****     if(e_joint[1].get_angle()>1.57)
+ 308              		.loc 1 56 2 is_stmt 1 view .LVU80
+  56:Core/Src/actuator/arm.cpp ****     if(e_joint[1].get_angle()>1.57)
+ 309              		.loc 1 56 22 is_stmt 0 view .LVU81
+ 310 0160 B0EE000A 		vmov.f32	s0, #2.0e+0
+ 311 0164 4248     		ldr	r0, .L33+40
+ 312 0166 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 313              	.LVL31:
+  57:Core/Src/actuator/arm.cpp ****    {
+ 314              		.loc 1 57 5 is_stmt 1 view .LVU82
+  57:Core/Src/actuator/arm.cpp ****    {
+ 315              		.loc 1 57 28 is_stmt 0 view .LVU83
+ 316 016a 4248     		ldr	r0, .L33+44
+ 317 016c FFF7FEFF 		bl	_ZN7encoder9get_angleEv
+ 318              	.LVL32:
+ 319 0170 10EE100A 		vmov	r0, s0
+ 320 0174 FFF7FEFF 		bl	__aeabi_f2d
+ 321              	.LVL33:
+  57:Core/Src/actuator/arm.cpp ****    {
+ 322              		.loc 1 57 5 view .LVU84
+ 323 0178 3BA3     		adr	r3, .L33+32
+ 324 017a D3E90023 		ldrd	r2, [r3]
+ 325 017e FFF7FEFF 		bl	__aeabi_dcmpgt
+ARM GAS  /tmp/ccHojXh8.s 			page 9
+
+
+ 326              	.LVL34:
+ 327 0182 90B1     		cbz	r0, .L8
+  59:Core/Src/actuator/arm.cpp ****       m_joint[1].set_omega(0);
+ 328              		.loc 1 59 7 is_stmt 1 view .LVU85
+  59:Core/Src/actuator/arm.cpp ****       m_joint[1].set_omega(0);
+ 329              		.loc 1 59 29 is_stmt 0 view .LVU86
+ 330 0184 3B48     		ldr	r0, .L33+44
+ 331 0186 FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 332              	.LVL35:
+  60:Core/Src/actuator/arm.cpp ****       joint[1]=Direction::STOP;
+ 333              		.loc 1 60 7 is_stmt 1 view .LVU87
+  60:Core/Src/actuator/arm.cpp ****       joint[1]=Direction::STOP;
+ 334              		.loc 1 60 27 is_stmt 0 view .LVU88
+ 335 018a 9FED3B0A 		vldr.32	s0, .L33+48
+ 336 018e 3848     		ldr	r0, .L33+40
+ 337 0190 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 338              	.LVL36:
+  61:Core/Src/actuator/arm.cpp ****    }
+ 339              		.loc 1 61 7 is_stmt 1 view .LVU89
+  61:Core/Src/actuator/arm.cpp ****    }
+ 340              		.loc 1 61 15 is_stmt 0 view .LVU90
+ 341 0194 0223     		movs	r3, #2
+ 342 0196 6370     		strb	r3, [r4, #1]
+ 343 0198 07E0     		b	.L8
+ 344              	.L14:
+  73:Core/Src/actuator/arm.cpp ****       
+  74:Core/Src/actuator/arm.cpp ****    }
+  75:Core/Src/actuator/arm.cpp ****    }
+  76:Core/Src/actuator/arm.cpp ****    else{
+  77:Core/Src/actuator/arm.cpp ****       e_joint[1].reset_angle();
+ 345              		.loc 1 77 7 is_stmt 1 view .LVU91
+ 346              		.loc 1 77 29 is_stmt 0 view .LVU92
+ 347 019a 3648     		ldr	r0, .L33+44
+ 348 019c FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 349              	.LVL37:
+  78:Core/Src/actuator/arm.cpp ****       m_joint[1].set_omega(0);
+ 350              		.loc 1 78 7 is_stmt 1 view .LVU93
+ 351              		.loc 1 78 27 is_stmt 0 view .LVU94
+ 352 01a0 9FED350A 		vldr.32	s0, .L33+48
+ 353 01a4 3248     		ldr	r0, .L33+40
+ 354 01a6 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 355              	.LVL38:
+ 356              	.L8:
+ 357              	.LBE6:
+ 358              	.LBE8:
+  79:Core/Src/actuator/arm.cpp ****   }
+  80:Core/Src/actuator/arm.cpp ****   if(pneuReleaseState==true)
+ 359              		.loc 1 80 3 is_stmt 1 view .LVU95
+ 360              		.loc 1 80 6 is_stmt 0 view .LVU96
+ 361 01aa E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 362              		.loc 1 80 3 view .LVU97
+ 363 01ac 33B9     		cbnz	r3, .L30
+ 364              	.L16:
+  81:Core/Src/actuator/arm.cpp ****   {
+  82:Core/Src/actuator/arm.cpp ****    HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_RESET);
+  83:Core/Src/actuator/arm.cpp ****    pneuReleaseState=false;
+  84:Core/Src/actuator/arm.cpp ****   // HAL_TIM_Base_Start_IT(&htim10);
+ARM GAS  /tmp/ccHojXh8.s 			page 10
+
+
+  85:Core/Src/actuator/arm.cpp ****   }
+  86:Core/Src/actuator/arm.cpp ****   if(armState==true)
+ 365              		.loc 1 86 3 is_stmt 1 view .LVU98
+ 366              		.loc 1 86 6 is_stmt 0 view .LVU99
+ 367 01ae 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 368              		.loc 1 86 3 view .LVU100
+ 369 01b0 6BB9     		cbnz	r3, .L31
+ 370              	.L17:
+  87:Core/Src/actuator/arm.cpp ****   {
+  88:Core/Src/actuator/arm.cpp ****    e_joint[0].reset_angle();
+  89:Core/Src/actuator/arm.cpp ****    m_joint[0].set_omega(0);
+  90:Core/Src/actuator/arm.cpp ****    joint[0]=Direction::STOP;
+  91:Core/Src/actuator/arm.cpp ****    e_joint[1].reset_angle();
+  92:Core/Src/actuator/arm.cpp ****    m_joint[1].set_omega(0);
+  93:Core/Src/actuator/arm.cpp ****    joint[1]=Direction::STOP;
+  94:Core/Src/actuator/arm.cpp ****    armState=false;
+  95:Core/Src/actuator/arm.cpp **** 
+  96:Core/Src/actuator/arm.cpp ****   }
+  97:Core/Src/actuator/arm.cpp ****   if(startLoadArrow==true)
+ 371              		.loc 1 97 3 is_stmt 1 view .LVU101
+ 372              		.loc 1 97 6 is_stmt 0 view .LVU102
+ 373 01b2 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 374              		.loc 1 97 3 view .LVU103
+ 375 01b4 3BBB     		cbnz	r3, .L32
+ 376              	.L1:
+  98:Core/Src/actuator/arm.cpp ****   {
+  99:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3,GPIO_PIN_SET);
+ 100:Core/Src/actuator/arm.cpp ****        HAL_Delay(1000);
+ 101:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_5,GPIO_PIN_SET);
+ 102:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_RESET);
+ 103:Core/Src/actuator/arm.cpp ****        HAL_Delay(1000);
+ 104:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3,GPIO_PIN_RESET);
+ 105:Core/Src/actuator/arm.cpp ****        startLoadArrow=false;
+ 106:Core/Src/actuator/arm.cpp ****   }
+ 107:Core/Src/actuator/arm.cpp **** }
+ 377              		.loc 1 107 1 view .LVU104
+ 378 01b6 BDEC028B 		vldm	sp!, {d8}
+ 379              	.LCFI2:
+ 380              		.cfi_remember_state
+ 381              		.cfi_restore 80
+ 382              		.cfi_restore 81
+ 383              		.cfi_def_cfa_offset 24
+ 384 01ba F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 385              	.LVL39:
+ 386              	.L30:
+ 387              	.LCFI3:
+ 388              		.cfi_restore_state
+  82:Core/Src/actuator/arm.cpp ****    pneuReleaseState=false;
+ 389              		.loc 1 82 4 is_stmt 1 view .LVU105
+  82:Core/Src/actuator/arm.cpp ****    pneuReleaseState=false;
+ 390              		.loc 1 82 21 is_stmt 0 view .LVU106
+ 391 01bc 0022     		movs	r2, #0
+ 392 01be 4FF40051 		mov	r1, #8192
+ 393 01c2 2E48     		ldr	r0, .L33+52
+ 394 01c4 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 395              	.LVL40:
+  83:Core/Src/actuator/arm.cpp ****   // HAL_TIM_Base_Start_IT(&htim10);
+ARM GAS  /tmp/ccHojXh8.s 			page 11
+
+
+ 396              		.loc 1 83 4 is_stmt 1 view .LVU107
+  83:Core/Src/actuator/arm.cpp ****   // HAL_TIM_Base_Start_IT(&htim10);
+ 397              		.loc 1 83 20 is_stmt 0 view .LVU108
+ 398 01c8 0023     		movs	r3, #0
+ 399 01ca E370     		strb	r3, [r4, #3]
+ 400 01cc EFE7     		b	.L16
+ 401              	.L31:
+  88:Core/Src/actuator/arm.cpp ****    m_joint[0].set_omega(0);
+ 402              		.loc 1 88 4 is_stmt 1 view .LVU109
+  88:Core/Src/actuator/arm.cpp ****    m_joint[0].set_omega(0);
+ 403              		.loc 1 88 26 is_stmt 0 view .LVU110
+ 404 01ce 2E4F     		ldr	r7, .L33+64
+ 405 01d0 3846     		mov	r0, r7
+ 406 01d2 FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 407              	.LVL41:
+  89:Core/Src/actuator/arm.cpp ****    joint[0]=Direction::STOP;
+ 408              		.loc 1 89 4 is_stmt 1 view .LVU111
+  89:Core/Src/actuator/arm.cpp ****    joint[0]=Direction::STOP;
+ 409              		.loc 1 89 24 is_stmt 0 view .LVU112
+ 410 01d6 9FED288A 		vldr.32	s16, .L33+48
+ 411 01da 2A4E     		ldr	r6, .L33+60
+ 412 01dc B0EE480A 		vmov.f32	s0, s16
+ 413 01e0 3046     		mov	r0, r6
+ 414 01e2 FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 415              	.LVL42:
+  90:Core/Src/actuator/arm.cpp ****    e_joint[1].reset_angle();
+ 416              		.loc 1 90 4 is_stmt 1 view .LVU113
+  90:Core/Src/actuator/arm.cpp ****    e_joint[1].reset_angle();
+ 417              		.loc 1 90 12 is_stmt 0 view .LVU114
+ 418 01e6 0225     		movs	r5, #2
+ 419 01e8 2570     		strb	r5, [r4]
+  91:Core/Src/actuator/arm.cpp ****    m_joint[1].set_omega(0);
+ 420              		.loc 1 91 4 is_stmt 1 view .LVU115
+  91:Core/Src/actuator/arm.cpp ****    m_joint[1].set_omega(0);
+ 421              		.loc 1 91 26 is_stmt 0 view .LVU116
+ 422 01ea 07F11400 		add	r0, r7, #20
+ 423 01ee FFF7FEFF 		bl	_ZN7encoder11reset_angleEv
+ 424              	.LVL43:
+  92:Core/Src/actuator/arm.cpp ****    joint[1]=Direction::STOP;
+ 425              		.loc 1 92 4 is_stmt 1 view .LVU117
+  92:Core/Src/actuator/arm.cpp ****    joint[1]=Direction::STOP;
+ 426              		.loc 1 92 24 is_stmt 0 view .LVU118
+ 427 01f2 B0EE480A 		vmov.f32	s0, s16
+ 428 01f6 06F5D070 		add	r0, r6, #416
+ 429 01fa FFF7FEFF 		bl	_ZN5motor9set_omegaEf
+ 430              	.LVL44:
+  93:Core/Src/actuator/arm.cpp ****    armState=false;
+ 431              		.loc 1 93 4 is_stmt 1 view .LVU119
+  93:Core/Src/actuator/arm.cpp ****    armState=false;
+ 432              		.loc 1 93 12 is_stmt 0 view .LVU120
+ 433 01fe 6570     		strb	r5, [r4, #1]
+  94:Core/Src/actuator/arm.cpp **** 
+ 434              		.loc 1 94 4 is_stmt 1 view .LVU121
+  94:Core/Src/actuator/arm.cpp **** 
+ 435              		.loc 1 94 12 is_stmt 0 view .LVU122
+ 436 0200 0023     		movs	r3, #0
+ 437 0202 2371     		strb	r3, [r4, #4]
+ARM GAS  /tmp/ccHojXh8.s 			page 12
+
+
+ 438 0204 D5E7     		b	.L17
+ 439              	.L32:
+  99:Core/Src/actuator/arm.cpp ****        HAL_Delay(1000);
+ 440              		.loc 1 99 8 is_stmt 1 view .LVU123
+  99:Core/Src/actuator/arm.cpp ****        HAL_Delay(1000);
+ 441              		.loc 1 99 25 is_stmt 0 view .LVU124
+ 442 0206 224D     		ldr	r5, .L33+72
+ 443 0208 0122     		movs	r2, #1
+ 444 020a 0821     		movs	r1, #8
+ 445 020c 2846     		mov	r0, r5
+ 446 020e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 447              	.LVL45:
+ 100:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_5,GPIO_PIN_SET);
+ 448              		.loc 1 100 8 is_stmt 1 view .LVU125
+ 100:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_5,GPIO_PIN_SET);
+ 449              		.loc 1 100 17 is_stmt 0 view .LVU126
+ 450 0212 4FF47A70 		mov	r0, #1000
+ 451 0216 FFF7FEFF 		bl	HAL_Delay
+ 452              	.LVL46:
+ 101:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_RESET);
+ 453              		.loc 1 101 8 is_stmt 1 view .LVU127
+ 101:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,GPIO_PIN_RESET);
+ 454              		.loc 1 101 25 is_stmt 0 view .LVU128
+ 455 021a 0122     		movs	r2, #1
+ 456 021c 2021     		movs	r1, #32
+ 457 021e 2846     		mov	r0, r5
+ 458 0220 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 459              	.LVL47:
+ 102:Core/Src/actuator/arm.cpp ****        HAL_Delay(1000);
+ 460              		.loc 1 102 8 is_stmt 1 view .LVU129
+ 102:Core/Src/actuator/arm.cpp ****        HAL_Delay(1000);
+ 461              		.loc 1 102 25 is_stmt 0 view .LVU130
+ 462 0224 0022     		movs	r2, #0
+ 463 0226 4FF40051 		mov	r1, #8192
+ 464 022a 1448     		ldr	r0, .L33+52
+ 465 022c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 466              	.LVL48:
+ 103:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3,GPIO_PIN_RESET);
+ 467              		.loc 1 103 8 is_stmt 1 view .LVU131
+ 103:Core/Src/actuator/arm.cpp ****        HAL_GPIO_WritePin(GPIOE,GPIO_PIN_3,GPIO_PIN_RESET);
+ 468              		.loc 1 103 17 is_stmt 0 view .LVU132
+ 469 0230 4FF47A70 		mov	r0, #1000
+ 470 0234 FFF7FEFF 		bl	HAL_Delay
+ 471              	.LVL49:
+ 104:Core/Src/actuator/arm.cpp ****        startLoadArrow=false;
+ 472              		.loc 1 104 8 is_stmt 1 view .LVU133
+ 104:Core/Src/actuator/arm.cpp ****        startLoadArrow=false;
+ 473              		.loc 1 104 25 is_stmt 0 view .LVU134
+ 474 0238 0022     		movs	r2, #0
+ 475 023a 0821     		movs	r1, #8
+ 476 023c 2846     		mov	r0, r5
+ 477 023e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 478              	.LVL50:
+ 105:Core/Src/actuator/arm.cpp ****   }
+ 479              		.loc 1 105 8 is_stmt 1 view .LVU135
+ 105:Core/Src/actuator/arm.cpp ****   }
+ 480              		.loc 1 105 22 is_stmt 0 view .LVU136
+ARM GAS  /tmp/ccHojXh8.s 			page 13
+
+
+ 481 0242 0023     		movs	r3, #0
+ 482 0244 6371     		strb	r3, [r4, #5]
+ 483              		.loc 1 107 1 view .LVU137
+ 484 0246 B6E7     		b	.L1
+ 485              	.L34:
+ 486              		.align	3
+ 487              	.L33:
+ 488 0248 1F85EB51 		.word	1374389535
+ 489 024c B81EF9BF 		.word	-1074192712
+ 490 0250 66666666 		.word	1717986918
+ 491 0254 6666F63F 		.word	1073112678
+ 492 0258 33333333 		.word	858993459
+ 493 025c 3333D33F 		.word	1070805811
+ 494 0260 33333333 		.word	858993459
+ 495 0264 3333FBBF 		.word	-1074056397
+ 496 0268 1F85EB51 		.word	1374389535
+ 497 026c B81EF93F 		.word	1073290936
+ 498 0270 A0010000 		.word	m_joint+416
+ 499 0274 14000000 		.word	e_joint+20
+ 500 0278 00000000 		.word	0
+ 501 027c 00080240 		.word	1073874944
+ 502 0280 00000000 		.word	.LANCHOR0
+ 503 0284 00000000 		.word	m_joint
+ 504 0288 00000000 		.word	e_joint
+ 505 028c 00000000 		.word	pid_algo_joint
+ 506 0290 00100240 		.word	1073876992
+ 507              		.cfi_endproc
+ 508              	.LFE1682:
+ 510              		.section	.text._ZN3arm14start_commandsEv,"ax",%progbits
+ 511              		.align	1
+ 512              		.global	_ZN3arm14start_commandsEv
+ 513              		.syntax unified
+ 514              		.thumb
+ 515              		.thumb_func
+ 516              		.fpu fpv4-sp-d16
+ 518              	_ZN3arm14start_commandsEv:
+ 519              	.LVL51:
+ 520              	.LFB1683:
+ 108:Core/Src/actuator/arm.cpp **** void arm::start_commands(void)
+ 109:Core/Src/actuator/arm.cpp **** {	if ((HAL_GetTick() - currTime) > 10)
+ 521              		.loc 1 109 1 is_stmt 1 view -0
+ 522              		.cfi_startproc
+ 523              		@ args = 0, pretend = 0, frame = 0
+ 524              		@ frame_needed = 0, uses_anonymous_args = 0
+ 525              		.loc 1 109 1 is_stmt 0 view .LVU139
+ 526 0000 10B5     		push	{r4, lr}
+ 527              	.LCFI4:
+ 528              		.cfi_def_cfa_offset 8
+ 529              		.cfi_offset 4, -8
+ 530              		.cfi_offset 14, -4
+ 531 0002 0446     		mov	r4, r0
+ 532              		.loc 1 109 3 is_stmt 1 view .LVU140
+ 533              		.loc 1 109 19 is_stmt 0 view .LVU141
+ 534 0004 FFF7FEFF 		bl	HAL_GetTick
+ 535              	.LVL52:
+ 536              		.loc 1 109 24 view .LVU142
+ 537 0008 A368     		ldr	r3, [r4, #8]
+ARM GAS  /tmp/ccHojXh8.s 			page 14
+
+
+ 538              		.loc 1 109 22 view .LVU143
+ 539 000a C01A     		subs	r0, r0, r3
+ 540              		.loc 1 109 3 view .LVU144
+ 541 000c 0A28     		cmp	r0, #10
+ 542 000e 00D8     		bhi	.L38
+ 543              	.L35:
+ 110:Core/Src/actuator/arm.cpp ****    {
+ 111:Core/Src/actuator/arm.cpp ****     motor_actuate();
+ 112:Core/Src/actuator/arm.cpp ****    currTime = HAL_GetTick();
+ 113:Core/Src/actuator/arm.cpp ****    }
+ 114:Core/Src/actuator/arm.cpp **** }
+ 544              		.loc 1 114 1 view .LVU145
+ 545 0010 10BD     		pop	{r4, pc}
+ 546              	.LVL53:
+ 547              	.L38:
+ 111:Core/Src/actuator/arm.cpp ****    currTime = HAL_GetTick();
+ 548              		.loc 1 111 5 is_stmt 1 view .LVU146
+ 111:Core/Src/actuator/arm.cpp ****    currTime = HAL_GetTick();
+ 549              		.loc 1 111 18 is_stmt 0 view .LVU147
+ 550 0012 2046     		mov	r0, r4
+ 551 0014 FFF7FEFF 		bl	_ZN3arm13motor_actuateEv
+ 552              	.LVL54:
+ 112:Core/Src/actuator/arm.cpp ****    }
+ 553              		.loc 1 112 4 is_stmt 1 view .LVU148
+ 112:Core/Src/actuator/arm.cpp ****    }
+ 554              		.loc 1 112 26 is_stmt 0 view .LVU149
+ 555 0018 FFF7FEFF 		bl	HAL_GetTick
+ 556              	.LVL55:
+ 112:Core/Src/actuator/arm.cpp ****    }
+ 557              		.loc 1 112 13 view .LVU150
+ 558 001c A060     		str	r0, [r4, #8]
+ 559              		.loc 1 114 1 view .LVU151
+ 560 001e F7E7     		b	.L35
+ 561              		.cfi_endproc
+ 562              	.LFE1683:
+ 564              		.global	first_entered
+ 565              		.section	.bss.first_entered,"aw",%nobits
+ 566              		.set	.LANCHOR0,. + 0
+ 569              	first_entered:
+ 570 0000 00       		.space	1
+ 571              		.text
+ 572              	.Letext0:
+ 573              		.file 2 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 574              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 575              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdint.h"
+ 576              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 577              		.file 6 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/incl
+ 578              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 579              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 580              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 581              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 582              		.file 11 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 583              		.file 12 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 584              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 585              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 586              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 587              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ARM GAS  /tmp/ccHojXh8.s 			page 15
+
+
+ 588              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 589              		.file 18 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 590              		.file 19 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 591              		.file 20 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 592              		.file 21 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 593              		.file 22 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 594              		.file 23 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 595              		.file 24 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 596              		.file 25 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_types
+ 597              		.file 26 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/reent.
+ 598              		.file 27 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/lock.h
+ 599              		.file 28 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 600              		.file 29 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdlib.h"
+ 601              		.file 30 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 602              		.file 31 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/inc
+ 603              		.file 32 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/wchar.h"
+ 604              		.file 33 "Core/Inc/utils/linalg.h"
+ 605              		.file 34 "Core/Inc/actuator/encoder.h"
+ 606              		.file 35 "Core/Inc/control/pid.h"
+ 607              		.file 36 "Core/Inc/control/fuzzy_pid.h"
+ 608              		.file 37 "Core/Inc/actuator/motor.h"
+ 609              		.file 38 "Core/Inc/actuator/arm.h"
+ 610              		.file 39 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 611              		.file 40 "<built-in>"
+ARM GAS  /tmp/ccHojXh8.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm.cpp
+     /tmp/ccHojXh8.s:23     .text._ZN3arm13motor_actuateEv:0000000000000000 $t
+     /tmp/ccHojXh8.s:31     .text._ZN3arm13motor_actuateEv:0000000000000000 _ZN3arm13motor_actuateEv
+     /tmp/ccHojXh8.s:488    .text._ZN3arm13motor_actuateEv:0000000000000248 $d
+     /tmp/ccHojXh8.s:511    .text._ZN3arm14start_commandsEv:0000000000000000 $t
+     /tmp/ccHojXh8.s:518    .text._ZN3arm14start_commandsEv:0000000000000000 _ZN3arm14start_commandsEv
+     /tmp/ccHojXh8.s:569    .bss.first_entered:0000000000000000 first_entered
+     /tmp/ccHojXh8.s:570    .bss.first_entered:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_f2d
+__aeabi_dcmpge
+__aeabi_dcmple
+__aeabi_dcmpgt
+__aeabi_dcmplt
+_ZN5motor9set_omegaEf
+_ZN7encoder9get_angleEv
+_ZN7encoder11reset_angleEv
+HAL_GPIO_WritePin
+_ZN7encoder9get_omegaEv
+_ZN5motor12computeOmegaEff13pid_Algorithm
+HAL_Delay
+m_joint
+e_joint
+pid_algo_joint
+HAL_GetTick

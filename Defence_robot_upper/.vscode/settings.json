@@ -1,0 +1,13 @@
+// Workspace settings used to overwrite default and user settings
+{
+    // build
+    "files.associations": {
+        "**/ci/**/*.yml": "azure-pipelines",
+        "cmath": "cpp",
+        "type_traits": "cpp"
+    },
+    "cortex-debug.armToolchainPath": "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/bin",//GNU arm toolchain for comiling
+    "cortex-debug.openocdPath": "/usr/bin/openocd", // server for debug and flash code in the microcontroller
+    "C_Cpp.errorSquiggles": "Enabled" 
+
+}

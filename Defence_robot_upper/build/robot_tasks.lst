@@ -1,0 +1,293 @@
+ARM GAS  /tmp/ccnOYCix.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"robot_tasks.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.rotatoryWheelTask,"ax",%progbits
+  18              		.align	1
+  19              		.global	rotatoryWheelTask
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	rotatoryWheelTask:
+  27              	.LFB1712:
+  28              		.file 1 "Core/Src/robot/robot_tasks.cpp"
+   1:Core/Src/robot/robot_tasks.cpp **** #include "FreeRTOS.h"
+   2:Core/Src/robot/robot_tasks.cpp **** #include "task.h"
+   3:Core/Src/robot/robot_tasks.cpp **** #include "main.h"
+   4:Core/Src/robot/robot_tasks.cpp **** #include "cmsis_os.h"
+   5:Core/Src/robot/robot_tasks.cpp **** #include "semphr.h"
+   6:Core/Src/robot/robot_tasks.cpp **** #include"robot_operation.h"
+   7:Core/Src/robot/robot_tasks.cpp **** extern SemaphoreHandle_t binSem;
+   8:Core/Src/robot/robot_tasks.cpp **** extern arm arm_;
+   9:Core/Src/robot/robot_tasks.cpp **** extern rotation_wheel rotation_wheel_;
+  10:Core/Src/robot/robot_tasks.cpp **** extern a4988 stepper;
+  11:Core/Src/robot/robot_tasks.cpp **** extern conveyer_encoder conveyer_encoder_;
+  12:Core/Src/robot/robot_tasks.cpp **** extern "C" void rotatoryWheelTask(void const * argument);
+  13:Core/Src/robot/robot_tasks.cpp **** extern "C"  void armTask(void const * argument);
+  14:Core/Src/robot/robot_tasks.cpp **** extern "C" void updateTask(void const * argument);
+  15:Core/Src/robot/robot_tasks.cpp **** extern  "C" void ConveyerTask(void const * argument);
+  16:Core/Src/robot/robot_tasks.cpp **** void rotatoryWheelTask(void const * argument)
+  17:Core/Src/robot/robot_tasks.cpp **** {
+  29              		.loc 1 17 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              	.LVL0:
+  35              		.loc 1 17 1 is_stmt 0 view .LVU1
+  36 0000 08B5     		push	{r3, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 3, -8
+  40              		.cfi_offset 14, -4
+  41              	.LVL1:
+ARM GAS  /tmp/ccnOYCix.s 			page 2
+
+
+  42              	.L2:
+  18:Core/Src/robot/robot_tasks.cpp ****     for(;;){
+  43              		.loc 1 18 5 is_stmt 1 discriminator 1 view .LVU2
+  19:Core/Src/robot/robot_tasks.cpp ****     rotation_wheel_.start_commands();
+  44              		.loc 1 19 5 discriminator 1 view .LVU3
+  45              		.loc 1 19 35 is_stmt 0 discriminator 1 view .LVU4
+  46 0002 0248     		ldr	r0, .L4
+  47 0004 FFF7FEFF 		bl	_ZN14rotation_wheel14start_commandsEv
+  48              	.LVL2:
+  18:Core/Src/robot/robot_tasks.cpp ****     for(;;){
+  49              		.loc 1 18 5 is_stmt 1 discriminator 1 view .LVU5
+  50 0008 FBE7     		b	.L2
+  51              	.L5:
+  52 000a 00BF     		.align	2
+  53              	.L4:
+  54 000c 00000000 		.word	rotation_wheel_
+  55              		.cfi_endproc
+  56              	.LFE1712:
+  58              		.section	.text.armTask,"ax",%progbits
+  59              		.align	1
+  60              		.global	armTask
+  61              		.syntax unified
+  62              		.thumb
+  63              		.thumb_func
+  64              		.fpu fpv4-sp-d16
+  66              	armTask:
+  67              	.LFB1713:
+  20:Core/Src/robot/robot_tasks.cpp ****     }
+  21:Core/Src/robot/robot_tasks.cpp **** }
+  22:Core/Src/robot/robot_tasks.cpp **** void armTask(void const * argument)
+  23:Core/Src/robot/robot_tasks.cpp **** {
+  68              		.loc 1 23 1 view -0
+  69              		.cfi_startproc
+  70              		@ Volatile: function does not return.
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73              	.LVL3:
+  74              		.loc 1 23 1 is_stmt 0 view .LVU7
+  75 0000 08B5     		push	{r3, lr}
+  76              	.LCFI1:
+  77              		.cfi_def_cfa_offset 8
+  78              		.cfi_offset 3, -8
+  79              		.cfi_offset 14, -4
+  80              	.LVL4:
+  81              	.L7:
+  24:Core/Src/robot/robot_tasks.cpp ****     for(;;){
+  82              		.loc 1 24 5 is_stmt 1 discriminator 1 view .LVU8
+  25:Core/Src/robot/robot_tasks.cpp ****     arm_.start_commands();
+  83              		.loc 1 25 5 discriminator 1 view .LVU9
+  84              		.loc 1 25 24 is_stmt 0 discriminator 1 view .LVU10
+  85 0002 0348     		ldr	r0, .L9
+  86 0004 FFF7FEFF 		bl	_ZN3arm14start_commandsEv
+  87              	.LVL5:
+  26:Core/Src/robot/robot_tasks.cpp ****     osDelay(SAMPLE_TIME);
+  88              		.loc 1 26 5 is_stmt 1 discriminator 1 view .LVU11
+  89              		.loc 1 26 12 is_stmt 0 discriminator 1 view .LVU12
+  90 0008 0A20     		movs	r0, #10
+ARM GAS  /tmp/ccnOYCix.s 			page 3
+
+
+  91 000a FFF7FEFF 		bl	osDelay
+  92              	.LVL6:
+  24:Core/Src/robot/robot_tasks.cpp ****     for(;;){
+  93              		.loc 1 24 5 is_stmt 1 discriminator 1 view .LVU13
+  94 000e F8E7     		b	.L7
+  95              	.L10:
+  96              		.align	2
+  97              	.L9:
+  98 0010 00000000 		.word	arm_
+  99              		.cfi_endproc
+ 100              	.LFE1713:
+ 102              		.section	.text.updateTask,"ax",%progbits
+ 103              		.align	1
+ 104              		.global	updateTask
+ 105              		.syntax unified
+ 106              		.thumb
+ 107              		.thumb_func
+ 108              		.fpu fpv4-sp-d16
+ 110              	updateTask:
+ 111              	.LFB1714:
+  27:Core/Src/robot/robot_tasks.cpp ****     }
+  28:Core/Src/robot/robot_tasks.cpp **** }
+  29:Core/Src/robot/robot_tasks.cpp **** void updateTask(void const * argument)
+  30:Core/Src/robot/robot_tasks.cpp **** {
+ 112              		.loc 1 30 1 view -0
+ 113              		.cfi_startproc
+ 114              		@ Volatile: function does not return.
+ 115              		@ args = 0, pretend = 0, frame = 0
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117              	.LVL7:
+ 118              		.loc 1 30 1 is_stmt 0 view .LVU15
+ 119 0000 08B5     		push	{r3, lr}
+ 120              	.LCFI2:
+ 121              		.cfi_def_cfa_offset 8
+ 122              		.cfi_offset 3, -8
+ 123              		.cfi_offset 14, -4
+ 124              	.LVL8:
+ 125              	.L12:
+  31:Core/Src/robot/robot_tasks.cpp ****   for(;;)
+ 126              		.loc 1 31 3 is_stmt 1 discriminator 1 view .LVU16
+  32:Core/Src/robot/robot_tasks.cpp ****   {
+  33:Core/Src/robot/robot_tasks.cpp ****     parse_joyData();
+ 127              		.loc 1 33 5 discriminator 1 view .LVU17
+ 128              		.loc 1 33 18 is_stmt 0 discriminator 1 view .LVU18
+ 129 0002 FFF7FEFF 		bl	_Z13parse_joyDatav
+ 130              	.LVL9:
+  34:Core/Src/robot/robot_tasks.cpp ****     osDelay(1);
+ 131              		.loc 1 34 5 is_stmt 1 discriminator 1 view .LVU19
+ 132              		.loc 1 34 12 is_stmt 0 discriminator 1 view .LVU20
+ 133 0006 0120     		movs	r0, #1
+ 134 0008 FFF7FEFF 		bl	osDelay
+ 135              	.LVL10:
+  31:Core/Src/robot/robot_tasks.cpp ****   for(;;)
+ 136              		.loc 1 31 3 is_stmt 1 discriminator 1 view .LVU21
+ 137 000c F9E7     		b	.L12
+ 138              		.cfi_endproc
+ 139              	.LFE1714:
+ARM GAS  /tmp/ccnOYCix.s 			page 4
+
+
+ 141              		.section	.text.ConveyerTask,"ax",%progbits
+ 142              		.align	1
+ 143              		.global	ConveyerTask
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 147              		.fpu fpv4-sp-d16
+ 149              	ConveyerTask:
+ 150              	.LFB1715:
+  35:Core/Src/robot/robot_tasks.cpp ****     }
+  36:Core/Src/robot/robot_tasks.cpp ****   }
+  37:Core/Src/robot/robot_tasks.cpp **** void ConveyerTask(void const * argument)
+  38:Core/Src/robot/robot_tasks.cpp **** {
+ 151              		.loc 1 38 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ Volatile: function does not return.
+ 154              		@ args = 0, pretend = 0, frame = 0
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156              	.LVL11:
+ 157              		.loc 1 38 1 is_stmt 0 view .LVU23
+ 158 0000 08B5     		push	{r3, lr}
+ 159              	.LCFI3:
+ 160              		.cfi_def_cfa_offset 8
+ 161              		.cfi_offset 3, -8
+ 162              		.cfi_offset 14, -4
+ 163              	.LVL12:
+ 164              	.L15:
+  39:Core/Src/robot/robot_tasks.cpp ****   for(;;)
+ 165              		.loc 1 39 3 is_stmt 1 discriminator 1 view .LVU24
+  40:Core/Src/robot/robot_tasks.cpp ****   {
+  41:Core/Src/robot/robot_tasks.cpp ****    conveyer_encoder_.start_conveyer();
+ 166              		.loc 1 41 4 discriminator 1 view .LVU25
+ 167              		.loc 1 41 36 is_stmt 0 discriminator 1 view .LVU26
+ 168 0002 0248     		ldr	r0, .L17
+ 169 0004 FFF7FEFF 		bl	_ZN16conveyer_encoder14start_conveyerEv
+ 170              	.LVL13:
+  39:Core/Src/robot/robot_tasks.cpp ****   for(;;)
+ 171              		.loc 1 39 3 is_stmt 1 discriminator 1 view .LVU27
+ 172 0008 FBE7     		b	.L15
+ 173              	.L18:
+ 174 000a 00BF     		.align	2
+ 175              	.L17:
+ 176 000c 00000000 		.word	conveyer_encoder_
+ 177              		.cfi_endproc
+ 178              	.LFE1715:
+ 180              		.text
+ 181              	.Letext0:
+ 182              		.file 2 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/incl
+ 183              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 184              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 185              		.file 5 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdint.h"
+ 186              		.file 6 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/
+ 187              		.file 7 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/
+ 188              		.file 8 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/
+ 189              		.file 9 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1/
+ 190              		.file 10 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 191              		.file 11 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ARM GAS  /tmp/ccnOYCix.s 			page 5
+
+
+ 192              		.file 12 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 193              		.file 13 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 194              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 195              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 196              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 197              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 198              		.file 18 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 199              		.file 19 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 200              		.file 20 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_types
+ 201              		.file 21 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/reent.
+ 202              		.file 22 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/lock.h
+ 203              		.file 23 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 204              		.file 24 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdlib.h"
+ 205              		.file 25 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 206              		.file 26 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/inc
+ 207              		.file 27 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/wchar.h"
+ 208              		.file 28 "Core/Inc/utils/linalg.h"
+ 209              		.file 29 "Core/Inc/actuator/arm.h"
+ 210              		.file 30 "Core/Inc/actuator/rotatory_wheel.h"
+ 211              		.file 31 "Core/Inc/actuator/conveyer.h"
+ 212              		.file 32 "Core/Inc/devs/uart_communication.h"
+ 213              		.file 33 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 214              		.file 34 "<built-in>"
+ 215              		.file 35 "Core/Inc/actuator/motor.h"
+ARM GAS  /tmp/ccnOYCix.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 robot_tasks.cpp
+     /tmp/ccnOYCix.s:18     .text.rotatoryWheelTask:0000000000000000 $t
+     /tmp/ccnOYCix.s:26     .text.rotatoryWheelTask:0000000000000000 rotatoryWheelTask
+     /tmp/ccnOYCix.s:54     .text.rotatoryWheelTask:000000000000000c $d
+     /tmp/ccnOYCix.s:59     .text.armTask:0000000000000000 $t
+     /tmp/ccnOYCix.s:66     .text.armTask:0000000000000000 armTask
+     /tmp/ccnOYCix.s:98     .text.armTask:0000000000000010 $d
+     /tmp/ccnOYCix.s:103    .text.updateTask:0000000000000000 $t
+     /tmp/ccnOYCix.s:110    .text.updateTask:0000000000000000 updateTask
+     /tmp/ccnOYCix.s:142    .text.ConveyerTask:0000000000000000 $t
+     /tmp/ccnOYCix.s:149    .text.ConveyerTask:0000000000000000 ConveyerTask
+     /tmp/ccnOYCix.s:176    .text.ConveyerTask:000000000000000c $d
+
+UNDEFINED SYMBOLS
+_ZN14rotation_wheel14start_commandsEv
+rotation_wheel_
+_ZN3arm14start_commandsEv
+osDelay
+arm_
+_Z13parse_joyDatav
+_ZN16conveyer_encoder14start_conveyerEv
+conveyer_encoder_

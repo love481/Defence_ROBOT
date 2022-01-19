@@ -1,0 +1,1173 @@
+ARM GAS  /tmp/cc5dmEe8.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"joystick.cpp"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text._ZN8CRC_HashD2Ev,"axG",%progbits,_ZN8CRC_HashD5Ev,comdat
+  18              		.align	1
+  19              		.weak	_ZN8CRC_HashD2Ev
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	_ZN8CRC_HashD2Ev:
+  27              	.LVL0:
+  28              	.LFB137:
+  29              		.file 1 "Core/Inc/utils/crypto/crc_hash.h"
+   1:Core/Inc/utils/crypto/crc_hash.h **** #ifndef _CRC_HASH_
+   2:Core/Inc/utils/crypto/crc_hash.h **** #define _CRC_HASH_
+   3:Core/Inc/utils/crypto/crc_hash.h **** 
+   4:Core/Inc/utils/crypto/crc_hash.h **** #include "stm32f4xx.h"
+   5:Core/Inc/utils/crypto/crc_hash.h **** 
+   6:Core/Inc/utils/crypto/crc_hash.h **** #define WIDTH                   (8)
+   7:Core/Inc/utils/crypto/crc_hash.h **** #define CRC_HASH_TABLE_SIZE     (256)
+   8:Core/Inc/utils/crypto/crc_hash.h **** #define TOP_BIT                 (1 << 7)
+   9:Core/Inc/utils/crypto/crc_hash.h **** 
+  10:Core/Inc/utils/crypto/crc_hash.h **** class CRC_Hash
+  11:Core/Inc/utils/crypto/crc_hash.h **** {
+  12:Core/Inc/utils/crypto/crc_hash.h **** public:
+  13:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash(uint8_t polynomial);
+  14:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash(CRC_Hash &&) = default;
+  15:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash(const CRC_Hash &) = default;
+  16:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash &operator=(CRC_Hash &&) = default;
+  17:Core/Inc/utils/crypto/crc_hash.h ****         CRC_Hash &operator=(const CRC_Hash &) = default;
+  18:Core/Inc/utils/crypto/crc_hash.h ****         ~CRC_Hash() { }
+  30              		.loc 1 18 9 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 18 23 is_stmt 0 view .LVU1
+  36 0000 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE137:
+  40              		.weak	_ZN8CRC_HashD1Ev
+  41              		.thumb_set _ZN8CRC_HashD1Ev,_ZN8CRC_HashD2Ev
+ARM GAS  /tmp/cc5dmEe8.s 			page 2
+
+
+  42              		.section	.text._ZL12fill_JoyDataP13JoyStick_DataPh,"ax",%progbits
+  43              		.align	1
+  44              		.syntax unified
+  45              		.thumb
+  46              		.thumb_func
+  47              		.fpu fpv4-sp-d16
+  49              	_ZL12fill_JoyDataP13JoyStick_DataPh:
+  50              	.LVL1:
+  51              	.LFB403:
+  52              		.file 2 "Core/Src/devs/joystick.cpp"
+   1:Core/Src/devs/joystick.cpp **** #include "joystick.h"
+   2:Core/Src/devs/joystick.cpp **** #include "array.h"
+   3:Core/Src/devs/joystick.cpp **** #include <math.h>
+   4:Core/Src/devs/joystick.cpp **** #include"robo_state.h"
+   5:Core/Src/devs/joystick.cpp **** static float vel=1.5;
+   6:Core/Src/devs/joystick.cpp **** #define JOYSTICK_START_BYTE (START_BYTE)
+   7:Core/Src/devs/joystick.cpp **** #define NUM_JOYSTICK_BYTES (8)
+   8:Core/Src/devs/joystick.cpp **** 
+   9:Core/Src/devs/joystick.cpp **** extern JoyStick_Handle gJoyStick;
+  10:Core/Src/devs/joystick.cpp **** struct JoyStick_Data gJoy;
+  11:Core/Src/devs/joystick.cpp **** static JoyStick_Data gNull_JData;
+  12:Core/Src/devs/joystick.cpp **** extern robo_state robo_state_;
+  13:Core/Src/devs/joystick.cpp **** 
+  14:Core/Src/devs/joystick.cpp **** static uint8_t sending_byte[2];
+  15:Core/Src/devs/joystick.cpp **** static CRC_Hash gJoyStick_CRC(7);
+  16:Core/Src/devs/joystick.cpp **** 
+  17:Core/Src/devs/joystick.cpp **** static uint8_t gRx2Data;
+  18:Core/Src/devs/joystick.cpp **** static uint8_t gJoy_Data_Arr[NUM_JOYSTICK_BYTES];
+  19:Core/Src/devs/joystick.cpp **** static uint16_t gRx2_Data_num = 0;
+  20:Core/Src/devs/joystick.cpp **** static bool gStart_Byte_Rx2 = false;
+  21:Core/Src/devs/joystick.cpp **** static void fill_JoyData(JoyStick_Data *joy, uint8_t data[NUM_JOYSTICK_BYTES]);
+  22:Core/Src/devs/joystick.cpp **** void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+  23:Core/Src/devs/joystick.cpp **** {
+  24:Core/Src/devs/joystick.cpp ****         __HAL_UART_FLUSH_DRREGISTER(huart);
+  25:Core/Src/devs/joystick.cpp ****         if (!gStart_Byte_Rx2)
+  26:Core/Src/devs/joystick.cpp ****         {
+  27:Core/Src/devs/joystick.cpp ****                 if (gRx2Data == JOYSTICK_START_BYTE)
+  28:Core/Src/devs/joystick.cpp ****                 {
+  29:Core/Src/devs/joystick.cpp ****                         gStart_Byte_Rx2 = true;
+  30:Core/Src/devs/joystick.cpp ****                        HAL_UART_Transmit_DMA(&huart4,&gRx2Data,1);
+  31:Core/Src/devs/joystick.cpp ****                 }
+  32:Core/Src/devs/joystick.cpp ****         }
+  33:Core/Src/devs/joystick.cpp ****         else
+  34:Core/Src/devs/joystick.cpp ****         {
+  35:Core/Src/devs/joystick.cpp ****                 if (gRx2_Data_num < NUM_JOYSTICK_BYTES)
+  36:Core/Src/devs/joystick.cpp ****                 {      
+  37:Core/Src/devs/joystick.cpp ****                         gJoy_Data_Arr[gRx2_Data_num] = gRx2Data;
+  38:Core/Src/devs/joystick.cpp ****                         //printf(" data%d %d\n",gRx2_Data_num,sending_byte[gRx2_Data_num]);
+  39:Core/Src/devs/joystick.cpp ****                       if(gRx2_Data_num==0 || gRx2_Data_num==1)
+  40:Core/Src/devs/joystick.cpp ****                         {
+  41:Core/Src/devs/joystick.cpp ****                           sending_byte[gRx2_Data_num]=gJoy_Data_Arr[gRx2_Data_num];
+  42:Core/Src/devs/joystick.cpp ****                           //printf(" data%d %d\n",gRx2_Data_num,sending_byte[gRx2_Data_num]);
+  43:Core/Src/devs/joystick.cpp ****                           HAL_UART_Transmit_DMA(&huart4,&sending_byte[gRx2_Data_num],1);
+  44:Core/Src/devs/joystick.cpp ****                         }
+  45:Core/Src/devs/joystick.cpp ****                        else if(gRx2_Data_num==2)
+  46:Core/Src/devs/joystick.cpp ****                         {      
+  47:Core/Src/devs/joystick.cpp ****                                 uint8_t hash_sending=gJoyStick_CRC.get_Hash(sending_byte, 2);
+ARM GAS  /tmp/cc5dmEe8.s 			page 3
+
+
+  48:Core/Src/devs/joystick.cpp ****                               // printf(" hash %d\n",hash_sending);
+  49:Core/Src/devs/joystick.cpp ****                                 HAL_UART_Transmit_DMA(&huart4,&hash_sending,1);
+  50:Core/Src/devs/joystick.cpp ****                         }
+  51:Core/Src/devs/joystick.cpp ****                         ++gRx2_Data_num;
+  52:Core/Src/devs/joystick.cpp ****                 }
+  53:Core/Src/devs/joystick.cpp ****                 else {
+  54:Core/Src/devs/joystick.cpp ****                         uint8_t rem = gRx2Data;
+  55:Core/Src/devs/joystick.cpp ****                         gStart_Byte_Rx2 = false;
+  56:Core/Src/devs/joystick.cpp ****                         gRx2_Data_num = 0;
+  57:Core/Src/devs/joystick.cpp ****                         uint8_t hash = gJoyStick_CRC.get_Hash(gJoy_Data_Arr, NUM_JOYSTICK_BYTES);
+  58:Core/Src/devs/joystick.cpp ****                         if (hash == rem) {
+  59:Core/Src/devs/joystick.cpp ****                                 fill_JoyData(&gJoy, gJoy_Data_Arr);
+  60:Core/Src/devs/joystick.cpp ****                                 //gJoyStick.data.insert(gJoy);
+  61:Core/Src/devs/joystick.cpp ****                                 // printf("No Error!!");
+  62:Core/Src/devs/joystick.cpp ****                         }
+  63:Core/Src/devs/joystick.cpp ****                         else {
+  64:Core/Src/devs/joystick.cpp ****                                 printf("Error");
+  65:Core/Src/devs/joystick.cpp ****                         }
+  66:Core/Src/devs/joystick.cpp ****                 }
+  67:Core/Src/devs/joystick.cpp ****         }
+  68:Core/Src/devs/joystick.cpp **** }
+  69:Core/Src/devs/joystick.cpp **** /*bool JoyStick::is_Empty()
+  70:Core/Src/devs/joystick.cpp **** {
+  71:Core/Src/devs/joystick.cpp ****         return gJoyStick.data.is_Empty();
+  72:Core/Src/devs/joystick.cpp **** }*/
+  73:Core/Src/devs/joystick.cpp **** void JoyStick::init()
+  74:Core/Src/devs/joystick.cpp **** {
+  75:Core/Src/devs/joystick.cpp ****         gNull_JData.button1 = 0;
+  76:Core/Src/devs/joystick.cpp ****         gNull_JData.button2 = 0;
+  77:Core/Src/devs/joystick.cpp ****         gNull_JData.lt = 0;
+  78:Core/Src/devs/joystick.cpp ****         gNull_JData.rt = 0;
+  79:Core/Src/devs/joystick.cpp ****         gNull_JData.l_hatx = 0;
+  80:Core/Src/devs/joystick.cpp ****         gNull_JData.l_haty = 0;
+  81:Core/Src/devs/joystick.cpp ****         gNull_JData.r_hatx = 0;
+  82:Core/Src/devs/joystick.cpp ****         gNull_JData.r_haty = 0;
+  83:Core/Src/devs/joystick.cpp **** }
+  84:Core/Src/devs/joystick.cpp **** /*JoyStick_Data JoyStick::read()
+  85:Core/Src/devs/joystick.cpp **** {
+  86:Core/Src/devs/joystick.cpp ****         if (!is_Empty()) {
+  87:Core/Src/devs/joystick.cpp ****                 return hjoy_->data.lookup();
+  88:Core/Src/devs/joystick.cpp ****         }
+  89:Core/Src/devs/joystick.cpp ****         return gNull_JData;
+  90:Core/Src/devs/joystick.cpp **** }*/
+  91:Core/Src/devs/joystick.cpp **** void fill_JoyData(JoyStick_Data *joy, uint8_t data[NUM_JOYSTICK_BYTES])
+  92:Core/Src/devs/joystick.cpp **** {
+  53              		.loc 2 92 1 is_stmt 1 view -0
+  54              		.cfi_startproc
+  55              		@ args = 0, pretend = 0, frame = 0
+  56              		@ frame_needed = 0, uses_anonymous_args = 0
+  57              		@ link register save eliminated.
+  93:Core/Src/devs/joystick.cpp ****         //joy->button1 = data[0];
+  94:Core/Src/devs/joystick.cpp ****         //joy->button2 = data[1];
+  95:Core/Src/devs/joystick.cpp ****         joy->lt = data[2];
+  58              		.loc 2 95 9 view .LVU3
+  59              		.loc 2 95 17 is_stmt 0 view .LVU4
+  60 0000 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+  61 0002 8370     		strb	r3, [r0, #2]
+ARM GAS  /tmp/cc5dmEe8.s 			page 4
+
+
+  96:Core/Src/devs/joystick.cpp ****         joy->rt = data[3];
+  62              		.loc 2 96 9 is_stmt 1 view .LVU5
+  63              		.loc 2 96 17 is_stmt 0 view .LVU6
+  64 0004 CB78     		ldrb	r3, [r1, #3]	@ zero_extendqisi2
+  65 0006 C370     		strb	r3, [r0, #3]
+  97:Core/Src/devs/joystick.cpp ****         joy->l_hatx = data[4];
+  66              		.loc 2 97 9 is_stmt 1 view .LVU7
+  67              		.loc 2 97 21 is_stmt 0 view .LVU8
+  68 0008 0B79     		ldrb	r3, [r1, #4]	@ zero_extendqisi2
+  69 000a 0371     		strb	r3, [r0, #4]
+  98:Core/Src/devs/joystick.cpp ****         joy->l_haty = data[5];
+  70              		.loc 2 98 9 is_stmt 1 view .LVU9
+  71              		.loc 2 98 21 is_stmt 0 view .LVU10
+  72 000c 4B79     		ldrb	r3, [r1, #5]	@ zero_extendqisi2
+  73 000e 4371     		strb	r3, [r0, #5]
+  99:Core/Src/devs/joystick.cpp ****         joy->r_hatx = data[6];
+  74              		.loc 2 99 9 is_stmt 1 view .LVU11
+  75              		.loc 2 99 21 is_stmt 0 view .LVU12
+  76 0010 8B79     		ldrb	r3, [r1, #6]	@ zero_extendqisi2
+  77 0012 8371     		strb	r3, [r0, #6]
+ 100:Core/Src/devs/joystick.cpp ****         joy->r_haty = data[7];
+  78              		.loc 2 100 9 is_stmt 1 view .LVU13
+  79              		.loc 2 100 21 is_stmt 0 view .LVU14
+  80 0014 CB79     		ldrb	r3, [r1, #7]	@ zero_extendqisi2
+  81 0016 C371     		strb	r3, [r0, #7]
+ 101:Core/Src/devs/joystick.cpp **** }
+  82              		.loc 2 101 1 view .LVU15
+  83 0018 7047     		bx	lr
+  84              		.cfi_endproc
+  85              	.LFE403:
+  87              		.section	.text._Z41__static_initialization_and_destruction_0ii,"ax",%progbits
+  88              		.align	1
+  89              		.syntax unified
+  90              		.thumb
+  91              		.thumb_func
+  92              		.fpu fpv4-sp-d16
+  94              	_Z41__static_initialization_and_destruction_0ii:
+  95              	.LVL2:
+  96              	.LFB405:
+ 102:Core/Src/devs/joystick.cpp **** /*void JoyStick::parse()
+ 103:Core/Src/devs/joystick.cpp **** {   
+ 104:Core/Src/devs/joystick.cpp ****         JoyStick_Data joydata = read();
+ 105:Core/Src/devs/joystick.cpp ****         parse_JoyData(joydata);
+ 106:Core/Src/devs/joystick.cpp **** }*/
+ 107:Core/Src/devs/joystick.cpp **** 
+ 108:Core/Src/devs/joystick.cpp **** void JoyStick:: parse_JoyData()
+ 109:Core/Src/devs/joystick.cpp **** {
+ 110:Core/Src/devs/joystick.cpp ****          HAL_UART_Receive_DMA(hjoy_->huart, &gRx2Data, 1);
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 112:Core/Src/devs/joystick.cpp ****         {
+ 113:Core/Src/devs/joystick.cpp ****            // printf("F \n");
+ 114:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 115:Core/Src/devs/joystick.cpp ****             robo_state_.direction=90;
+ 116:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 117:Core/Src/devs/joystick.cpp ****         }
+ 118:Core/Src/devs/joystick.cpp ****         else if(gJoy.l_haty >= 127 && gJoy.l_hatx == 0 )
+ 119:Core/Src/devs/joystick.cpp ****         {
+ARM GAS  /tmp/cc5dmEe8.s 			page 5
+
+
+ 120:Core/Src/devs/joystick.cpp ****            // printf("B \n");
+ 121:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 122:Core/Src/devs/joystick.cpp ****             robo_state_.direction=-90;
+ 123:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 124:Core/Src/devs/joystick.cpp ****         }
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 126:Core/Src/devs/joystick.cpp ****         {
+ 127:Core/Src/devs/joystick.cpp ****             // printf("R \n");
+ 128:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 129:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 130:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 131:Core/Src/devs/joystick.cpp ****         }
+ 132:Core/Src/devs/joystick.cpp ****         else if (gJoy.r_hatx >= 127 && gJoy.r_haty == 0 )
+ 133:Core/Src/devs/joystick.cpp ****         {
+ 134:Core/Src/devs/joystick.cpp ****             // printf("L \n");
+ 135:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 136:Core/Src/devs/joystick.cpp ****             robo_state_.direction=180;
+ 137:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 138:Core/Src/devs/joystick.cpp ****         }
+ 139:Core/Src/devs/joystick.cpp ****          else if (gJoy.lt==255)
+ 140:Core/Src/devs/joystick.cpp ****         {
+ 141:Core/Src/devs/joystick.cpp ****               //printf("CW \n");
+ 142:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 143:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 144:Core/Src/devs/joystick.cpp ****             robo_state_.omega=-0.5;
+ 145:Core/Src/devs/joystick.cpp ****         }
+ 146:Core/Src/devs/joystick.cpp ****          else if (gJoy.rt==255)
+ 147:Core/Src/devs/joystick.cpp ****         {
+ 148:Core/Src/devs/joystick.cpp ****                // printf("ACW \n");
+ 149:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 150:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 151:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0.5;
+ 152:Core/Src/devs/joystick.cpp ****         }
+ 153:Core/Src/devs/joystick.cpp ****         else
+ 154:Core/Src/devs/joystick.cpp ****         {   //printf("STOP \n");
+ 155:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 156:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 157:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 158:Core/Src/devs/joystick.cpp ****         }
+ 159:Core/Src/devs/joystick.cpp **** }...
+  97              		.loc 2 159 1 is_stmt 1 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		.loc 2 159 1 is_stmt 0 view .LVU17
+ 102 0000 0128     		cmp	r0, #1
+ 103 0002 00D0     		beq	.L9
+ 104              	.L6:
+ 105 0004 7047     		bx	lr
+ 106              	.L9:
+ 107              		.loc 2 159 1 discriminator 1 view .LVU18
+ 108 0006 4FF6FF73 		movw	r3, #65535
+ 109 000a 9942     		cmp	r1, r3
+ 110 000c FAD1     		bne	.L6
+ 111              		.loc 2 159 1 view .LVU19
+ 112 000e 10B5     		push	{r4, lr}
+ 113              	.LCFI0:
+ARM GAS  /tmp/cc5dmEe8.s 			page 6
+
+
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 4, -8
+ 116              		.cfi_offset 14, -4
+  15:Core/Src/devs/joystick.cpp **** static CRC_Hash gJoyStick_CRC(7);
+ 117              		.loc 2 15 32 view .LVU20
+ 118 0010 054C     		ldr	r4, .L10
+ 119 0012 0721     		movs	r1, #7
+ 120              	.LVL3:
+  15:Core/Src/devs/joystick.cpp **** static CRC_Hash gJoyStick_CRC(7);
+ 121              		.loc 2 15 32 view .LVU21
+ 122 0014 2046     		mov	r0, r4
+ 123              	.LVL4:
+  15:Core/Src/devs/joystick.cpp **** static CRC_Hash gJoyStick_CRC(7);
+ 124              		.loc 2 15 32 view .LVU22
+ 125 0016 FFF7FEFF 		bl	_ZN8CRC_HashC1Eh
+ 126              	.LVL5:
+  15:Core/Src/devs/joystick.cpp **** static CRC_Hash gJoyStick_CRC(7);
+ 127              		.loc 2 15 17 view .LVU23
+ 128 001a 044A     		ldr	r2, .L10+4
+ 129 001c 0449     		ldr	r1, .L10+8
+ 130 001e 2046     		mov	r0, r4
+ 131 0020 FFF7FEFF 		bl	__aeabi_atexit
+ 132              	.LVL6:
+ 133              		.loc 2 159 1 view .LVU24
+ 134 0024 10BD     		pop	{r4, pc}
+ 135              	.L11:
+ 136 0026 00BF     		.align	2
+ 137              	.L10:
+ 138 0028 00000000 		.word	.LANCHOR0
+ 139 002c 00000000 		.word	__dso_handle
+ 140 0030 00000000 		.word	_ZN8CRC_HashD1Ev
+ 141              		.cfi_endproc
+ 142              	.LFE405:
+ 144              		.section	.rodata.HAL_UART_RxCpltCallback.str1.4,"aMS",%progbits,1
+ 145              		.align	2
+ 146              	.LC0:
+ 147 0000 4572726F 		.ascii	"Error\000"
+ 147      7200
+ 148              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	HAL_UART_RxCpltCallback
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.fpu fpv4-sp-d16
+ 156              	HAL_UART_RxCpltCallback:
+ 157              	.LVL7:
+ 158              	.LFB401:
+  23:Core/Src/devs/joystick.cpp **** {
+ 159              		.loc 2 23 1 is_stmt 1 view -0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 8
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+  23:Core/Src/devs/joystick.cpp **** {
+ 163              		.loc 2 23 1 is_stmt 0 view .LVU26
+ 164 0000 10B5     		push	{r4, lr}
+ 165              	.LCFI1:
+ARM GAS  /tmp/cc5dmEe8.s 			page 7
+
+
+ 166              		.cfi_def_cfa_offset 8
+ 167              		.cfi_offset 4, -8
+ 168              		.cfi_offset 14, -4
+ 169 0002 82B0     		sub	sp, sp, #8
+ 170              	.LCFI2:
+ 171              		.cfi_def_cfa_offset 16
+  24:Core/Src/devs/joystick.cpp ****         __HAL_UART_FLUSH_DRREGISTER(huart);
+ 172              		.loc 2 24 9 is_stmt 1 view .LVU27
+ 173 0004 0368     		ldr	r3, [r0]
+ 174 0006 5B68     		ldr	r3, [r3, #4]
+  25:Core/Src/devs/joystick.cpp ****         if (!gStart_Byte_Rx2)
+ 175              		.loc 2 25 9 view .LVU28
+ 176              	.LBB2:
+  25:Core/Src/devs/joystick.cpp ****         if (!gStart_Byte_Rx2)
+ 177              		.loc 2 25 13 is_stmt 0 view .LVU29
+ 178 0008 274B     		ldr	r3, .L24
+ 179 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  25:Core/Src/devs/joystick.cpp ****         if (!gStart_Byte_Rx2)
+ 180              		.loc 2 25 9 view .LVU30
+ 181 000c 6BB9     		cbnz	r3, .L13
+  27:Core/Src/devs/joystick.cpp ****                 if (gRx2Data == JOYSTICK_START_BYTE)
+ 182              		.loc 2 27 17 is_stmt 1 view .LVU31
+  27:Core/Src/devs/joystick.cpp ****                 if (gRx2Data == JOYSTICK_START_BYTE)
+ 183              		.loc 2 27 30 is_stmt 0 view .LVU32
+ 184 000e 274B     		ldr	r3, .L24+4
+ 185 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  27:Core/Src/devs/joystick.cpp ****                 if (gRx2Data == JOYSTICK_START_BYTE)
+ 186              		.loc 2 27 17 view .LVU33
+ 187 0012 A52B     		cmp	r3, #165
+ 188 0014 01D0     		beq	.L20
+ 189              	.LVL8:
+ 190              	.L12:
+  27:Core/Src/devs/joystick.cpp ****                 if (gRx2Data == JOYSTICK_START_BYTE)
+ 191              		.loc 2 27 17 view .LVU34
+ 192              	.LBE2:
+  68:Core/Src/devs/joystick.cpp **** }
+ 193              		.loc 2 68 1 view .LVU35
+ 194 0016 02B0     		add	sp, sp, #8
+ 195              	.LCFI3:
+ 196              		.cfi_remember_state
+ 197              		.cfi_def_cfa_offset 8
+ 198              		@ sp needed
+ 199 0018 10BD     		pop	{r4, pc}
+ 200              	.LVL9:
+ 201              	.L20:
+ 202              	.LCFI4:
+ 203              		.cfi_restore_state
+ 204              	.LBB17:
+  29:Core/Src/devs/joystick.cpp ****                         gStart_Byte_Rx2 = true;
+ 205              		.loc 2 29 25 is_stmt 1 view .LVU36
+  29:Core/Src/devs/joystick.cpp ****                         gStart_Byte_Rx2 = true;
+ 206              		.loc 2 29 41 is_stmt 0 view .LVU37
+ 207 001a 0122     		movs	r2, #1
+ 208 001c 224B     		ldr	r3, .L24
+ 209 001e 1A70     		strb	r2, [r3]
+  30:Core/Src/devs/joystick.cpp ****                        HAL_UART_Transmit_DMA(&huart4,&gRx2Data,1);
+ 210              		.loc 2 30 24 is_stmt 1 view .LVU38
+ARM GAS  /tmp/cc5dmEe8.s 			page 8
+
+
+  30:Core/Src/devs/joystick.cpp ****                        HAL_UART_Transmit_DMA(&huart4,&gRx2Data,1);
+ 211              		.loc 2 30 45 is_stmt 0 view .LVU39
+ 212 0020 2249     		ldr	r1, .L24+4
+ 213 0022 2348     		ldr	r0, .L24+8
+ 214              	.LVL10:
+  30:Core/Src/devs/joystick.cpp ****                        HAL_UART_Transmit_DMA(&huart4,&gRx2Data,1);
+ 215              		.loc 2 30 45 view .LVU40
+ 216 0024 FFF7FEFF 		bl	HAL_UART_Transmit_DMA
+ 217              	.LVL11:
+ 218 0028 F5E7     		b	.L12
+ 219              	.LVL12:
+ 220              	.L13:
+  30:Core/Src/devs/joystick.cpp ****                        HAL_UART_Transmit_DMA(&huart4,&gRx2Data,1);
+ 221              		.loc 2 30 45 view .LVU41
+ 222              	.LBE17:
+  35:Core/Src/devs/joystick.cpp ****                 if (gRx2_Data_num < NUM_JOYSTICK_BYTES)
+ 223              		.loc 2 35 17 is_stmt 1 view .LVU42
+ 224              	.LBB18:
+ 225              	.LBB3:
+  35:Core/Src/devs/joystick.cpp ****                 if (gRx2_Data_num < NUM_JOYSTICK_BYTES)
+ 226              		.loc 2 35 35 is_stmt 0 view .LVU43
+ 227 002a 224B     		ldr	r3, .L24+12
+ 228 002c 1B88     		ldrh	r3, [r3]
+  35:Core/Src/devs/joystick.cpp ****                 if (gRx2_Data_num < NUM_JOYSTICK_BYTES)
+ 229              		.loc 2 35 17 view .LVU44
+ 230 002e 072B     		cmp	r3, #7
+ 231 0030 22D8     		bhi	.L15
+ 232              	.LBB4:
+  37:Core/Src/devs/joystick.cpp ****                         gJoy_Data_Arr[gRx2_Data_num] = gRx2Data;
+ 233              		.loc 2 37 25 is_stmt 1 view .LVU45
+  37:Core/Src/devs/joystick.cpp ****                         gJoy_Data_Arr[gRx2_Data_num] = gRx2Data;
+ 234              		.loc 2 37 54 is_stmt 0 view .LVU46
+ 235 0032 1E4A     		ldr	r2, .L24+4
+ 236 0034 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 237 0036 2049     		ldr	r1, .L24+16
+ 238 0038 CA54     		strb	r2, [r1, r3]
+  39:Core/Src/devs/joystick.cpp ****                       if(gRx2_Data_num==0 || gRx2_Data_num==1)
+ 239              		.loc 2 39 23 is_stmt 1 view .LVU47
+ 240              	.LBB5:
+ 241 003a 012B     		cmp	r3, #1
+ 242 003c 06D9     		bls	.L21
+ 243              	.LBE5:
+ 244              	.LBE4:
+ 245              	.LBE3:
+ 246              	.LBE18:
+  45:Core/Src/devs/joystick.cpp ****                        else if(gRx2_Data_num==2)
+ 247              		.loc 2 45 29 view .LVU48
+ 248              	.LBB19:
+ 249              	.LBB15:
+ 250              	.LBB11:
+ 251              	.LBB9:
+ 252              	.LBB6:
+ 253 003e 022B     		cmp	r3, #2
+ 254 0040 0CD0     		beq	.L22
+ 255              	.LVL13:
+ 256              	.L17:
+  45:Core/Src/devs/joystick.cpp ****                        else if(gRx2_Data_num==2)
+ARM GAS  /tmp/cc5dmEe8.s 			page 9
+
+
+ 257              		.loc 2 45 29 is_stmt 0 view .LVU49
+ 258              	.LBE6:
+ 259              	.LBE9:
+  51:Core/Src/devs/joystick.cpp ****                         ++gRx2_Data_num;
+ 260              		.loc 2 51 25 is_stmt 1 view .LVU50
+ 261 0042 1C4A     		ldr	r2, .L24+12
+ 262 0044 1388     		ldrh	r3, [r2]
+ 263 0046 0133     		adds	r3, r3, #1
+ 264 0048 1380     		strh	r3, [r2]	@ movhi
+ 265              	.LBE11:
+ 266 004a E4E7     		b	.L12
+ 267              	.LVL14:
+ 268              	.L21:
+ 269              	.LBB12:
+ 270              	.LBB10:
+  41:Core/Src/devs/joystick.cpp ****                           sending_byte[gRx2_Data_num]=gJoy_Data_Arr[gRx2_Data_num];
+ 271              		.loc 2 41 27 view .LVU51
+  41:Core/Src/devs/joystick.cpp ****                           sending_byte[gRx2_Data_num]=gJoy_Data_Arr[gRx2_Data_num];
+ 272              		.loc 2 41 54 is_stmt 0 view .LVU52
+ 273 004c 1B49     		ldr	r1, .L24+20
+ 274 004e CA54     		strb	r2, [r1, r3]
+  43:Core/Src/devs/joystick.cpp ****                           HAL_UART_Transmit_DMA(&huart4,&sending_byte[gRx2_Data_num],1);
+ 275              		.loc 2 43 27 is_stmt 1 view .LVU53
+  43:Core/Src/devs/joystick.cpp ****                           HAL_UART_Transmit_DMA(&huart4,&sending_byte[gRx2_Data_num],1);
+ 276              		.loc 2 43 48 is_stmt 0 view .LVU54
+ 277 0050 0122     		movs	r2, #1
+ 278 0052 1944     		add	r1, r1, r3
+ 279 0054 1648     		ldr	r0, .L24+8
+ 280              	.LVL15:
+  43:Core/Src/devs/joystick.cpp ****                           HAL_UART_Transmit_DMA(&huart4,&sending_byte[gRx2_Data_num],1);
+ 281              		.loc 2 43 48 view .LVU55
+ 282 0056 FFF7FEFF 		bl	HAL_UART_Transmit_DMA
+ 283              	.LVL16:
+ 284 005a F2E7     		b	.L17
+ 285              	.LVL17:
+ 286              	.L22:
+ 287              	.LBB8:
+ 288              	.LBB7:
+  47:Core/Src/devs/joystick.cpp ****                                 uint8_t hash_sending=gJoyStick_CRC.get_Hash(sending_byte, 2);
+ 289              		.loc 2 47 33 is_stmt 1 view .LVU56
+  47:Core/Src/devs/joystick.cpp ****                                 uint8_t hash_sending=gJoyStick_CRC.get_Hash(sending_byte, 2);
+ 290              		.loc 2 47 76 is_stmt 0 view .LVU57
+ 291 005c 0222     		movs	r2, #2
+ 292 005e 1749     		ldr	r1, .L24+20
+ 293 0060 1748     		ldr	r0, .L24+24
+ 294              	.LVL18:
+  47:Core/Src/devs/joystick.cpp ****                                 uint8_t hash_sending=gJoyStick_CRC.get_Hash(sending_byte, 2);
+ 295              		.loc 2 47 76 view .LVU58
+ 296 0062 FFF7FEFF 		bl	_ZN8CRC_Hash8get_HashEPht
+ 297              	.LVL19:
+  47:Core/Src/devs/joystick.cpp ****                                 uint8_t hash_sending=gJoyStick_CRC.get_Hash(sending_byte, 2);
+ 298              		.loc 2 47 92 view .LVU59
+ 299 0066 8DF80700 		strb	r0, [sp, #7]
+  49:Core/Src/devs/joystick.cpp ****                                 HAL_UART_Transmit_DMA(&huart4,&hash_sending,1);
+ 300              		.loc 2 49 33 is_stmt 1 view .LVU60
+  49:Core/Src/devs/joystick.cpp ****                                 HAL_UART_Transmit_DMA(&huart4,&hash_sending,1);
+ 301              		.loc 2 49 54 is_stmt 0 view .LVU61
+ARM GAS  /tmp/cc5dmEe8.s 			page 10
+
+
+ 302 006a 0122     		movs	r2, #1
+ 303 006c 0DF10701 		add	r1, sp, #7
+ 304 0070 0F48     		ldr	r0, .L24+8
+ 305 0072 FFF7FEFF 		bl	HAL_UART_Transmit_DMA
+ 306              	.LVL20:
+ 307              	.LBE7:
+ 308 0076 E4E7     		b	.L17
+ 309              	.LVL21:
+ 310              	.L15:
+  49:Core/Src/devs/joystick.cpp ****                                 HAL_UART_Transmit_DMA(&huart4,&hash_sending,1);
+ 311              		.loc 2 49 54 view .LVU62
+ 312              	.LBE8:
+ 313              	.LBE10:
+ 314              	.LBE12:
+ 315              	.LBB13:
+  54:Core/Src/devs/joystick.cpp ****                         uint8_t rem = gRx2Data;
+ 316              		.loc 2 54 25 is_stmt 1 view .LVU63
+  54:Core/Src/devs/joystick.cpp ****                         uint8_t rem = gRx2Data;
+ 317              		.loc 2 54 33 is_stmt 0 view .LVU64
+ 318 0078 0C4B     		ldr	r3, .L24+4
+ 319 007a 1C78     		ldrb	r4, [r3]	@ zero_extendqisi2
+ 320              	.LVL22:
+  55:Core/Src/devs/joystick.cpp ****                         gStart_Byte_Rx2 = false;
+ 321              		.loc 2 55 25 is_stmt 1 view .LVU65
+  55:Core/Src/devs/joystick.cpp ****                         gStart_Byte_Rx2 = false;
+ 322              		.loc 2 55 41 is_stmt 0 view .LVU66
+ 323 007c 0023     		movs	r3, #0
+ 324 007e 0A4A     		ldr	r2, .L24
+ 325 0080 1370     		strb	r3, [r2]
+  56:Core/Src/devs/joystick.cpp ****                         gRx2_Data_num = 0;
+ 326              		.loc 2 56 25 is_stmt 1 view .LVU67
+  56:Core/Src/devs/joystick.cpp ****                         gRx2_Data_num = 0;
+ 327              		.loc 2 56 39 is_stmt 0 view .LVU68
+ 328 0082 0C4A     		ldr	r2, .L24+12
+ 329 0084 1380     		strh	r3, [r2]	@ movhi
+  57:Core/Src/devs/joystick.cpp ****                         uint8_t hash = gJoyStick_CRC.get_Hash(gJoy_Data_Arr, NUM_JOYSTICK_BYTES);
+ 330              		.loc 2 57 25 is_stmt 1 view .LVU69
+  57:Core/Src/devs/joystick.cpp ****                         uint8_t hash = gJoyStick_CRC.get_Hash(gJoy_Data_Arr, NUM_JOYSTICK_BYTES);
+ 331              		.loc 2 57 62 is_stmt 0 view .LVU70
+ 332 0086 0822     		movs	r2, #8
+ 333 0088 0B49     		ldr	r1, .L24+16
+ 334 008a 0D48     		ldr	r0, .L24+24
+ 335              	.LVL23:
+  57:Core/Src/devs/joystick.cpp ****                         uint8_t hash = gJoyStick_CRC.get_Hash(gJoy_Data_Arr, NUM_JOYSTICK_BYTES);
+ 336              		.loc 2 57 62 view .LVU71
+ 337 008c FFF7FEFF 		bl	_ZN8CRC_Hash8get_HashEPht
+ 338              	.LVL24:
+  58:Core/Src/devs/joystick.cpp ****                         if (hash == rem) {
+ 339              		.loc 2 58 25 is_stmt 1 view .LVU72
+ 340 0090 8442     		cmp	r4, r0
+ 341 0092 03D0     		beq	.L23
+  64:Core/Src/devs/joystick.cpp ****                                 printf("Error");
+ 342              		.loc 2 64 33 view .LVU73
+  64:Core/Src/devs/joystick.cpp ****                                 printf("Error");
+ 343              		.loc 2 64 39 is_stmt 0 view .LVU74
+ 344 0094 0B48     		ldr	r0, .L24+28
+ 345              	.LVL25:
+ARM GAS  /tmp/cc5dmEe8.s 			page 11
+
+
+  64:Core/Src/devs/joystick.cpp ****                                 printf("Error");
+ 346              		.loc 2 64 39 view .LVU75
+ 347 0096 FFF7FEFF 		bl	printf
+ 348              	.LVL26:
+ 349              	.LBE13:
+ 350              	.LBE15:
+ 351              	.LBE19:
+  68:Core/Src/devs/joystick.cpp **** }
+ 352              		.loc 2 68 1 view .LVU76
+ 353 009a BCE7     		b	.L12
+ 354              	.LVL27:
+ 355              	.L23:
+ 356              	.LBB20:
+ 357              	.LBB16:
+ 358              	.LBB14:
+  59:Core/Src/devs/joystick.cpp ****                                 fill_JoyData(&gJoy, gJoy_Data_Arr);
+ 359              		.loc 2 59 33 is_stmt 1 view .LVU77
+  59:Core/Src/devs/joystick.cpp ****                                 fill_JoyData(&gJoy, gJoy_Data_Arr);
+ 360              		.loc 2 59 45 is_stmt 0 view .LVU78
+ 361 009c 0649     		ldr	r1, .L24+16
+ 362 009e 0A48     		ldr	r0, .L24+32
+ 363              	.LVL28:
+  59:Core/Src/devs/joystick.cpp ****                                 fill_JoyData(&gJoy, gJoy_Data_Arr);
+ 364              		.loc 2 59 45 view .LVU79
+ 365 00a0 FFF7FEFF 		bl	_ZL12fill_JoyDataP13JoyStick_DataPh
+ 366              	.LVL29:
+ 367 00a4 B7E7     		b	.L12
+ 368              	.L25:
+ 369 00a6 00BF     		.align	2
+ 370              	.L24:
+ 371 00a8 00000000 		.word	.LANCHOR1
+ 372 00ac 00000000 		.word	.LANCHOR2
+ 373 00b0 00000000 		.word	huart4
+ 374 00b4 00000000 		.word	.LANCHOR3
+ 375 00b8 00000000 		.word	.LANCHOR4
+ 376 00bc 00000000 		.word	.LANCHOR5
+ 377 00c0 00000000 		.word	.LANCHOR0
+ 378 00c4 00000000 		.word	.LC0
+ 379 00c8 00000000 		.word	.LANCHOR6
+ 380              	.LBE14:
+ 381              	.LBE16:
+ 382              	.LBE20:
+ 383              		.cfi_endproc
+ 384              	.LFE401:
+ 386              		.section	.text._ZN8JoyStick4initEv,"ax",%progbits
+ 387              		.align	1
+ 388              		.global	_ZN8JoyStick4initEv
+ 389              		.syntax unified
+ 390              		.thumb
+ 391              		.thumb_func
+ 392              		.fpu fpv4-sp-d16
+ 394              	_ZN8JoyStick4initEv:
+ 395              	.LVL30:
+ 396              	.LFB402:
+  74:Core/Src/devs/joystick.cpp **** {
+ 397              		.loc 2 74 1 is_stmt 1 view -0
+ 398              		.cfi_startproc
+ARM GAS  /tmp/cc5dmEe8.s 			page 12
+
+
+ 399              		@ args = 0, pretend = 0, frame = 0
+ 400              		@ frame_needed = 0, uses_anonymous_args = 0
+ 401              		@ link register save eliminated.
+  75:Core/Src/devs/joystick.cpp ****         gNull_JData.button1 = 0;
+ 402              		.loc 2 75 9 view .LVU81
+  75:Core/Src/devs/joystick.cpp ****         gNull_JData.button1 = 0;
+ 403              		.loc 2 75 29 is_stmt 0 view .LVU82
+ 404 0000 054B     		ldr	r3, .L27
+ 405 0002 0022     		movs	r2, #0
+ 406 0004 1A70     		strb	r2, [r3]
+  76:Core/Src/devs/joystick.cpp ****         gNull_JData.button2 = 0;
+ 407              		.loc 2 76 9 is_stmt 1 view .LVU83
+  76:Core/Src/devs/joystick.cpp ****         gNull_JData.button2 = 0;
+ 408              		.loc 2 76 29 is_stmt 0 view .LVU84
+ 409 0006 5A70     		strb	r2, [r3, #1]
+  77:Core/Src/devs/joystick.cpp ****         gNull_JData.lt = 0;
+ 410              		.loc 2 77 9 is_stmt 1 view .LVU85
+  77:Core/Src/devs/joystick.cpp ****         gNull_JData.lt = 0;
+ 411              		.loc 2 77 24 is_stmt 0 view .LVU86
+ 412 0008 9A70     		strb	r2, [r3, #2]
+  78:Core/Src/devs/joystick.cpp ****         gNull_JData.rt = 0;
+ 413              		.loc 2 78 9 is_stmt 1 view .LVU87
+  78:Core/Src/devs/joystick.cpp ****         gNull_JData.rt = 0;
+ 414              		.loc 2 78 24 is_stmt 0 view .LVU88
+ 415 000a DA70     		strb	r2, [r3, #3]
+  79:Core/Src/devs/joystick.cpp ****         gNull_JData.l_hatx = 0;
+ 416              		.loc 2 79 9 is_stmt 1 view .LVU89
+  79:Core/Src/devs/joystick.cpp ****         gNull_JData.l_hatx = 0;
+ 417              		.loc 2 79 28 is_stmt 0 view .LVU90
+ 418 000c 1A71     		strb	r2, [r3, #4]
+  80:Core/Src/devs/joystick.cpp ****         gNull_JData.l_haty = 0;
+ 419              		.loc 2 80 9 is_stmt 1 view .LVU91
+  80:Core/Src/devs/joystick.cpp ****         gNull_JData.l_haty = 0;
+ 420              		.loc 2 80 28 is_stmt 0 view .LVU92
+ 421 000e 5A71     		strb	r2, [r3, #5]
+  81:Core/Src/devs/joystick.cpp ****         gNull_JData.r_hatx = 0;
+ 422              		.loc 2 81 9 is_stmt 1 view .LVU93
+  81:Core/Src/devs/joystick.cpp ****         gNull_JData.r_hatx = 0;
+ 423              		.loc 2 81 28 is_stmt 0 view .LVU94
+ 424 0010 9A71     		strb	r2, [r3, #6]
+  82:Core/Src/devs/joystick.cpp ****         gNull_JData.r_haty = 0;
+ 425              		.loc 2 82 9 is_stmt 1 view .LVU95
+  82:Core/Src/devs/joystick.cpp ****         gNull_JData.r_haty = 0;
+ 426              		.loc 2 82 28 is_stmt 0 view .LVU96
+ 427 0012 DA71     		strb	r2, [r3, #7]
+  83:Core/Src/devs/joystick.cpp **** }
+ 428              		.loc 2 83 1 view .LVU97
+ 429 0014 7047     		bx	lr
+ 430              	.L28:
+ 431 0016 00BF     		.align	2
+ 432              	.L27:
+ 433 0018 00000000 		.word	.LANCHOR7
+ 434              		.cfi_endproc
+ 435              	.LFE402:
+ 437              		.section	.text._ZN8JoyStick13parse_JoyDataEv,"ax",%progbits
+ 438              		.align	1
+ 439              		.global	_ZN8JoyStick13parse_JoyDataEv
+ARM GAS  /tmp/cc5dmEe8.s 			page 13
+
+
+ 440              		.syntax unified
+ 441              		.thumb
+ 442              		.thumb_func
+ 443              		.fpu fpv4-sp-d16
+ 445              	_ZN8JoyStick13parse_JoyDataEv:
+ 446              	.LVL31:
+ 447              	.LFB404:
+ 109:Core/Src/devs/joystick.cpp **** {
+ 448              		.loc 2 109 1 is_stmt 1 view -0
+ 449              		.cfi_startproc
+ 450              		@ args = 0, pretend = 0, frame = 0
+ 451              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109:Core/Src/devs/joystick.cpp **** {
+ 452              		.loc 2 109 1 is_stmt 0 view .LVU99
+ 453 0000 08B5     		push	{r3, lr}
+ 454              	.LCFI5:
+ 455              		.cfi_def_cfa_offset 8
+ 456              		.cfi_offset 3, -8
+ 457              		.cfi_offset 14, -4
+ 110:Core/Src/devs/joystick.cpp ****          HAL_UART_Receive_DMA(hjoy_->huart, &gRx2Data, 1);
+ 458              		.loc 2 110 10 is_stmt 1 view .LVU100
+ 110:Core/Src/devs/joystick.cpp ****          HAL_UART_Receive_DMA(hjoy_->huart, &gRx2Data, 1);
+ 459              		.loc 2 110 31 is_stmt 0 view .LVU101
+ 460 0002 0368     		ldr	r3, [r0]
+ 110:Core/Src/devs/joystick.cpp ****          HAL_UART_Receive_DMA(hjoy_->huart, &gRx2Data, 1);
+ 461              		.loc 2 110 30 view .LVU102
+ 462 0004 0122     		movs	r2, #1
+ 463 0006 3149     		ldr	r1, .L40
+ 464 0008 1868     		ldr	r0, [r3]
+ 465              	.LVL32:
+ 110:Core/Src/devs/joystick.cpp ****          HAL_UART_Receive_DMA(hjoy_->huart, &gRx2Data, 1);
+ 466              		.loc 2 110 30 view .LVU103
+ 467 000a FFF7FEFF 		bl	HAL_UART_Receive_DMA
+ 468              	.LVL33:
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 469              		.loc 2 111 9 is_stmt 1 view .LVU104
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 470              		.loc 2 111 18 is_stmt 0 view .LVU105
+ 471 000e 304B     		ldr	r3, .L40+4
+ 472 0010 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 473              		.loc 2 111 25 view .LVU106
+ 474 0012 93F90530 		ldrsb	r3, [r3, #5]
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 475              		.loc 2 111 9 view .LVU107
+ 476 0016 002B     		cmp	r3, #0
+ 477 0018 0CDB     		blt	.L30
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 478              		.loc 2 111 40 discriminator 1 view .LVU108
+ 479 001a 2D4B     		ldr	r3, .L40+4
+ 480 001c 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 481              		.loc 2 111 32 discriminator 1 view .LVU109
+ 482 001e 4BB9     		cbnz	r3, .L30
+ 111:Core/Src/devs/joystick.cpp ****         if (gJoy.l_haty <= 127 && gJoy.l_hatx == 0 && gJoy.l_haty != 0 )
+ 483              		.loc 2 111 52 discriminator 2 view .LVU110
+ 484 0020 42B1     		cbz	r2, .L30
+ARM GAS  /tmp/cc5dmEe8.s 			page 14
+
+
+ 114:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 485              		.loc 2 114 13 is_stmt 1 view .LVU111
+ 114:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 486              		.loc 2 114 34 is_stmt 0 view .LVU112
+ 487 0022 2C4B     		ldr	r3, .L40+8
+ 488 0024 4FF07F52 		mov	r2, #1069547520
+ 489 0028 1A64     		str	r2, [r3, #64]	@ float
+ 115:Core/Src/devs/joystick.cpp ****             robo_state_.direction=90;
+ 490              		.loc 2 115 13 is_stmt 1 view .LVU113
+ 115:Core/Src/devs/joystick.cpp ****             robo_state_.direction=90;
+ 491              		.loc 2 115 34 is_stmt 0 view .LVU114
+ 492 002a 2B4A     		ldr	r2, .L40+12
+ 493 002c 9A64     		str	r2, [r3, #72]	@ float
+ 116:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 494              		.loc 2 116 13 is_stmt 1 view .LVU115
+ 116:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 495              		.loc 2 116 30 is_stmt 0 view .LVU116
+ 496 002e 0022     		movs	r2, #0
+ 497 0030 5A64     		str	r2, [r3, #68]	@ float
+ 498 0032 0CE0     		b	.L29
+ 499              	.L30:
+ 118:Core/Src/devs/joystick.cpp ****         else if(gJoy.l_haty >= 127 && gJoy.l_hatx == 0 )
+ 500              		.loc 2 118 14 is_stmt 1 view .LVU117
+ 501 0034 7E2A     		cmp	r2, #126
+ 502 0036 0BD9     		bls	.L32
+ 118:Core/Src/devs/joystick.cpp ****         else if(gJoy.l_haty >= 127 && gJoy.l_hatx == 0 )
+ 503              		.loc 2 118 44 is_stmt 0 discriminator 1 view .LVU118
+ 504 0038 254B     		ldr	r3, .L40+4
+ 505 003a 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 118:Core/Src/devs/joystick.cpp ****         else if(gJoy.l_haty >= 127 && gJoy.l_hatx == 0 )
+ 506              		.loc 2 118 36 discriminator 1 view .LVU119
+ 507 003c 43B9     		cbnz	r3, .L32
+ 121:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 508              		.loc 2 121 13 is_stmt 1 view .LVU120
+ 121:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 509              		.loc 2 121 34 is_stmt 0 view .LVU121
+ 510 003e 254B     		ldr	r3, .L40+8
+ 511 0040 4FF07F52 		mov	r2, #1069547520
+ 512 0044 1A64     		str	r2, [r3, #64]	@ float
+ 122:Core/Src/devs/joystick.cpp ****             robo_state_.direction=-90;
+ 513              		.loc 2 122 13 is_stmt 1 view .LVU122
+ 122:Core/Src/devs/joystick.cpp ****             robo_state_.direction=-90;
+ 514              		.loc 2 122 34 is_stmt 0 view .LVU123
+ 515 0046 254A     		ldr	r2, .L40+16
+ 516 0048 9A64     		str	r2, [r3, #72]	@ float
+ 123:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 517              		.loc 2 123 13 is_stmt 1 view .LVU124
+ 123:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 518              		.loc 2 123 30 is_stmt 0 view .LVU125
+ 519 004a 0022     		movs	r2, #0
+ 520 004c 5A64     		str	r2, [r3, #68]	@ float
+ 521              	.L29:
+ 522              		.loc 2 159 1 view .LVU126
+ 523 004e 08BD     		pop	{r3, pc}
+ 524              	.L32:
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 525              		.loc 2 125 15 is_stmt 1 view .LVU127
+ARM GAS  /tmp/cc5dmEe8.s 			page 15
+
+
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 526              		.loc 2 125 24 is_stmt 0 view .LVU128
+ 527 0050 1F4B     		ldr	r3, .L40+4
+ 528 0052 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 529              		.loc 2 125 31 view .LVU129
+ 530 0054 93F90630 		ldrsb	r3, [r3, #6]
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 531              		.loc 2 125 15 view .LVU130
+ 532 0058 002B     		cmp	r3, #0
+ 533 005a 0BDB     		blt	.L33
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 534              		.loc 2 125 46 discriminator 1 view .LVU131
+ 535 005c 1C4B     		ldr	r3, .L40+4
+ 536 005e DB79     		ldrb	r3, [r3, #7]	@ zero_extendqisi2
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 537              		.loc 2 125 38 discriminator 1 view .LVU132
+ 538 0060 43B9     		cbnz	r3, .L33
+ 125:Core/Src/devs/joystick.cpp ****          else if (gJoy.r_hatx <= 127 && gJoy.r_haty == 0 && gJoy.r_hatx != 0)
+ 539              		.loc 2 125 58 discriminator 2 view .LVU133
+ 540 0062 3AB1     		cbz	r2, .L33
+ 128:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 541              		.loc 2 128 13 is_stmt 1 view .LVU134
+ 128:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 542              		.loc 2 128 34 is_stmt 0 view .LVU135
+ 543 0064 1B4B     		ldr	r3, .L40+8
+ 544 0066 4FF07F52 		mov	r2, #1069547520
+ 545 006a 1A64     		str	r2, [r3, #64]	@ float
+ 129:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 546              		.loc 2 129 13 is_stmt 1 view .LVU136
+ 129:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 547              		.loc 2 129 34 is_stmt 0 view .LVU137
+ 548 006c 0022     		movs	r2, #0
+ 549 006e 9A64     		str	r2, [r3, #72]	@ float
+ 130:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 550              		.loc 2 130 13 is_stmt 1 view .LVU138
+ 130:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 551              		.loc 2 130 30 is_stmt 0 view .LVU139
+ 552 0070 5A64     		str	r2, [r3, #68]	@ float
+ 553 0072 ECE7     		b	.L29
+ 554              	.L33:
+ 132:Core/Src/devs/joystick.cpp ****         else if (gJoy.r_hatx >= 127 && gJoy.r_haty == 0 )
+ 555              		.loc 2 132 14 is_stmt 1 view .LVU140
+ 556 0074 7E2A     		cmp	r2, #126
+ 557 0076 0BD9     		bls	.L34
+ 132:Core/Src/devs/joystick.cpp ****         else if (gJoy.r_hatx >= 127 && gJoy.r_haty == 0 )
+ 558              		.loc 2 132 45 is_stmt 0 discriminator 1 view .LVU141
+ 559 0078 154B     		ldr	r3, .L40+4
+ 560 007a DB79     		ldrb	r3, [r3, #7]	@ zero_extendqisi2
+ 132:Core/Src/devs/joystick.cpp ****         else if (gJoy.r_hatx >= 127 && gJoy.r_haty == 0 )
+ 561              		.loc 2 132 37 discriminator 1 view .LVU142
+ 562 007c 43B9     		cbnz	r3, .L34
+ 135:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 563              		.loc 2 135 13 is_stmt 1 view .LVU143
+ 135:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =vel;
+ 564              		.loc 2 135 34 is_stmt 0 view .LVU144
+ 565 007e 154B     		ldr	r3, .L40+8
+ARM GAS  /tmp/cc5dmEe8.s 			page 16
+
+
+ 566 0080 4FF07F52 		mov	r2, #1069547520
+ 567 0084 1A64     		str	r2, [r3, #64]	@ float
+ 136:Core/Src/devs/joystick.cpp ****             robo_state_.direction=180;
+ 568              		.loc 2 136 13 is_stmt 1 view .LVU145
+ 136:Core/Src/devs/joystick.cpp ****             robo_state_.direction=180;
+ 569              		.loc 2 136 34 is_stmt 0 view .LVU146
+ 570 0086 164A     		ldr	r2, .L40+20
+ 571 0088 9A64     		str	r2, [r3, #72]	@ float
+ 137:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 572              		.loc 2 137 13 is_stmt 1 view .LVU147
+ 137:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 573              		.loc 2 137 30 is_stmt 0 view .LVU148
+ 574 008a 0022     		movs	r2, #0
+ 575 008c 5A64     		str	r2, [r3, #68]	@ float
+ 576 008e DEE7     		b	.L29
+ 577              	.L34:
+ 139:Core/Src/devs/joystick.cpp ****          else if (gJoy.lt==255)
+ 578              		.loc 2 139 15 is_stmt 1 view .LVU149
+ 139:Core/Src/devs/joystick.cpp ****          else if (gJoy.lt==255)
+ 579              		.loc 2 139 24 is_stmt 0 view .LVU150
+ 580 0090 0F4B     		ldr	r3, .L40+4
+ 581 0092 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 139:Core/Src/devs/joystick.cpp ****          else if (gJoy.lt==255)
+ 582              		.loc 2 139 15 view .LVU151
+ 583 0094 FF2B     		cmp	r3, #255
+ 584 0096 09D0     		beq	.L38
+ 146:Core/Src/devs/joystick.cpp ****          else if (gJoy.rt==255)
+ 585              		.loc 2 146 15 is_stmt 1 view .LVU152
+ 146:Core/Src/devs/joystick.cpp ****          else if (gJoy.rt==255)
+ 586              		.loc 2 146 24 is_stmt 0 view .LVU153
+ 587 0098 0D4B     		ldr	r3, .L40+4
+ 588 009a DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 146:Core/Src/devs/joystick.cpp ****          else if (gJoy.rt==255)
+ 589              		.loc 2 146 15 view .LVU154
+ 590 009c FF2B     		cmp	r3, #255
+ 591 009e 0DD0     		beq	.L39
+ 155:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 592              		.loc 2 155 13 is_stmt 1 view .LVU155
+ 155:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 593              		.loc 2 155 34 is_stmt 0 view .LVU156
+ 594 00a0 0C4B     		ldr	r3, .L40+8
+ 595 00a2 0022     		movs	r2, #0
+ 596 00a4 1A64     		str	r2, [r3, #64]	@ float
+ 156:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 597              		.loc 2 156 13 is_stmt 1 view .LVU157
+ 156:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 598              		.loc 2 156 34 is_stmt 0 view .LVU158
+ 599 00a6 9A64     		str	r2, [r3, #72]	@ float
+ 157:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 600              		.loc 2 157 13 is_stmt 1 view .LVU159
+ 157:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0;
+ 601              		.loc 2 157 30 is_stmt 0 view .LVU160
+ 602 00a8 5A64     		str	r2, [r3, #68]	@ float
+ 603              		.loc 2 159 1 view .LVU161
+ 604 00aa D0E7     		b	.L29
+ 605              	.L38:
+ 142:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ARM GAS  /tmp/cc5dmEe8.s 			page 17
+
+
+ 606              		.loc 2 142 13 is_stmt 1 view .LVU162
+ 142:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 607              		.loc 2 142 34 is_stmt 0 view .LVU163
+ 608 00ac 094B     		ldr	r3, .L40+8
+ 609 00ae 0022     		movs	r2, #0
+ 610 00b0 1A64     		str	r2, [r3, #64]	@ float
+ 143:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 611              		.loc 2 143 13 is_stmt 1 view .LVU164
+ 143:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 612              		.loc 2 143 34 is_stmt 0 view .LVU165
+ 613 00b2 9A64     		str	r2, [r3, #72]	@ float
+ 144:Core/Src/devs/joystick.cpp ****             robo_state_.omega=-0.5;
+ 614              		.loc 2 144 13 is_stmt 1 view .LVU166
+ 144:Core/Src/devs/joystick.cpp ****             robo_state_.omega=-0.5;
+ 615              		.loc 2 144 30 is_stmt 0 view .LVU167
+ 616 00b4 4FF03F42 		mov	r2, #-1090519040
+ 617 00b8 5A64     		str	r2, [r3, #68]	@ float
+ 618 00ba C8E7     		b	.L29
+ 619              	.L39:
+ 149:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 620              		.loc 2 149 13 is_stmt 1 view .LVU168
+ 149:Core/Src/devs/joystick.cpp ****             robo_state_.velocity =0;
+ 621              		.loc 2 149 34 is_stmt 0 view .LVU169
+ 622 00bc 054B     		ldr	r3, .L40+8
+ 623 00be 0022     		movs	r2, #0
+ 624 00c0 1A64     		str	r2, [r3, #64]	@ float
+ 150:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 625              		.loc 2 150 13 is_stmt 1 view .LVU170
+ 150:Core/Src/devs/joystick.cpp ****             robo_state_.direction=0;
+ 626              		.loc 2 150 34 is_stmt 0 view .LVU171
+ 627 00c2 9A64     		str	r2, [r3, #72]	@ float
+ 151:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0.5;
+ 628              		.loc 2 151 13 is_stmt 1 view .LVU172
+ 151:Core/Src/devs/joystick.cpp ****             robo_state_.omega=0.5;
+ 629              		.loc 2 151 30 is_stmt 0 view .LVU173
+ 630 00c4 4FF07C52 		mov	r2, #1056964608
+ 631 00c8 5A64     		str	r2, [r3, #68]	@ float
+ 632 00ca C0E7     		b	.L29
+ 633              	.L41:
+ 634              		.align	2
+ 635              	.L40:
+ 636 00cc 00000000 		.word	.LANCHOR2
+ 637 00d0 00000000 		.word	.LANCHOR6
+ 638 00d4 00000000 		.word	robo_state_
+ 639 00d8 0000B442 		.word	1119092736
+ 640 00dc 0000B4C2 		.word	-1028390912
+ 641 00e0 00003443 		.word	1127481344
+ 642              		.cfi_endproc
+ 643              	.LFE404:
+ 645              		.section	.text._GLOBAL__sub_I_gJoy,"ax",%progbits
+ 646              		.align	1
+ 647              		.syntax unified
+ 648              		.thumb
+ 649              		.thumb_func
+ 650              		.fpu fpv4-sp-d16
+ 652              	_GLOBAL__sub_I_gJoy:
+ 653              	.LFB406:
+ARM GAS  /tmp/cc5dmEe8.s 			page 18
+
+
+ 654              		.loc 2 159 1 is_stmt 1 view -0
+ 655              		.cfi_startproc
+ 656              		@ args = 0, pretend = 0, frame = 0
+ 657              		@ frame_needed = 0, uses_anonymous_args = 0
+ 658 0000 08B5     		push	{r3, lr}
+ 659              	.LCFI6:
+ 660              		.cfi_def_cfa_offset 8
+ 661              		.cfi_offset 3, -8
+ 662              		.cfi_offset 14, -4
+ 663              		.loc 2 159 1 is_stmt 0 view .LVU175
+ 664 0002 4FF6FF71 		movw	r1, #65535
+ 665 0006 0120     		movs	r0, #1
+ 666 0008 FFF7FEFF 		bl	_Z41__static_initialization_and_destruction_0ii
+ 667              	.LVL34:
+ 668 000c 08BD     		pop	{r3, pc}
+ 669              		.cfi_endproc
+ 670              	.LFE406:
+ 672              		.section	.init_array,"aw",%init_array
+ 673              		.align	2
+ 674 0000 00000000 		.word	_GLOBAL__sub_I_gJoy(target1)
+ 675              		.global	gJoy
+ 676              		.section	.bss._ZL11gNull_JData,"aw",%nobits
+ 677              		.align	2
+ 678              		.set	.LANCHOR7,. + 0
+ 681              	_ZL11gNull_JData:
+ 682 0000 00000000 		.space	8
+ 682      00000000 
+ 683              		.section	.bss._ZL12sending_byte,"aw",%nobits
+ 684              		.align	2
+ 685              		.set	.LANCHOR5,. + 0
+ 688              	_ZL12sending_byte:
+ 689 0000 0000     		.space	2
+ 690              		.section	.bss._ZL13gJoyStick_CRC,"aw",%nobits
+ 691              		.align	2
+ 692              		.set	.LANCHOR0,. + 0
+ 695              	_ZL13gJoyStick_CRC:
+ 696 0000 00000000 		.space	256
+ 696      00000000 
+ 696      00000000 
+ 696      00000000 
+ 696      00000000 
+ 697              		.section	.bss._ZL13gJoy_Data_Arr,"aw",%nobits
+ 698              		.align	2
+ 699              		.set	.LANCHOR4,. + 0
+ 702              	_ZL13gJoy_Data_Arr:
+ 703 0000 00000000 		.space	8
+ 703      00000000 
+ 704              		.section	.bss._ZL13gRx2_Data_num,"aw",%nobits
+ 705              		.align	1
+ 706              		.set	.LANCHOR3,. + 0
+ 709              	_ZL13gRx2_Data_num:
+ 710 0000 0000     		.space	2
+ 711              		.section	.bss._ZL15gStart_Byte_Rx2,"aw",%nobits
+ 712              		.set	.LANCHOR1,. + 0
+ 715              	_ZL15gStart_Byte_Rx2:
+ 716 0000 00       		.space	1
+ 717              		.section	.bss._ZL8gRx2Data,"aw",%nobits
+ARM GAS  /tmp/cc5dmEe8.s 			page 19
+
+
+ 718              		.set	.LANCHOR2,. + 0
+ 721              	_ZL8gRx2Data:
+ 722 0000 00       		.space	1
+ 723              		.section	.bss.gJoy,"aw",%nobits
+ 724              		.align	2
+ 725              		.set	.LANCHOR6,. + 0
+ 728              	gJoy:
+ 729 0000 00000000 		.space	8
+ 729      00000000 
+ 730              		.text
+ 731              	.Letext0:
+ 732              		.file 3 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/machine/_de
+ 733              		.file 4 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/sys/_stdint
+ 734              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 735              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 736              		.file 7 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/incl
+ 737              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 738              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 739              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 740              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 741              		.file 12 "Core/Inc/devs/joystick.h"
+ 742              		.file 13 "Core/Inc/utils/container/queue_custom.h"
+ 743              		.file 14 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 744              		.file 15 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 745              		.file 16 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 746              		.file 17 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 747              		.file 18 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 748              		.file 19 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdlib.h"
+ 749              		.file 20 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 750              		.file 21 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/math.h"
+ 751              		.file 22 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/c++/10.2.1
+ 752              		.file 23 "Core/Inc/control/pid.h"
+ 753              		.file 24 "Core/Inc/robot/robo_state.h"
+ 754              		.file 25 "Core/Inc/periphs/usart.h"
+ 755              		.file 26 "/home/love/Documents/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/stdio.h"
+ 756              		.file 27 "<built-in>"
+ARM GAS  /tmp/cc5dmEe8.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 joystick.cpp
+     /tmp/cc5dmEe8.s:18     .text._ZN8CRC_HashD2Ev:0000000000000000 $t
+     /tmp/cc5dmEe8.s:26     .text._ZN8CRC_HashD2Ev:0000000000000000 _ZN8CRC_HashD2Ev
+     /tmp/cc5dmEe8.s:26     .text._ZN8CRC_HashD2Ev:0000000000000000 _ZN8CRC_HashD1Ev
+     /tmp/cc5dmEe8.s:43     .text._ZL12fill_JoyDataP13JoyStick_DataPh:0000000000000000 $t
+     /tmp/cc5dmEe8.s:49     .text._ZL12fill_JoyDataP13JoyStick_DataPh:0000000000000000 _ZL12fill_JoyDataP13JoyStick_DataPh
+     /tmp/cc5dmEe8.s:88     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
+     /tmp/cc5dmEe8.s:94     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
+     /tmp/cc5dmEe8.s:138    .text._Z41__static_initialization_and_destruction_0ii:0000000000000028 $d
+     /tmp/cc5dmEe8.s:145    .rodata.HAL_UART_RxCpltCallback.str1.4:0000000000000000 $d
+     /tmp/cc5dmEe8.s:149    .text.HAL_UART_RxCpltCallback:0000000000000000 $t
+     /tmp/cc5dmEe8.s:156    .text.HAL_UART_RxCpltCallback:0000000000000000 HAL_UART_RxCpltCallback
+     /tmp/cc5dmEe8.s:371    .text.HAL_UART_RxCpltCallback:00000000000000a8 $d
+     /tmp/cc5dmEe8.s:387    .text._ZN8JoyStick4initEv:0000000000000000 $t
+     /tmp/cc5dmEe8.s:394    .text._ZN8JoyStick4initEv:0000000000000000 _ZN8JoyStick4initEv
+     /tmp/cc5dmEe8.s:433    .text._ZN8JoyStick4initEv:0000000000000018 $d
+     /tmp/cc5dmEe8.s:438    .text._ZN8JoyStick13parse_JoyDataEv:0000000000000000 $t
+     /tmp/cc5dmEe8.s:445    .text._ZN8JoyStick13parse_JoyDataEv:0000000000000000 _ZN8JoyStick13parse_JoyDataEv
+     /tmp/cc5dmEe8.s:636    .text._ZN8JoyStick13parse_JoyDataEv:00000000000000cc $d
+     /tmp/cc5dmEe8.s:646    .text._GLOBAL__sub_I_gJoy:0000000000000000 $t
+     /tmp/cc5dmEe8.s:652    .text._GLOBAL__sub_I_gJoy:0000000000000000 _GLOBAL__sub_I_gJoy
+     /tmp/cc5dmEe8.s:673    .init_array:0000000000000000 $d
+     /tmp/cc5dmEe8.s:728    .bss.gJoy:0000000000000000 gJoy
+     /tmp/cc5dmEe8.s:677    .bss._ZL11gNull_JData:0000000000000000 $d
+     /tmp/cc5dmEe8.s:681    .bss._ZL11gNull_JData:0000000000000000 _ZL11gNull_JData
+     /tmp/cc5dmEe8.s:684    .bss._ZL12sending_byte:0000000000000000 $d
+     /tmp/cc5dmEe8.s:688    .bss._ZL12sending_byte:0000000000000000 _ZL12sending_byte
+     /tmp/cc5dmEe8.s:691    .bss._ZL13gJoyStick_CRC:0000000000000000 $d
+     /tmp/cc5dmEe8.s:695    .bss._ZL13gJoyStick_CRC:0000000000000000 _ZL13gJoyStick_CRC
+     /tmp/cc5dmEe8.s:698    .bss._ZL13gJoy_Data_Arr:0000000000000000 $d
+     /tmp/cc5dmEe8.s:702    .bss._ZL13gJoy_Data_Arr:0000000000000000 _ZL13gJoy_Data_Arr
+     /tmp/cc5dmEe8.s:705    .bss._ZL13gRx2_Data_num:0000000000000000 $d
+     /tmp/cc5dmEe8.s:709    .bss._ZL13gRx2_Data_num:0000000000000000 _ZL13gRx2_Data_num
+     /tmp/cc5dmEe8.s:715    .bss._ZL15gStart_Byte_Rx2:0000000000000000 _ZL15gStart_Byte_Rx2
+     /tmp/cc5dmEe8.s:716    .bss._ZL15gStart_Byte_Rx2:0000000000000000 $d
+     /tmp/cc5dmEe8.s:721    .bss._ZL8gRx2Data:0000000000000000 _ZL8gRx2Data
+     /tmp/cc5dmEe8.s:722    .bss._ZL8gRx2Data:0000000000000000 $d
+     /tmp/cc5dmEe8.s:724    .bss.gJoy:0000000000000000 $d
+                           .group:0000000000000000 _ZN8CRC_HashD5Ev
+
+UNDEFINED SYMBOLS
+_ZN8CRC_HashC1Eh
+__aeabi_atexit
+__dso_handle
+HAL_UART_Transmit_DMA
+_ZN8CRC_Hash8get_HashEPht
+printf
+huart4
+HAL_UART_Receive_DMA
+robo_state_
